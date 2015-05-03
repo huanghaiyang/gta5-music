@@ -1,0 +1,26 @@
+{
+  "name": "gta5-music",
+  "version": "1.0.0",
+  "homepage": "https://github.com/huanghaiyang/gta5-music",
+  "description": "a music player like in the game named gta5",
+  "main": "index.html",
+  "keywords": [
+    "music",
+    "player"
+  ],
+  "authors": [
+    "huanghaiyang"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.4",
+    "css-reset": "~2.5.1"
+  }
+}
