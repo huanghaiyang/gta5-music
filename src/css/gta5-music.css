@@ -7,9 +7,32 @@
 	height: 100%;
 }
 .music-ul>li{
-	width:80px;
-	height: 80px;
+	position: absolute;
+	width:100px;
+	height: 100px;
 	border-radius: 50%;
 	background-color: #555555;
 	opacity: .9;
+	text-align: center;
 }
+.music-ul>li>.box{
+	font-size:12px;
+	letter-spacing:2px;
+	width: 100%;
+	height: 100%;
+	display: table;
+}
+
+.music-ul>li>.box>.wrap{
+    display: table-cell;
+    vertical-align: middle; 
+    *position:absolute;
+    *top: 50%;
+    *left: 0;
+}
+
+.music-ul>li>.box>.wrap>.content {
+    *position: relative;
+    *top: -50%;
+    *left: 0;
+}    

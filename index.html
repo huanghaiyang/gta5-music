@@ -4,6 +4,7 @@
 	<link rel="stylesheet" type="text/css" href="bower_components/css-reset/reset.css">
 	<link rel="stylesheet" type="text/css" href="src/css/gta5-music.css">
 	<script type="text/javascript" src='bower_components/jquery/dist/jquery.min.js'></script>
+	
 	<script type="text/javascript" src='src/js/gta5-music.js'></script>
 
 	<style type="text/css">
@@ -12,20 +13,56 @@
 			height: 100%;
 		}
 	</style>
-	<script type="text/javascript">
+	<body>
+		
+		<ul id="me" class="music-ul">
+			<li>
+				<audio>
+				  	<source src="music/霹雳英雄-神威破八荒(玄貘II).mp3" type="audio/mpeg">
+				</audio>
+			</li>
+			<li>
+				<audio>
+					<source src="music/霹雳英雄-神州风云.mp3" type="audio/mpeg">
+				</audio>
+			</li>
+			<li>
+				<audio>
+					<source src="music/霹雳英雄-识界主宰(玄貘).mp3" type="audio/mpeg">
+				</audio>
+			</li>
+			<li>
+				<audio>
+					<source src="music/霹雳英雄-死国之神.mp3" type="audio/mpeg">
+				</audio>
+			</li>
+			<li>
+				<audio>
+					<source src="music/霹雳英雄-死国之天(天者).mp3" type="audio/mpeg">
+				</audio>
+			</li>
+			<li>
+				<audio>
+					<source src="music/霹雳英雄-素还真(二).mp3" type="audio/mpeg">
+				</audio>
+			</li>
+			<li>
+				<audio>
+					<source src="music/霹雳英雄-素还真(一).mp3" type="audio/mpeg">
+				</audio>
+			</li>
+			<li>
+				<audio>
+					<source src="music/霹雳英雄-素还真.mp3" type="audio/mpeg">
+				</audio>
+			</li>
+		</ul>
+
+	</body><script type="text/javascript">
 		$(function(){
 			$('#me').gta5Music({
 				centerFill:true
 			});
 		});
 	</script>
-	<body>
-		
-		<ul id="me" class="music-ul">
-			<li>
-				<audio></audio>
-			</li>
-		</ul>
-
-	</body>
 </html>
