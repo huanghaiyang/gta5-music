@@ -42,6 +42,8 @@
 				t: $t.height() / 2
 			};
 
+			var currentAudio = null;
+
 			var $lis = $t.find(">li");
 			$lis.each(function(index, li) {
 				$li = $(li);
@@ -54,9 +56,25 @@
 				});
 				var $audio = $li.children("audio");
 				(function($li) {
-					$audio[0].addEventListener('canplaythrough', function(e) {
+					var audio = $audio[0];
+					audio.addEventListener('canplaythrough', function(e) {
 						$li.append($("<div class=\"box\"><div class=\"wrap\"><div class=\"content\">" + decodeURI($audio[0].currentSrc.replace(/.*\//, "").replace(/\.mp3/, "")) + "</div></div></div>"));
 					}, false);
+					var clickCount = 0;
+					$li.bind("click", function() {
+						if (clickCount === 0) {
+							$li.addClass("active");
+							$li.find(".box").addClass("active");
+							clickCount = 1;
+							audio.play();
+							currentAudio = $audio[0];
+						} else {
+							$li.removeClass("active");
+							$li.find(".box").removeClass("active");
+							clickCount = 0;
+							audio.pause();
+						}
+					});
 				})($li);
 			});
 
