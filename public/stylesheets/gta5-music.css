@@ -14,11 +14,15 @@
 	border-radius: 50%;
 	text-align: center;
 	background-color: #666666;
+	-webkit-transition:background-color 0.3s ease-in;
+	-moz-transition:background-color 0.3s ease-in;
+	-ms-transition:background-color 0.3s ease-in;
+	-o-transition:background-color 0.3s ease-in;
+	transition:background-color 0.3s ease-in;
 }
 .music-ul>li:hover,.music-ul>li.active:hover{
 	background-color: #0099CC;
 	opacity: .8;
-	-webkit-transition:background-color 0.3s ease-in;
 }
 .music-ul>li.active{
 	background-color: #0099CC;
@@ -36,12 +40,16 @@
 	position: absolute;
 	background-color: #CCCCCC;
 	border-radius: 50%;
+	-webkit-transition:background-color 0.3s ease-in;
+	-moz-transition:background-color 0.3s ease-in;
+	-ms-transition:background-color 0.3s ease-in;
+	-o-transition:background-color 0.3s ease-in;
+	transition:background-color 0.3s ease-in;
 }
 .music-ul>li>.box:hover,.music-ul>li>.box.active:hover{
 	background-color: black;
 	color: white;
 	opacity: .8;
-	-webkit-transition:background-color 0.3s ease-in;
 }
 .music-ul>li>.box.active{
 	background-color: black;
@@ -62,4 +70,8 @@
     *top: -50%;
     *left: 0;
     cursor: default;
-}    
+}
+.refresh-button{
+	position: absolute;
+	display: inline;
+}  

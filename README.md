@@ -1,2 +1,2 @@
-# gta5-music
-a music player like in the game named gta5
+# pili-music
+a music player

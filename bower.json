@@ -1,8 +1,8 @@
 {
-  "name": "gta5-music",
+  "name": "pili-music",
   "version": "1.0.0",
-  "homepage": "https://github.com/huanghaiyang/gta5-music",
-  "description": "a music player like in the game named gta5",
+  "homepage": "https://github.com/huanghaiyang/pili-music",
+  "description": "a music player",
   "main": "index.html",
   "keywords": [
     "music",
