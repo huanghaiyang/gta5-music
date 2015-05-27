@@ -8,8 +8,8 @@ http://pan.baidu.com/s/1dDcZTrr
 node-inspector &
 
 启动app服务
-node --debug-brk ../bin/app
+node --debug-brk ./bin/app
 
 
 启动system服务
-node --debug-brk ../bin/system
+node --debug-brk ./bin/system
