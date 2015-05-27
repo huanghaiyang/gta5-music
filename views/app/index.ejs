@@ -1,13 +1,17 @@
 <!doctype html5>
 <html>
+	<head>
+		<title>
+			<%= title%>
+		</title>
+	</head>
 	<meta charset="utf-8">
 	<link rel="stylesheet" type="text/css" href="/css-reset/reset.css">
-	<link rel="stylesheet" type="text/css" href="/stylesheets/gta5-music.css">
-	<link rel="stylesheet" type="text/css" href="/stylesheets/style.css">
+	<link rel="stylesheet" type="text/css" href="/stylesheets/app/gta5-music.css">
+	<link rel="stylesheet" type="text/css" href="/stylesheets/app/style.css">
 	<script type="text/javascript" src='/jquery/dist/jquery.min.js'></script>
 	<script type="text/javascript" src="/lib/jquery.rotate/jquery.rotate.js"></script>
-	
-	<script type="text/javascript" src='/javascripts/gta5-music.js'></script>
+	<script type="text/javascript" src='/javascripts/app/gta5-music.js'></script>
 
 	<style type="text/css">
 		:root, body{
@@ -46,11 +50,6 @@
 				</li>
 				<li>
 					<audio>
-						<source src="/music/霹雳英雄-素还真(二).mp3" type="audio/mpeg">
-					</audio>
-				</li>
-				<li>
-					<audio>
 						<source src="/music/霹雳英雄-素还真(一).mp3" type="audio/mpeg">
 					</audio>
 				</li>
@@ -59,10 +58,16 @@
 						<source src="/music/霹雳英雄-素还真.mp3" type="audio/mpeg">
 					</audio>
 				</li>
+				<li>
+					<audio>
+						<source src="/music/霹雳英雄-素还真(二).mp3" type="audio/mpeg">
+					</audio>
+				</li>
 			</ul>
 		</div>
 
-	</body><script type="text/javascript">
+	</body>
+	<script type="text/javascript">
 		$(function(){
 			$('#me').gta5Music({
 				centerFill:true
