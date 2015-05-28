@@ -1,6 +1,10 @@
 资源音乐文件地址（百度网盘分享）:
 http://pan.baidu.com/s/1dDcZTrr
 
+bower install 
+
+npm install
+
 数据库文件:
 /data
 

@@ -16,6 +16,7 @@
     "**/.*",
     "node_modules",
     "bower_components",
+    "public/bower_components",
     "test",
     "tests"
   ],
@@ -23,6 +24,15 @@
     "jquery": "~2.1.4",
     "css-reset": "~2.5.1",
     "angular": "~1.4.0",
-    "bootstrap": "~3.3.4"
+    "bootstrap": "~3.3.4",
+    "jquery-ui": "~1.11.4",
+    "font-awesome": "~4.3.0",
+    "requirejs": "~2.1.17",
+    "angular-couch-potato": "~0.2.3",
+    "angular-ui-router": "~0.2.15",
+    "angular-resource": "~1.4.0",
+    "angular-cookies": "~1.4.0",
+    "requirejs-domready": "~2.0.1",
+    "angular-bootstrap": "~0.13.0"
   }
 }
