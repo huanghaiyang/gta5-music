@@ -1,12 +1,12 @@
-define(['layout/module', 'jquery'], function (module) {
+define(['app', 'jquery'], function(module) {
 
     "use strict";
 
-    (function ($) {
+    (function($) {
 
-        $.fn.smartCollapseToggle = function () {
+        $.fn.smartCollapseToggle = function() {
 
-            return this.each(function () {
+            return this.each(function() {
 
                 var $body = $('body');
                 var $this = $(this);
@@ -38,17 +38,17 @@ define(['layout/module', 'jquery'], function (module) {
         };
     })(jQuery);
 
-    module.registerDirective('smartMenu', function ($state, $rootScope) {
+    module.directive('smartMenu', function($state, $rootScope) {
         return {
             restrict: 'A',
-            link: function (scope, element, attrs) {
+            link: function(scope, element, attrs) {
                 var $body = $('body');
 
                 var $collapsible = element.find('li[data-menu-collapse]');
-                $collapsible.each(function (idx, li) {
+                $collapsible.each(function(idx, li) {
                     var $li = $(li);
                     $li
-                        .on('click', '>a', function (e) {
+                        .on('click', '>a', function(e) {
 
                             // collapse all open siblings
                             $li.siblings('.open').smartCollapseToggle();
@@ -73,11 +73,11 @@ define(['layout/module', 'jquery'], function (module) {
                 });
 
                 // click on route link
-                element.on('click', 'a[data-ui-sref]', function (e) {
+                element.on('click', 'a[data-ui-sref]', function(e) {
                     // collapse all siblings to element parents and remove active markers
                     $(this)
                         .parents('li').addClass('active')
-                        .each(function () {
+                        .each(function() {
                             $(this).siblings('li.open').smartCollapseToggle();
                             $(this).siblings('li').removeClass('active')
                         });
@@ -88,7 +88,7 @@ define(['layout/module', 'jquery'], function (module) {
                 });
 
 
-                scope.$on('$smartLayoutMenuOnTop', function (event, menuOnTop) {
+                scope.$on('$smartLayoutMenuOnTop', function(event, menuOnTop) {
                     if (menuOnTop) {
                         $collapsible.filter('.open').smartCollapseToggle();
                     }

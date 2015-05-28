@@ -33,6 +33,8 @@
     "angular-resource": "~1.4.0",
     "angular-cookies": "~1.4.0",
     "requirejs-domready": "~2.0.1",
-    "angular-bootstrap": "~0.13.0"
+    "angular-bootstrap": "~0.13.0",
+    "angular-route": "~1.4.0",
+    "ng-fab-form": "~1.2.11"
   }
 }
