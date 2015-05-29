@@ -17,11 +17,11 @@ require.config({
 
 		"ng-fab-form": "ng-fab-form/dist/ng-fab-form",
 		"fun": "../src/system/fun",
-		"app": "../src/system/app",
-		"app.route": "../src/system/route",
-		"app.controller": "../src/system/controller",
-		"app.config": "../src/system/config",
-		"app.directives.smartmenu": "../src/system/layout/directives/smartmenu/smartmenu"
+		"usermenu": "../src/system/app/usermenu/usermenu",
+		"usermenu.route": "../src/system/app/usermenu/route",
+		"usermenu.controller": "../src/system/app/usermenu/controller",
+		"usermenu.config": "../src/system/app/usermenu/config",
+		"usermenu.directives.smartmenu": "../src/system/layout/directives/smartmenu/smartmenu"
 	},
 	shim: {
 		"angular": {
@@ -51,7 +51,7 @@ require.config({
 		"ng-fab-form": {
 			"deps": ["angular"]
 		},
-		"app": {
+		"usermenu": {
 			"deps": ["angular"]
 		}
 	},
@@ -60,13 +60,13 @@ require.config({
 /*加载文件*/
 define([
 	"require", "jquery", "angular", "angular-resource", "angular-cookies", "angular-messages", "angular-couch-potato", "angular-ui-router", "angular-bootstrap",
-	"angular-route", "ng-fab-form", "fun", "app", "app.route", "app.controller", "app.config", "app.directives.smartmenu"
+	"angular-route", "ng-fab-form", "fun", "usermenu", "usermenu.route", "usermenu.controller", "usermenu.config", "usermenu.directives.smartmenu"
 ], function(require) {
 	'use strict';
 	/*文档可用*/
 	require(['domReady'], function(domReady) {
 		domReady(function() {
-			angular.bootstrap(document.getElementById("app"), ["app"]);
+			angular.bootstrap(document.getElementById("usermenu"), ["usermenu"]);
 		});
 
 	});

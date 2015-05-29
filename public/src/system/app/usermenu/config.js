@@ -1,4 +1,4 @@
-define(["app","fun"], function(app,Fun) {
+define(["usermenu", "fun"], function(app, Fun) {
 	app.config(function($httpProvider) {
 
 		$httpProvider.interceptors.push(function($q) {
@@ -16,16 +16,6 @@ define(["app","fun"], function(app,Fun) {
 					return $q.reject(res);
 				}
 			};
-		});
-	}).config(function(ngFabFormProvider) {
-		ngFabFormProvider.extendConfig({
-			validationsTemplate: "/src/system/layout/directives/ng-fab-form/message-zh.html",
-			preventInvalidSubmit: true,
-			preventDoubleSubmit: true,
-			setFormDirtyOnSubmit: true,
-			scrollToAndFocusFirstErrorOnSubmit: true,
-			scrollAnimationTime: 900,
-			scrollOffset: -100
 		});
 	});
 });

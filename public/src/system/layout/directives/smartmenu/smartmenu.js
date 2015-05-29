@@ -1,4 +1,4 @@
-define(['app', 'jquery'], function(module) {
+define(['usermenu', 'jquery'], function(module) {
 
     "use strict";
 

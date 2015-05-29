@@ -15,9 +15,13 @@
 		}
 	</style>
 	<body>
-		<div id="app">
-			<div ng-view></div>
-		</div>
+		<%include nav%>
+		<%include usermenu%>
+		<div id="main" role="main">
+	        <%include ribbon%>
+	        <div class="col-sm-12" ng-view>
+	        </div>
+	    </div>
 	</body>
 	<script type="text/javascript">
 	</script>
