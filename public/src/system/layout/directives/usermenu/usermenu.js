@@ -22,7 +22,7 @@ define(["usermenu"], function(app) {
                             var li = "";
                             if (data[i].leaf === true) {
                                 /*由于没有使用angular-ui-router.js,所以data-ui-sref属性只是为了smartMenu.js插件能够正确识别带链接的超链接标签而已*/
-                                li = $("<li " + (data[i].active === true ? "class=\"active\"" : "") + "><a data-ui-sref href=\"{{rootPath}}/web" + data[i].hrefTarget + "\"><span>" + data[i].text + "</span></a></li>");
+                                li = $("<li " + (data[i].active === true ? "class=\"active\"" : "") + "><a data-ui-sref href=\"{{rootPath}}" + data[i].hrefTarget + "\"><span>" + data[i].text + "</span></a></li>");
                             } else
                                 li = $("<li data-menu-collapse><a><span class=\"menu-item-parent\">" + data[i].text + "</span></a></li>");
                             if (data[i].children && data[i].children.length > 0)

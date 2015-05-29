@@ -1,4 +1,5 @@
 var express = require('express');
+var fs=require('fs');
 var router = express.Router();
 
 /* GET music page. */
@@ -10,20 +11,8 @@ router.get('/', function(req, res, next) {
 });
 
 router.get("/menus", function(req, res, next) {
-	res.send([{
-		text: "音乐管理",
-		id: 0,
-		parentId: -1,
-		hrefTarget: "",
-		leaf: false,
-		children: [{
-			text: "音乐列表",
-			id: 1,
-			parentId: 0,
-			hrefTarget: "",
-			leaf: true
-		}]
-	}]);
+	var menuData=JSON.parse(fs.readFileSync('routes/system/json/menu.json'));
+	res.send(menuData);
 	res.end();
 });
 
