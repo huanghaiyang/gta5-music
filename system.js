@@ -24,7 +24,7 @@ app.use(bodyParser.urlencoded({
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'bower_components')));
-qpp.use('/', routes);
+app.use('/', routes);
 app.use('/system/', routes);
 app.use('/system/music', music);
 
