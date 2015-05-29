@@ -19,7 +19,7 @@ define(["app","fun"], function(app,Fun) {
 		});
 	}).config(function(ngFabFormProvider) {
 		ngFabFormProvider.extendConfig({
-			validationsTemplate: "/javascripts/system/layout/directives/ng-fab-form/message-zh.html",
+			validationsTemplate: "/src/system/layout/directives/ng-fab-form/message-zh.html",
 			preventInvalidSubmit: true,
 			preventDoubleSubmit: true,
 			setFormDirtyOnSubmit: true,

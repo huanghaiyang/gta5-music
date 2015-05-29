@@ -16,10 +16,10 @@ require.config({
 		"angular-route": "angular-route/angular-route",
 
 		"ng-fab-form": "ng-fab-form/dist/ng-fab-form",
-		"fun": "../javascripts/system/fun",
-		"app": "../javascripts/system/app",
-		"app.config": "../javascripts/system/app.config",
-		"app.directives.smartmenu": "../javascripts/system/layout/directives/smartmenu/smartmenu"
+		"fun": "../src/system/fun",
+		"app": "../src/system/app",
+		"app.config": "../src/system/app.config",
+		"app.directives.smartmenu": "../src/system/layout/directives/smartmenu/smartmenu"
 	},
 	shim: {
 		"angular": {
