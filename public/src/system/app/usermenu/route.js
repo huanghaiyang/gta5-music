@@ -6,7 +6,7 @@ define(["usermenu"], function(app) {
                 templateUrl: "src/system/app/usermenu/index.html",
                 controller: 'IndexController'
             };
-            $routeProvider.when("/", index).when('/index', index);
+            $routeProvider.when("/:path", index);
 
         });
 });

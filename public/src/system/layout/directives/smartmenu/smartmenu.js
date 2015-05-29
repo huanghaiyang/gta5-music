@@ -38,7 +38,7 @@ define(['usermenu', 'jquery'], function(module) {
         };
     })(jQuery);
 
-    module.directive('smartMenu', function($state, $rootScope) {
+    module.directive('smartMenu', function($rootScope) {
         return {
             restrict: 'A',
             link: function(scope, element, attrs) {
