@@ -1,71 +1,31 @@
-/*模块定义*/
-require.config({
-	baseUrl: "/bower_components/",
-	paths: {
-		"jquery": "jquery/dist/jquery",
+define(["app","fun"], function(app,Fun) {
+	app.config(function($httpProvider) {
 
-		"domReady": "requirejs-domready/domReady",
-
-		"angular": "angular/angular",
-		"angular-resource": "angular-resource/angular-resource",
-		"angular-cookies": "angular-cookies/angular-cookies",
-		"angular-messages": "angular-messages/angular-messages",
-		"angular-couch-potato": "angular-couch-potato/dist/angular-couch-potato",
-		"angular-ui-router": "angular-ui-router/release/angular-ui-router",
-		"angular-bootstrap": "angular-bootstrap/ui-bootstrap",
-		"angular-route": "angular-route/angular-route",
-
-		"ng-fab-form": "ng-fab-form/dist/ng-fab-form",
-		"fun": "../src/system/fun",
-		"app": "../src/system/app",
-		"app.config": "../src/system/app.config",
-		"app.directives.smartmenu": "../src/system/layout/directives/smartmenu/smartmenu"
-	},
-	shim: {
-		"angular": {
-			"exports": "AngularJS"
-		},
-		"angular-resource": {
-			"deps": ["angular"]
-		},
-		"angular-cookies": {
-			"deps": ["angular"]
-		},
-		"angular-messages": {
-			"deps": ["angular"]
-		},
-		"angular-couch-potato": {
-			"deps": ["angular"]
-		},
-		"angular-ui-router": {
-			"deps": ["angular"]
-		},
-		"angular-bootstrap": {
-			"deps": ["angular"]
-		},
-		"angular-route": {
-			"deps": ["angular"]
-		},
-		"ng-fab-form": {
-			"deps": ["angular"]
-		},
-		"app": {
-			"deps": ["angular"]
-		}
-	},
-	waitSeconds: 15
-});
-/*加载文件*/
-define([
-	"require", "jquery", "angular", "angular-resource", "angular-cookies", "angular-messages", "angular-couch-potato", "angular-ui-router", "angular-bootstrap",
-	"angular-route", "ng-fab-form", "fun", "app", "app.config", "app.directives.smartmenu"
-], function(require) {
-	'use strict';
-	/*文档可用*/
-	require(['domReady'], function(domReady) {
-		domReady(function() {
-			angular.bootstrap(document.getElementById("app"), ["app"]);
+		$httpProvider.interceptors.push(function($q) {
+			return {
+				request: function(config) {
+					config.headers['x-request-with'] = 'xmlhttprequest';
+					return config || $q.when(config);
+				},
+				responseError: function(res) {
+					if (res.status === 401) {
+						location.reload();
+					} else if (res.status === 500) {
+						Fun.msg.notifyWarn(res.status + ' ' + res.statusText, res.data.message)
+					}
+					return $q.reject(res);
+				}
+			};
 		});
-
+	}).config(function(ngFabFormProvider) {
+		ngFabFormProvider.extendConfig({
+			validationsTemplate: "/src/system/layout/directives/ng-fab-form/message-zh.html",
+			preventInvalidSubmit: true,
+			preventDoubleSubmit: true,
+			setFormDirtyOnSubmit: true,
+			scrollToAndFocusFirstErrorOnSubmit: true,
+			scrollAnimationTime: 900,
+			scrollOffset: -100
+		});
 	});
 });
