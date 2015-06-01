@@ -1,4 +1,4 @@
-define(["usermenu", "fun"], function(app, Fun) {
+define(["app", "fun"], function(app, Fun) {
 	app.config(function($httpProvider) {
 
 		$httpProvider.interceptors.push(function($q) {

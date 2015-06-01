@@ -22,11 +22,13 @@ require.config({
 		/*功能函数*/
 		"fun": "../src/system/fun",
 
-		/*用户导航菜单*/
-		"usermenu": "../src/system/module/usermenu/usermenu",
-		"usermenu.route": "../src/system/module/usermenu/route",
+		/*应用*/
+		"app": "../src/system/app",
+		"app.config": "../src/system/config",
+		"app.route": "../src/system/route",
+		"app.controller": "../src/system/controller",
+		/*用户菜单*/
 		"usermenu.controller": "../src/system/module/usermenu/controller",
-		"usermenu.config": "../src/system/module/usermenu/config",
 		"usermenu.service": "../src/system/module/usermenu/service",
 		/*导航菜单*/
 		"usermenu.directives.smartmenu": "../src/system/layout/directives/smartmenu/smartmenu",
@@ -63,7 +65,7 @@ require.config({
 		"ng-fab-form": {
 			"deps": ["angular"]
 		},
-		"usermenu": {
+		"app": {
 			"deps": ["angular"]
 		}
 	},
@@ -72,14 +74,14 @@ require.config({
 /*加载文件*/
 define([
 	"require", "jquery", "angular", "angular-resource", "angular-cookies", "angular-messages", "angular-couch-potato", "angular-ui-router", "angular-bootstrap",
-	"angular-route", "ng-fab-form", "fun", "usermenu", "usermenu.route", "usermenu.controller", "usermenu.config", "usermenu.service",
+	"angular-route", "ng-fab-form", "fun", "app", "app.route", "app.controller", "app.config", "usermenu.controller", "usermenu.service",
 	"usermenu.directives.smartmenu", "usermenu.directives.minifymenu", "usermenu.directives.usermenu"
 ], function(require) {
 	'use strict';
 	/*文档可用*/
 	require(['domReady'], function(domReady) {
 		domReady(function() {
-			angular.bootstrap(document.getElementById("usermenu"), ["usermenu"]);
+			angular.bootstrap(document.getElementById("app"), ["app"]);
 		});
 
 	});

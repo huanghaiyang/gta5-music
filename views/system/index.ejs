@@ -14,14 +14,9 @@
 			height: 100%;
 		}
 	</style>
-	<body>
+	<body id="app">
 		<%include nav%>
-		<%include usermenu%>
-		<div id="main" role="main">
-	        <%include ribbon%>
-	        <div class="col-sm-12" ng-view>
-	        </div>
-	    </div>
+		<div ng-view></div>
 	</body>
 	<script type="text/javascript">
 	</script>

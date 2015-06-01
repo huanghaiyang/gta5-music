@@ -1,4 +1,4 @@
-define(['usermenu', 'jquery'], function(module) {
+define(['app', 'jquery'], function(app) {
 
     "use strict";
 
@@ -38,7 +38,7 @@ define(['usermenu', 'jquery'], function(module) {
         };
     })(jQuery);
 
-    module.directive('smartMenu', function($rootScope) {
+    app.directive('smartMenu', function($rootScope) {
         return {
             restrict: 'A',
             link: function(scope, element, attrs) {

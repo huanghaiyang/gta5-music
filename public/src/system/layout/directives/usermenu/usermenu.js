@@ -1,4 +1,4 @@
-define(["usermenu"], function(app) {
+define(["app"], function(app) {
     app.directive('usermenu', ['$rootScope', '$compile',
         function($rootScope, $compile) {
             return {

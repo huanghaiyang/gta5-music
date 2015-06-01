@@ -1,5 +1,5 @@
-define(["usermenu"], function(app) {
-	app.controller("IndexController", ["$scope", "$location", "$route", "userService",
+define(["app"], function(app) {
+	app.controller("UsermenuController", ["$scope", "$location", "$route", "userService",
 		function($scope, $location, $route, userService) {
 
 			$scope.rootPath = "";

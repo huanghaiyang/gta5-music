@@ -1,0 +1,46 @@
+<div ng-controller="UsermenuController">
+	<aside id="left-panel">
+	    <div class="login-info">
+					<span>
+						<a href="javascript:void(0);" id="show-shortcut" data-action="toggleShortcut">
+							<span>
+								{{loginUser.realName}}
+							</span>
+	                    </a>
+
+					</span>
+	    </div>
+	    <usermenu data="menuData" root-path="rootPath"></usermenu>
+
+		<span class="minifyme" minify-menu>
+		    <i class="fa fa-arrow-circle-left hit"></i>
+	    </span>
+
+
+	</aside>
+</div>
+
+<div id="main" role="main">
+    <!-- RIBBON -->
+	<div id="ribbon">
+
+		<span class="ribbon-button-alignment"> 
+			<span id="refresh" class="btn btn-ribbon" data-action="resetWidgets" data-title="refresh"  rel="tooltip" data-placement="bottom" data-original-title="<i class='text-warning fa fa-warning'></i> Warning! This will reset all your widget settings." data-html="true">
+				<i class="fa fa-refresh"></i>
+			</span> 
+		</span>
+
+		<!-- breadcrumb -->
+		<ol class="breadcrumb">
+			
+		</ol>
+		<!-- end breadcrumb -->
+
+	</div>
+	<!-- END RIBBON -->
+    <div class="col-sm-12">
+    	<div ng-controller="MusicController">
+    		
+    	</div>
+    </div>
+</div>

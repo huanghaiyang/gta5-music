@@ -1,7 +1,7 @@
-define(['usermenu'], function(module) {
+define(['app'], function(app) {
     "use strict";
 
-    module.directive('minifyMenu', function() {
+    app.directive('minifyMenu', function() {
         return {
             restrict: 'A',
             link: function(scope, element) {
