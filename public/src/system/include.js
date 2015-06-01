@@ -89,7 +89,7 @@ define([
 	"require", "jquery", "angular", "angular-resource", "angular-cookies", "angular-messages", "angular-couch-potato", "angular-ui-router", "angular-bootstrap",
 	"angular-route", "ng-fab-form", "fun",
 	"app", "app.route", "app.controller", "app.config",
-	"app.directives.smartmenu", "app.directives.minifymenu", "app.directives.usermenu", "app.directives.fakepage",
+	"app.directives.smartmenu", "app.directives.minifymenu", "app.directives.usermenu", "app.directives.fakepage", "app.directives.paginator",
 	"home.controller",
 	"usermenu.controller", "usermenu.service",
 	"music.controller", "music.service"
