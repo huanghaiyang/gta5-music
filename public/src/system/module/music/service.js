@@ -1,5 +1,5 @@
 define(["app"], function(app) {
-    app.factory('userService', function($resource) {
+    app.factory('MusicService', function($resource) {
         return $resource('/system/music/:id', {
             id: '@id'
         }, {

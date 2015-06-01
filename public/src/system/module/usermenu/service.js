@@ -1,5 +1,5 @@
 define(["app"], function(app) {
-    app.factory('userService', function($resource) {
+    app.factory('UserService', function($resource) {
         return $resource('/system/user/:menus', {
             menus: '@menus'
         }, {

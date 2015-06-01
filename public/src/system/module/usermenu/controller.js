@@ -1,10 +1,10 @@
 define(["app"], function(app) {
-	app.controller("UsermenuController", ["$scope", "$location", "$route", "userService",
-		function($scope, $location, $route, userService) {
+	app.controller("UsermenuController", ["$scope", "$location", "$route", "UserService",
+		function($scope, $location, $route, UserService) {
 
 			$scope.rootPath = "";
-			$scope.loginUser = userService.get({}, function() {});
-			userService.query({
+			$scope.loginUser = UserService.get({}, function() {});
+			UserService.query({
 				menus: 'menus'
 			}, function(data) {
 				function improveData(data) {

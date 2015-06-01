@@ -28,19 +28,21 @@ require.config({
 		"app.route": "../src/system/route",
 		"app.controller": "../src/system/controller",
 
+		/*导航菜单*/
+		"app.directives.smartmenu": "../src/system/layout/directives/smartmenu/smartmenu",
+		/*导航菜单最小化*/
+		"app.directives.minifymenu": "../src/system/layout/directives/minifymenu/minifymenu",
+		/*自定义用户菜单*/
+		"app.directives.usermenu": "../src/system/layout/directives/usermenu/usermenu",
+		/*页面模板*/
+		"app.directives.fakepage": "../src/system/layout/directives/fakepage/fakepage",
+
 		/*首页*/
 		"home.controller": "../src/system/module/home/controller",
 
 		/*用户菜单*/
 		"usermenu.controller": "../src/system/module/usermenu/controller",
 		"usermenu.service": "../src/system/module/usermenu/service",
-
-		/*导航菜单*/
-		"usermenu.directives.smartmenu": "../src/system/layout/directives/smartmenu/smartmenu",
-		/*导航菜单最小化*/
-		"usermenu.directives.minifymenu": "../src/system/layout/directives/minifymenu/minifymenu",
-		/*自定义用户菜单*/
-		"usermenu.directives.usermenu": "../src/system/layout/directives/usermenu/usermenu",
 
 		/*音乐管理*/
 		"music.controller": "../src/system/module/music/controller",
@@ -83,9 +85,11 @@ require.config({
 /*加载文件*/
 define([
 	"require", "jquery", "angular", "angular-resource", "angular-cookies", "angular-messages", "angular-couch-potato", "angular-ui-router", "angular-bootstrap",
-	"angular-route", "ng-fab-form", "fun", "app", "app.route", "app.controller", "app.config",
+	"angular-route", "ng-fab-form", "fun",
+	"app", "app.route", "app.controller", "app.config",
+	"app.directives.smartmenu", "app.directives.minifymenu", "app.directives.usermenu", "app.directives.fakepage",
 	"home.controller",
-	"usermenu.controller", "usermenu.service", "usermenu.directives.smartmenu", "usermenu.directives.minifymenu", "usermenu.directives.usermenu",
+	"usermenu.controller", "usermenu.service",
 	"music.controller", "music.service"
 ], function(require) {
 	'use strict';
