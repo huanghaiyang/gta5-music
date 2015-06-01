@@ -36,6 +36,8 @@ require.config({
 		"app.directives.usermenu": "../src/system/layout/directives/usermenu/usermenu",
 		/*页面模板*/
 		"app.directives.fakepage": "../src/system/layout/directives/fakepage/fakepage",
+		/*分页插件*/
+		"app.directives.paginator": "../src/system/layout/directives/paginator/paginator",
 
 		/*首页*/
 		"home.controller": "../src/system/module/home/controller",
