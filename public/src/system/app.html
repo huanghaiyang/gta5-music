@@ -39,8 +39,7 @@
 	</div>
 	<!-- END RIBBON -->
     <div class="col-sm-12">
-    	<div ng-controller="MusicController">
-    		
-    	</div>
+    	<div ng-controller="HomeController" ng-if="'home'===module"></div>
+    	<div ng-controller="MusicController" ng-if="'music'===module"></div>
     </div>
 </div>
