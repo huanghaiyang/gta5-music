@@ -1,13 +1,26 @@
 [{
-	"text": "音乐管理",
+	"text": "界面管理",
 	"id": 0,
 	"parentId": -1,
 	"hrefTarget": "",
 	"leaf": false,
 	"children": [{
-		"text": "音乐列表",
-		"id": 1,
+		"text": "首页",
+		"id": 11,
 		"parentId": 0,
+		"hrefTarget": "#/home",
+		"leaf": true
+	}]
+}, {
+	"text": "音乐管理",
+	"id": 1,
+	"parentId": -1,
+	"hrefTarget": "",
+	"leaf": false,
+	"children": [{
+		"text": "音乐列表",
+		"id": 21,
+		"parentId": 1,
 		"hrefTarget": "#/music",
 		"leaf": true
 	}]
