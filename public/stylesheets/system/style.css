@@ -1,0 +1,15 @@
+/* 
+	author: huanghaiyang 
+	description: 调整页面整体样式; 
+*/
+.fa-fixed-valign{
+	margin-top: 10px !important;
+}
+.fa{
+	margin-top: 5px;
+	font-size: small
+}
+.btn.btn-ribbon>i {
+	font-size: small;
+	margin-top: 3px !important;
+}

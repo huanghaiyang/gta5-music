@@ -22,7 +22,6 @@
   ],
   "dependencies": {
     "jquery": "~2.1.4",
-    "css-reset": "~2.5.1",
     "angular": "~1.4.0",
     "bootstrap": "~3.3.4",
     "jquery-ui": "~1.11.4",
@@ -35,6 +34,7 @@
     "requirejs-domready": "~2.0.1",
     "angular-bootstrap": "~0.13.0",
     "angular-route": "~1.4.0",
-    "ng-fab-form": "~1.2.11"
+    "ng-fab-form": "~1.2.11",
+    "css-reset": "~2.5.1"
   }
 }

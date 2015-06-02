@@ -38,12 +38,12 @@
 
 	</div>
 	<!-- END RIBBON -->
-    <div class="col-sm-12">
-    	<div ng-controller="HomeController" ng-if="'home'===module">
+    <div class="col-sm-12" style="margin-top:10px;">
+    	<section ng-controller="HomeController" ng-if="'home'===module">
     		<fake-page link="src/system/module/home/home.html"></fake-page>
-    	</div>
-    	<div ng-controller="MusicController" ng-if="'music'===module">
+    	</section>
+    	<section ng-controller="MusicController" ng-if="'music'===module">
     		<fake-page link="src/system/module/music/music.html"></fake-page>
-    	</div>
+    	</section>
     </div>
 </div>
