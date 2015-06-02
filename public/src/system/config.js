@@ -18,4 +18,14 @@ define(["app", "fun"], function(app, Fun) {
 			};
 		});
 	});
-});
+}).config(function(ngFabFormProvider) {
+	ngFabFormProvider.extendConfig({
+		validationsTemplate: 'src/system/layout/directives/ng-fab-form/message-zh.html',
+		preventInvalidSubmit: true,
+		preventDoubleSubmit: true,
+		setFormDirtyOnSubmit: true,
+		scrollToAndFocusFirstErrorOnSubmit: true,
+		scrollAnimationTime: 900,
+		scrollOffset: -100
+	});
+});;
