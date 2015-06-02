@@ -36,8 +36,11 @@ require.config({
 		"app.directives.usermenu": "../src/system/layout/directives/usermenu/usermenu",
 		/*页面模板*/
 		"app.directives.fakepage": "../src/system/layout/directives/fakepage/fakepage",
-		/*分页插件*/
+		/*分页指令*/
 		"app.directives.paginator": "../src/system/layout/directives/paginator/paginator",
+
+		/*分页插件*/
+		"app.plugin.paginator": "../src/system/plugin/paginator/paginator",
 
 		/*首页*/
 		"home.controller": "../src/system/module/home/controller",
@@ -90,6 +93,7 @@ define([
 	"angular-route", "ng-fab-form", "fun",
 	"app", "app.route", "app.controller", "app.config",
 	"app.directives.smartmenu", "app.directives.minifymenu", "app.directives.usermenu", "app.directives.fakepage", "app.directives.paginator",
+	"app.plugin.paginator",
 	"home.controller",
 	"usermenu.controller", "usermenu.service",
 	"music.controller", "music.service"

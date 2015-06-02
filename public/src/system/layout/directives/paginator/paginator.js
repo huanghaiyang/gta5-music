@@ -6,6 +6,9 @@ define(["app"], function(app) {
 			templateUrl: 'src/system/layout/directives/paginator/page.html',
 			scope: {
 				page: '=page'
+			},
+			link: function(scope, element, attrs) {
+
 			}
 		};
 	});
