@@ -5,14 +5,7 @@ fs.readdir(dir, function(err, files) {
 		throw err;
 	} else {
 		files.forEach(function(filename) {
-			fs.stat(dir + "/" + filename, function(err, stats) {
-				if(err)
-					throw err ;
-				else
-				{
-					console.log(stats);
-				}
-			});
+			var fullpath = dir + "/" + filename;
 		});
 	}
 });
