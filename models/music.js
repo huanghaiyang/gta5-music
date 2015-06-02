@@ -7,6 +7,7 @@ var MusicSchema = mongoose.Schema({
 	description: String,
 	author: String,
 	age: String,
+	album: String,
 	/*收录时间*/
 	addDate: {
 		type: Date,
