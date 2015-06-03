@@ -4,19 +4,16 @@ var mongoose = require('/db/mongoose.js'),
 var MusicSchema = mongoose.Schema({
 	name: String,
 	title: String,
-	description: String,
-	author: String,
-	age: String,
+	comment: String,
+	artist: String,
+	year: String,
 	album: String,
 	/*收录时间*/
 	addDate: {
 		type: Date,
 		default: Date.now
 	},
-	file: [{
-		type: Schema.Types.ObjectId,
-		ref: 'musicFile'
-	}]
+	path: String
 });
 var Music = mongoose.model('music', MusicSchema);
 
