@@ -49,10 +49,10 @@ define(["app"], function(app) {
                         this.goto(this.getNumber() > this.getTotalPages() ? this.getTotalPages() - 1 : this.getNumber() + 1);
                     },
                     pre: function() {
-                        this.goto(this.getNumber() > 0 ? this.getNumber() - 1 : 0);
+                        this.goto(this.getNumber() > 0 ? this.getNumber() - 1 : 1);
                     },
                     firstPage: function() {
-                        this.goto(0);
+                        this.goto(1);
                     },
                     lastPage: function() {
                         this.goto(this.getTotalPages() - 1);

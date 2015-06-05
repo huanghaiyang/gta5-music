@@ -1,20 +1,18 @@
 /*author: huanghaiyang*/
 define(["app"], function(app) {
-	app.directive("fakePage", ["$sce", "$templateRequest",
-		function($sce, $templateRequest) {
+	app.directive("fakePage", ["$sce", "$templateRequest", "$compile",
+		function($sce, $templateRequest, $compile) {
 			return {
 				restrict: "E",
-				scope: {
-					link: "@"
-				},
+				scope: true,
 				replace: true,
 				template: "<div></div>",
 				link: function(scope, element, attrs) {
-					var templateUrl = scope.link;
+					var templateUrl = attrs.link;
 					templateUrl = $sce.getTrustedResourceUrl(templateUrl);
 					if (angular.isDefined(templateUrl)) {
 						$templateRequest(templateUrl).then(function(template) {
-							element.html(template);
+							element.append($compile(template)(scope));
 						});
 					}
 				}

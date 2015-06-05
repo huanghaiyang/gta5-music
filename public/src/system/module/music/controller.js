@@ -1,6 +1,7 @@
 define(["app"], function(app) {
 	app.controller("MusicController", ["$scope", "$location", "$route", "Paginator", "MusicService",
 		function($scope, $location, $route, Paginator, MusicService) {
+			$scope.x = "x";
 			$scope.page = Paginator({
 				resource: MusicService
 			});

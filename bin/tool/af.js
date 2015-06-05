@@ -3,7 +3,7 @@ var MongoClient = require('mongodb').MongoClient;
 var assert = require('assert');
 var dbInfo = require('../../db/info');
 var url = dbInfo.address;
-var collection = 'music';
+var collection = 'musics';
 
 var id3 = require("nodejs-id3-reader");
 var dir = "E:/huanghaiyang/gta5-music/public/music";
@@ -38,7 +38,7 @@ fs.readdir(dir, function(err, files) {
 						album: tags.album,
 						year: tags.year,
 						comment: tags.comment,
-						add: new Date(),
+						addDate: new Date(),
 						path: fullpath
 					};
 

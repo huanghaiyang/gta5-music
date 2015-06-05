@@ -1,5 +1,4 @@
-var mongoose = require('mongoose'),
-	Schema = mongoose.Schema;
+var mongoose = require('mongoose');
 var dbInfo = require('../db/info');
 
 mongoose.connect(dbInfo.address);
