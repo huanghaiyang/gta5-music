@@ -4,7 +4,11 @@ var mongoose = require('/db/mongoose.js'),
 var MusicSchema = mongoose.Schema({
 	name: String,
 	title: String,
-	comment: String,
+	comment: {
+		language: String,
+		short_description: String,
+		text: String
+	},
 	artist: String,
 	year: String,
 	album: String,
