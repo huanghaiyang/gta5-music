@@ -1,19 +1,11 @@
 var express = require('express');
-var fs=require('fs');
 var router = express.Router();
+var UserController = require("../../controllers/user");
+var userController = new UserController();
 
 /* GET music page. */
-router.get('/', function(req, res, next) {
-	res.send({
-		realName: "系统管理员"
-	});
-	res.end();
-});
+router.get('/', userController.loginUser);
 
-router.get("/menus", function(req, res, next) {
-	var menuData=JSON.parse(fs.readFileSync('routes/system/json/menu.json'));
-	res.send(menuData);
-	res.end();
-});
+router.get("/menus", userController.menus);
 
 module.exports = router;

@@ -1,5 +1,8 @@
-var mongoose = require('/db/mongoose.js'),
+var mongoose = require('mongoose'),
 	Schema = mongoose.Schema;
+var dbInfo = require('../db/info');
+
+mongoose.connect(dbInfo.address);
 
 var MusicSchema = mongoose.Schema({
 	name: String,

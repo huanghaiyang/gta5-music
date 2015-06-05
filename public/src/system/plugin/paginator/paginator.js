@@ -11,7 +11,7 @@ define(["app"], function(app) {
                 }
                 if (!config.params)
                     config.params = {
-                        page: 0,
+                        page: 1,
                         size: 10
                     };
 

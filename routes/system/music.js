@@ -1,11 +1,9 @@
 var express = require('express');
 var router = express.Router();
+var MusicController = require('../../controllers/music');
+var musicController = new MusicController();
 
 /* GET music page. */
-router.get('/', function(req, res, next) {
-	res.render('music', {
-		title: '乐曲管理'
-	});
-});
+router.get('/', musicController.query);
 
 module.exports = router;

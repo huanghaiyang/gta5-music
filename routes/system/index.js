@@ -1,11 +1,9 @@
 var express = require('express');
 var router = express.Router();
+var IndexController = require('../../controllers/index');
+var indexController = new IndexController();
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
-	res.render('index', {
-		title: '系统管理后台'
-	});
-});
+router.get('/', indexController.home);
 
 module.exports = router;
