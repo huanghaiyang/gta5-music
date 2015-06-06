@@ -17,3 +17,6 @@ node --debug-brk ./bin/app
 
 Æô¶¯system·þÎñ
 node --debug-brk ./bin/system
+
+
+node ./bin/tool/af.js -d e:/pili-music/public/music

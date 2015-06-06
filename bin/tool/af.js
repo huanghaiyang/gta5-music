@@ -1,4 +1,8 @@
 var fs = require("fs");
+
+var commander = require('commander');
+commander.option('-d --dirpath <dirpath>', 'set the music files dir path').parse(process.argv);
+
 var MongoClient = require('mongodb').MongoClient;
 var assert = require('assert');
 var dbInfo = require('../../db/info');
@@ -6,7 +10,7 @@ var url = dbInfo.address;
 var collection = 'musics';
 
 var id3 = require("nodejs-id3-reader");
-var dir = "E:/huanghaiyang/gta5-music/public/music";
+var dir = commander.dirpath ? commander.dirpath : __dirname.replace(/bin\/tool\//,'') + '/public/music';
 
 /*读取文件夹下的所有mp3文件*/
 fs.readdir(dir, function(err, files) {
