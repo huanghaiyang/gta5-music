@@ -55,7 +55,7 @@ define(["app"], function(app) {
                         this.goto(1);
                     },
                     lastPage: function() {
-                        this.goto(this.getTotalPages() - 1);
+                        this.goto(this.getTotalPages());
                     },
                     getList: function() {
                         return this.list;
