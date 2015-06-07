@@ -21,6 +21,7 @@ var MusicSchema = mongoose.Schema({
 	},
 	path: String
 });
+MusicSchema.set('toJSON', { virtuals: true });
 var Music = mongoose.model('music', MusicSchema);
 
 module.exports = Music;

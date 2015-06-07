@@ -1,5 +1,6 @@
 var Music = require('../models/music');
 var assert = require('assert');
+var DateUtils = require('../lib/dateutils');
 
 function MusicController() {};
 
@@ -32,9 +33,16 @@ MusicController.prototype.query = function(req, res, next) {
 			assert.equal(err, null);
 			console.log('query success.');
 
+			var content = JSON.parse(JSON.stringify(result));
+			console.log(content);
+
+			for (var i = 0; i < result.length; i++) {
+				content[i].addDate = DateUtils.Format(result[i].addDate, "yyyy-MM-dd HH:mm:ss");
+			}
+
 			var obj = {
 				size: size,
-				content: result,
+				content: content,
 				number: page,
 				sort: "addDate"
 			};
