@@ -39,11 +39,10 @@
 	</div>
 	<!-- END RIBBON -->
     <div class="col-sm-12" style="margin-top:10px;">
-    	<section ng-controller="HomeController" ng-if="'home'===module">
-    		<fake-page link="src/system/module/home/home.html"></fake-page>
-    	</section>
-    	<section ng-controller="MusicController" ng-if="'music'===module">
-    		<fake-page link="src/system/module/music/music.html"></fake-page>
-    	</section>
+    	
+		<fake-page link="src/system/module/home/home.html" ng-if="'home'===module"></fake-page>
+    	
+		<fake-page link="src/system/module/music/music.html" ng-if="'music'===module"></fake-page>
+		
     </div>
 </div>

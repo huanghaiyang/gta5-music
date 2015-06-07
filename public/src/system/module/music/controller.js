@@ -8,7 +8,7 @@ define(["app"], function(app) {
 				$scope.name = "";
 				$scope.title = "";
 				$scope.age = "";
-				$scope.author = "";
+				$scope.artist = "";
 				$scope.search();
 			};
 			$scope.search = function() {
@@ -16,7 +16,7 @@ define(["app"], function(app) {
 					name: $scope.name,
 					title: $scope.title,
 					age: $scope.age,
-					author: $scope.author
+					artist: $scope.artist
 				});
 				$scope.page.fresh();
 			};

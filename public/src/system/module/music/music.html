@@ -1,89 +1,91 @@
-<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-    <div class="jarviswidget jarviswidget-color-blueDark"
-         data-widget-editbutton="false">
-        <header>
-            <span class="widget-icon"> <i class="fa fa-table fa-fixed-valign"></i>
-            </span>
+<section ng-controller="MusicController">
+    <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div class="jarviswidget jarviswidget-color-blueDark"
+             data-widget-editbutton="false">
+            <header>
+                <span class="widget-icon"> <i class="fa fa-table fa-fixed-valign"></i>
+                </span>
 
-            <h2>音乐列表</h2>
-        </header>
+                <h2>音乐列表</h2>
+            </header>
 
-        <!-- widget div-->
-        <div>
-            <div class="widget-body no-padding">
-                <div class="dt-toolbar">
+            <!-- widget div-->
+            <div>
+                <div class="widget-body no-padding">
+                    <div class="dt-toolbar">
 
-                    <div class="col-xs-12 col-sm-12">
-                        <form class="navbar-form" >
-                            <div class="row" style="margin-bottom:10px;">
-                                <div class="form-group">
-                                    <label for="name" class="form-control-static" style="">音乐名称:</label>
-                                    <input id="name" name="name" ng-model="name" class="form-control">
+                        <div class="col-xs-12 col-sm-12">
+                            <form class="navbar-form" >
+                                <div class="row" style="margin-bottom:10px;">
+                                    <div class="form-group">
+                                        <label for="name" class="form-control-static" style="">音乐名称:</label>
+                                        <input id="name" name="name" ng-model="name" class="form-control">
+                                    </div>
+                                    &nbsp;
+                                    <div class="form-group">
+                                        <label for="title" class="form-control-static" style="">标题:</label>
+                                        <input id="title" name="title" ng-model="title" class="form-control">
+                                    </div>
+                                    &nbsp;
+                                    <div class="form-group">
+                                        <label for="artist" class="form-control-static" style="">艺术家:</label>
+                                        <input id="artist" name="artist" ng-model="artist" class="form-control">
+                                    </div>
+                                    &nbsp;
+                                    <div class="form-group">
+                                        <label for="year" class="form-control-static" style="">年代:</label>
+                                        <input id="year" name="year" ng-model="year" class="form-control">
+                                    </div>
                                 </div>
-                                &nbsp;
-                                <div class="form-group">
-                                    <label for="title" class="form-control-static" style="">标题:</label>
-                                    <input id="title" name="title" ng-model="title" class="form-control">
+                                <div class="row">
+                                    <button class="btn btn-default" ng-click="search()">
+                                        <span class="glyphicon glyphicon-zoom-in"></span> 查询
+                                    </button>
+                                    <button class="btn btn-default" ng-click="reset()">
+                                        <span class="glyphicon glyphicon-repeat"></span> 重置
+                                    </button>
+                                    <a class="btn btn-default" ng-href="#/new">添加</a>
                                 </div>
-                                &nbsp;
-                                <div class="form-group">
-                                    <label for="artist" class="form-control-static" style="">艺术家:</label>
-                                    <input id="artist" name="artist" ng-model="artist" class="form-control">
-                                </div>
-                                &nbsp;
-                                <div class="form-group">
-                                    <label for="year" class="form-control-static" style="">年代:</label>
-                                    <input id="year" name="year" ng-model="year" class="form-control">
-                                </div>
-                            </div>
-                            <div class="row">
-                                <button class="btn btn-default" ng-click="search()">
-                                    <span class="glyphicon glyphicon-zoom-in"></span> 查询
-                                </button>
-                                <button class="btn btn-default" ng-click="reset()">
-                                    <span class="glyphicon glyphicon-repeat"></span> 重置
-                                </button>
-                                <a class="btn btn-default" ng-href="#/new">添加</a>
-                            </div>
-                        </form>
+                            </form>
+                        </div>
+
+
                     </div>
+                    <table
+                           class="table table-striped table-bordered table-hover dataTable ">
+                        <thead>
+                        <tr>
+                            <th>音乐名称</th>
+                            <th>标题</th>
+                            <th>艺术家</th>
+                            <th>唱片集</th>
+                            <th>年代</th>
+                            <th>收录时间</th>
+                            <th>描述</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="music in page.list track by $index">
+                            <td>{{music.name}}</td>
+                            <td>{{music.title}}</td>
+                            <td>{{music.artist}}</td>
+                            <td>{{music.album}}</td>
+                            <td>{{music.year}}</td>
+                            <td>{{music.addDate}}</td>
+                            <td>{{music.comment.short_description}}</td>
+                            <td><a ng-href="#/{{music.id}}/edit">修改</a> | <a ng-click="delete(music.id)">删除</a> | <a ng-click="showRoleList($index,music)">资源文件</a> </td>
+                        </tr>
+                        </tbody>
+                    </table>
 
-
-                </div>
-                <table
-                       class="table table-striped table-bordered table-hover dataTable ">
-                    <thead>
-                    <tr>
-                        <th>音乐名称</th>
-                        <th>标题</th>
-                        <th>艺术家</th>
-                        <th>唱片集</th>
-                        <th>年代</th>
-                        <th>收录时间</th>
-                        <th>描述</th>
-                        <th>操作</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr ng-repeat="music in page.list track by $index">
-                        <td>{{music.name}}</td>
-                        <td>{{music.title}}</td>
-                        <td>{{music.artist}}</td>
-                        <td>{{music.album}}</td>
-                        <td>{{music.year}}</td>
-                        <td>{{music.addDate}}</td>
-                        <td>{{music.comment.short_description}}</td>
-                        <td><a ng-href="#/{{music.id}}/edit">修改</a> | <a ng-click="delete(music.id)">删除</a> | <a ng-click="showRoleList($index,music)">资源文件</a> </td>
-                    </tr>
-                    </tbody>
-                </table>
-
-                <div class="dt-toolbar-footer">
-                    <div class="col-xs-12 col-sm-12">
-                        <main-page page="page"/>
+                    <div class="dt-toolbar-footer">
+                        <div class="col-xs-12 col-sm-12">
+                            <main-page page="page"/>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</article>
+    </article>
+</section>

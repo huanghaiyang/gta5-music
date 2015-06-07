@@ -1,4 +1,4 @@
-define(["app"], function(app) {
+define(["app", "fun"], function(app, Fun) {
     app.factory(
         'Paginator',
         function() {

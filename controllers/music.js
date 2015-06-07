@@ -6,8 +6,27 @@ function MusicController() {};
 MusicController.prototype.query = function(req, res, next) {
 	var page = parseInt(req.query.page);
 	var size = parseInt(req.query.size);
+
+	var conditions = {};
+	var name = req.query.name;
+	if (name) {
+		conditions.name = new RegExp(name, "gi");
+	}
+	var title = req.query.title;
+	if (title) {
+		conditions.title = new RegExp(title, "gi");
+	}
+	var age = req.query.age;
+	if (age) {
+		conditions.age = new RegExp(age, "gi");
+	}
+	var artist = req.query.artist;
+	if (artist) {
+		conditions.artist = new RegExp(artist, "gi");
+	}
+
 	if (page >= 0 && size > 0) {
-		Music.find().sort({
+		Music.find(conditions).sort({
 			addDate: 'asc'
 		}).skip((page - 1) * size).limit(size).exec(function(err, result) {
 			assert.equal(err, null);
@@ -20,7 +39,7 @@ MusicController.prototype.query = function(req, res, next) {
 				sort: "addDate"
 			};
 
-			Music.count({}, function(err, count) {
+			Music.count(conditions, function(err, count) {
 				assert.equal(err, null);
 				console.log('count success.');
 				obj.totalPages = count % size > 0 ? Math.floor(count / size) + 1 : count / size;
