@@ -1,6 +1,7 @@
 var Music = require('../models/music');
 var assert = require('assert');
-var DateUtils = require('../lib/dateutils');
+var DateUtils = require('../lib/date-utils');
+var RegExpUtils = require('../lib/regexp-utils');
 
 function MusicController() {};
 
@@ -11,19 +12,19 @@ MusicController.prototype.query = function(req, res, next) {
 	var conditions = {};
 	var name = req.query.name;
 	if (name) {
-		conditions.name = new RegExp(name, "gi");
+		conditions.name = new RegExp(RegExpUtils.parse(name), "gi");
 	}
 	var title = req.query.title;
 	if (title) {
-		conditions.title = new RegExp(title, "gi");
+		conditions.title = new RegExp(RegExpUtils.parse(title), "gi");
 	}
 	var age = req.query.age;
 	if (age) {
-		conditions.age = new RegExp(age, "gi");
+		conditions.age = new RegExp(RegExpUtils.parse(age), "gi");
 	}
 	var artist = req.query.artist;
 	if (artist) {
-		conditions.artist = new RegExp(artist, "gi");
+		conditions.artist = new RegExp(RegExpUtils.parse(artist), "gi");
 	}
 
 	if (page >= 0 && size > 0) {
