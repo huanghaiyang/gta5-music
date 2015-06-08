@@ -9,4 +9,10 @@ router.get('/', musicController.query);
 /*添加*/
 router.post('/', musicController.add);
 
+/*删除*/
+router.delete('/:id', musicController.delete);
+
+/*修改*/
+router.put('/:id', musicController.update);
+
 module.exports = router;

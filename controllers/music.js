@@ -130,5 +130,13 @@ MusicController.prototype.add = function(req, res, next) {
 	}
 };
 
+MusicController.prototype.delete = function(req  ,res , next){
+	var id = req.params.id ; 
+	Music.remove({
+		_id : id
+	} , function(err){
+		
+	});
+};
 
 module.exports = MusicController;
