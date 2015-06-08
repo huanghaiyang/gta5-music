@@ -1,7 +1,7 @@
 define(["app", "fun"], function(app, Fun) {
 	app.controller("MusicController", ["$scope", "$location", "Paginator", "MusicService",
 		function($scope, $location, Paginator, MusicService) {
-			$scope.pyear = Paginator({
+			$scope.page = Paginator({
 				resource: MusicService
 			});
 			$scope.reset = function() {
@@ -12,13 +12,13 @@ define(["app", "fun"], function(app, Fun) {
 				$scope.search();
 			};
 			$scope.search = function() {
-				$scope.pyear.setParams({
+				$scope.page.setParams({
 					name: $scope.name,
 					title: $scope.title,
 					year: $scope.year,
 					artist: $scope.artist
 				});
-				$scope.pyear.fresh();
+				$scope.page.fresh();
 			};
 			$scope.delete = function(id) {
 				Fun.msg.delConfirm(function() {

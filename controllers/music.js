@@ -116,7 +116,7 @@ MusicController.prototype.add = function(req, res, next) {
 						res.send({
 							status: "alert",
 							message: "保存错误!",
-						err: err
+							err: err
 						});
 					else
 						res.send({
@@ -130,13 +130,15 @@ MusicController.prototype.add = function(req, res, next) {
 	}
 };
 
-MusicController.prototype.delete = function(req  ,res , next){
-	var id = req.params.id ; 
+MusicController.prototype.delete = function(req, res, next) {
+	var id = req.params.id;
 	Music.remove({
-		_id : id
-	} , function(err){
-		
+		_id: id
+	}, function(err) {
+
 	});
 };
+
+MusicController.prototype.update = function(req, res, next) {};
 
 module.exports = MusicController;
