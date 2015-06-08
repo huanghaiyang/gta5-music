@@ -13,3 +13,12 @@
 	font-size: small;
 	margin-top: 3px !important;
 }
+
+/* 信息添加页面样式调整 */
+.form-group{
+	margin-bottom:0;
+}
+
+.validation-errors{
+	color: red;
+}

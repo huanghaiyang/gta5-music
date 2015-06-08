@@ -16,6 +16,11 @@ require.config({
 		"angular-bootstrap": "angular-bootstrap/ui-bootstrap",
 		"angular-route": "angular-route/angular-route",
 
+		/*信息提示插件*/
+		"smart.notification": "../src/system/smartadmin/js/notification/SmartNotification.min",
+		/*组件*/
+		"smart.widgets": "../src/system/smartadmin/js/smartwidgets/jarvis.widget.min",
+
 		/*表单验证插件*/
 		"ng-fab-form": "ng-fab-form/dist/ng-fab-form",
 
@@ -78,6 +83,12 @@ require.config({
 		"angular-route": {
 			"deps": ["angular"]
 		},
+		"smart.notification": {
+			"deps": ["jquery"]
+		},
+		"smart.widgets": {
+			"deps": ["jquery"]
+		},
 		"ng-fab-form": {
 			"deps": ["angular"]
 		},
@@ -89,8 +100,9 @@ require.config({
 });
 /*加载文件*/
 define([
-	"require", "jquery", "angular", "angular-resource", "angular-cookies", "angular-messages", "angular-couch-potato", "angular-ui-router", "angular-bootstrap",
-	"angular-route", "ng-fab-form", "fun",
+	"require", "jquery", "angular", "angular-resource", "angular-cookies", "angular-messages", "angular-couch-potato", "angular-ui-router", "angular-bootstrap", "angular-route",
+	"smart.notification", "smart.widgets",
+	"ng-fab-form", "fun",
 	"app", "app.route", "app.controller", "app.config",
 	"app.directives.smartmenu", "app.directives.minifymenu", "app.directives.usermenu", "app.directives.fakepage", "app.directives.paginator",
 	"app.plugin.paginator",
