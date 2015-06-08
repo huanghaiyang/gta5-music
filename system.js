@@ -25,9 +25,9 @@ app.use(bodyParser.urlencoded({
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'bower_components')));
-app.use('/system/', routes);
-app.use('/system/music', music);
-app.use('/system/user', user);
+app.use('/', routes);
+app.use('/music', music);
+app.use('/user', user);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -1,6 +1,6 @@
 define(["app"], function(app) {
     app.factory('UserService', function($resource) {
-        return $resource('/system/user/:menus', {
+        return $resource('/user/:menus', {
             menus: '@menus'
         }, {
             'query': {
