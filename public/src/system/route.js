@@ -6,7 +6,7 @@ define(["app"], function(app) {
 				templateUrl: "src/system/app.html",
 				controller: 'AppController'
 			};
-			$routeProvider.when("/:path/:hash", app);
+			$routeProvider.when("/:path", app).when("/:path/:hash", app);
 
 		});
 });
