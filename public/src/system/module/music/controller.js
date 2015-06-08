@@ -1,6 +1,6 @@
 define(["app"], function(app) {
-	app.controller("MusicController", ["$scope", "$location", "$route", "Paginator", "MusicService",
-		function($scope, $location, $route, Paginator, MusicService) {
+	app.controller("MusicController", ["$scope", "$location", "Paginator", "MusicService",
+		function($scope, $location, Paginator, MusicService) {
 			$scope.page = Paginator({
 				resource: MusicService
 			});
@@ -20,6 +20,10 @@ define(["app"], function(app) {
 				});
 				$scope.page.fresh();
 			};
+		}
+	]).controller("MusicNewController", ["$scope", "$location", "$route", "MusicService",
+		function($scope, $location, $route, MusicService) {
+			
 		}
 	]);
 });

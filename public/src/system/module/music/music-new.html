@@ -1,0 +1,56 @@
+<article class="col-sm-10 col-sm-offset-1">
+	<div class="jarviswidget" id="wid-id-0" data-widget-colorbutton="false"
+		data-widget-editbutton="false">
+		<header>
+			<h2>添加音乐</h2>
+		</header>
+		<div>
+			<div class="widget-body">
+				<form class="form-horizontal" role="form"  ng-submit="save()">
+					<fieldset>
+						<div class="form-group">
+							<br> <label class="col-md-3 control-label" for="name">*名称</label>
+							<div class="col-md-8">
+								<input id="name" class="form-control" type="text" name="name" ng-model="music.name" required>
+							</div>
+						</div>
+						<div class="form-group">
+							<br> <label class="col-md-3 control-label" for="title">*标题</label>
+							<div class="col-md-8">
+								<input id="title" class="form-control" type="text" name="title" ng-model="music.title" required>
+							</div>
+						</div>
+						<div class="form-group">
+							<br> <label class="col-md-3 control-label" for="album">作品集</label>
+							<div class="col-md-8">
+								<input id="album" class="form-control" type="text" name="album" ng-model="music.album">
+							</div>
+						</div>
+						<div class="form-group">
+							<br> <label class="col-md-3 control-label" for="artist">艺术家</label>
+							<div class="col-md-8">
+								<input id="artist" class="form-control" type="artist" name="artist" ng-model="music.artist">
+							</div>
+						</div>
+						<div class="form-group">
+							<br> <label class="col-md-3 control-label" for="age">年代</label>
+							<div class="col-md-8">
+								<input id="age" class="form-control" type="age" name="age" ng-model="music.age">
+							</div>
+						</div>
+					</fieldset>
+					<div class="form-actions">
+						<div class="row">
+							<div class="col-md-12">
+								<button class="btn btn-default" type="submit">提交</button>
+								<a class="btn btn-primary" ng-href="#/music">返回列表</a>
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+			<!-- end widget content -->
+		</div>
+		<!-- end widget div -->
+	</div>
+</article>
