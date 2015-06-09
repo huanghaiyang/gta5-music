@@ -30,14 +30,28 @@ define(["app", "fun"], function(app, Fun) {
 					});
 				});
 			};
+			$scope.update = function(id) {
+				$location.url("/music/edit?id=" + id);
+			};
 		}
-	]).controller("MusicNewController", ["$scope", "$location", "MusicService",
-		function($scope, $location, MusicService) {
+	]).controller("MusicInfoController", ["$rootScope", "$scope", "$location", "MusicService",
+		function($rootScope, $scope, $location, MusicService) {
+			var module = $rootScope.module;
+
+			$scope.music = MusicService.get({
+				id: $location.$$search.id
+			});
 			$scope.save = function() {
-				MusicService.save($scope.music, function(result) {
-					Fun.msg.notify(result);
-					$location.path("/music");
-				});
+				if (module === "music/new")
+					MusicService.save($scope.music, function(result) {
+						Fun.msg.notify(result);
+						$location.path("/music");
+					});
+				else if (module === "music/edit")
+					MusicService.update($scope.music, function(result) {
+						Fun.msg.notify(result);
+						$location.path("/music");
+					});
 			}
 		}
 	]);

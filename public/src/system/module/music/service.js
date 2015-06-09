@@ -7,6 +7,9 @@ define(["app"], function(app) {
                 method: 'GET',
                 isArray: false,
                 cache: false
+            },
+            update: {
+                method: 'PUT'
             }
         });
     });

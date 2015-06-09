@@ -6,6 +6,9 @@ var musicController = new MusicController();
 /* GET music page. */
 router.get('/', musicController.query);
 
+/*获取*/
+router.get('/:id', musicController.get);
+
 /*添加*/
 router.post('/', musicController.add);
 

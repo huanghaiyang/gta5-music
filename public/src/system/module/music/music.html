@@ -61,6 +61,7 @@
                             <th>唱片集</th>
                             <th>年代</th>
                             <th>收录时间</th>
+                            <th>语言</th>
                             <th>描述</th>
                             <th>操作</th>
                         </tr>
@@ -73,8 +74,9 @@
                             <td>{{music.album}}</td>
                             <td>{{music.year}}</td>
                             <td>{{music.addDate}}</td>
+                            <td>{{music.comment.language}}</td>
                             <td>{{music.comment.short_description}}</td>
-                            <td><a ng-href="#/{{music.id}}/edit">修改</a> | <a ng-click="delete(music.id)">删除</a> | <a ng-click="showRoleList($index,music)">资源文件</a> </td>
+                            <td><a ng-click="update(music.id)">修改</a> | <a ng-click="delete(music.id)">删除</a> | <a ng-click="showRoleList($index,music)">资源文件</a> </td>
                         </tr>
                         </tbody>
                     </table>

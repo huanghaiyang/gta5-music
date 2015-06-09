@@ -87,5 +87,13 @@ define(function() {
     Fun.msg.delConfirm = function(yepoCallback, nopeCallback) {
         Fun.msg.confirm("<i class=\"fa fa-question txt-color-orangeDark\"></i><span class=\"txt-color-orangeDark\"><strong>操作提示</strong></span>", "是否确认删除记录?", yepoCallback, nopeCallback);
     };
+
+    Fun.angular = {
+        location: {
+            getModule: function($location) {
+                return $location.path().replace(/^\//, "");
+            }
+        }
+    };
     return Fun;
 });
