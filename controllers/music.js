@@ -135,7 +135,21 @@ MusicController.prototype.delete = function(req, res, next) {
 	Music.remove({
 		_id: id
 	}, function(err) {
-
+		assert.equal(err, null);
+		console.log('delete success.');
+		if (err) {
+			res.send({
+				status: "warning",
+				message: "删除错误!",
+				err: err
+			});
+		} else {
+			res.send({
+				status: "info",
+				message: "删除成功!"
+			});
+		}
+		res.end();
 	});
 };
 

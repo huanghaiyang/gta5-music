@@ -26,7 +26,7 @@ define(["app", "fun"], function(app, Fun) {
 						id: id
 					}, function(result) {
 						Fun.msg.notify(result);
-						$location.path("/music");
+						$scope.reset();
 					});
 				});
 			};
