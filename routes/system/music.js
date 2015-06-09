@@ -9,6 +9,9 @@ router.get('/', musicController.query);
 /*获取*/
 router.get('/:id', musicController.get);
 
+/*获取简单信息*/
+router.get('/:id/simple', musicController.getSimple);
+
 /*添加*/
 router.post('/', musicController.add);
 

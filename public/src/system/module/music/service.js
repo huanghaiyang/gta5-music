@@ -10,6 +10,9 @@ define(["app"], function(app) {
             },
             update: {
                 method: 'PUT'
+            },
+            getSimple: {
+                method: "GET"
             }
         });
     });

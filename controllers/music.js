@@ -17,6 +17,18 @@ MusicController.prototype.get = function(req, res, next) {
 	});
 };
 
+MusicController.prototype.getSimple = function(req, res, next) {
+	var id = req.params.id;
+	Music.findOne({
+		_id: id
+	}).select("_id , name ,  title").exec(function(err, doc) {
+		assert.equal(err, null);
+		console.log('find success.');
+		res.send(doc);
+		res.end();
+	});
+};
+
 MusicController.prototype.query = function(req, res, next) {
 	var page = parseInt(req.query.page);
 	var size = parseInt(req.query.size);
