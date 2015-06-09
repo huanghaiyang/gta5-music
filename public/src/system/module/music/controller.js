@@ -33,7 +33,7 @@ define(["app", "fun"], function(app, Fun) {
 			$scope.update = function(id) {
 				$location.url("/music/edit?id=" + id);
 			};
-			$scope.showResource = function(id){
+			$scope.showResource = function(id) {
 				$location.url("/music/mp3?id=" + id);
 			};
 		}
@@ -60,7 +60,8 @@ define(["app", "fun"], function(app, Fun) {
 	]).controller("MusicResouceController", ["$rootScope", "$scope", "$location", "MusicService",
 		function($rootScope, $scope, $location, MusicService) {
 			$scope.music = MusicService.getSimple({
-				id : $location.$$search.id
+				id: $location.$$search.id,
+				simple: 'simple'
 			});
 		}
 	]);
