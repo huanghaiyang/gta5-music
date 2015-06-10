@@ -65,7 +65,7 @@ define(["app", "fun"], function(app, Fun) {
 			}).$promise.then(function(result) {
 				createjs.Sound.alternateExtensions = ["mp3"];
 				createjs.Sound.on("fileload", loadHandler);
-				createjs.Sound.registerSound("http://localhost:3002/" + encodeURIComponent(result.path), "sound");
+				createjs.Sound.registerSound("/file_server/" + encodeURIComponent(result.path), "sound");
 			});
 
 			function loadHandler(event) {
