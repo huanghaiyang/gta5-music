@@ -62,7 +62,18 @@ define(["app", "fun"], function(app, Fun) {
 			$scope.music = MusicService.getSimple({
 				id: $location.$$search.id,
 				simple: 'simple'
+			}).$promise.then(function(result) {
+				createjs.Sound.alternateExtensions = ["mp3"];
+				createjs.Sound.on("fileload", loadHandler);
+				createjs.Sound.registerSound("http://localhost:3002/" + encodeURIComponent(result.path), "sound");
 			});
+
+			function loadHandler(event) {
+				// This is fired for each sound that is registered.
+				var instance = createjs.Sound.play("sound"); // play using id.  Could also use full sourcepath or event.src.
+				instance.on("complete", function() {});
+				instance.volume = 0.5;
+			}
 		}
 	]);
 });

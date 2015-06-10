@@ -56,7 +56,10 @@ require.config({
 
 		/*音乐管理*/
 		"music.controller": "../src/system/module/music/controller",
-		"music.service": "../src/system/module/music/service"
+		"music.service": "../src/system/module/music/service",
+
+		/*mp3媒体播放插件*/
+		"audio.soundjs": "SoundJS/lib/soundjs-0.6.1.combined"
 	},
 	shim: {
 		"angular": {
@@ -108,7 +111,8 @@ define([
 	"app.plugin.paginator",
 	"home.controller",
 	"usermenu.controller", "usermenu.service",
-	"music.controller", "music.service"
+	"music.controller", "music.service",
+	"audio.soundjs"
 ], function(require) {
 	'use strict';
 	/*文档可用*/

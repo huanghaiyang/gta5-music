@@ -25,6 +25,7 @@ var path = require('path');
 http.createServer(function(request, response) {
     var pathname = url.parse(request.url).pathname;
     var realpath = pathname !== '/' ? ROOT + pathname : __filename;
+    realpath = decodeURIComponent(realpath);
     var extname = path.extname(realpath).slice(1);
     var contentType = 'text/plain';
 
