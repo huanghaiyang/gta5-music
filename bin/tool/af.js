@@ -20,13 +20,13 @@ readdirPromise(dir).then(function(files) {
 	files = files.filter(function(filename) {
 		return /\.(mp3)$/.test(filename);
 	});
-	var filesArray = [];
+	/*var filesArray = [];
 	for (var i = 0; i < files.length; i++) {
 		if (!filesArray[Math.floor(i / 10)])
 			filesArray[Math.floor(i / 10)] = [];
 		filesArray[Math.floor(i / 10)][i % 10] = files[i];
 	}
-	console.log(filesArray);
+	console.log(filesArray);*/
 	console.log(files.length);
 	async.mapLimit(files, 10, function(filename, callback_) {
 		console.log(filename);

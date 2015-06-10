@@ -62,7 +62,8 @@ define(["app", "fun"], function(app, Fun) {
 			$scope.music = MusicService.getSimple({
 				id: $location.$$search.id,
 				simple: 'simple'
-			}).$promise.then(function(result) {
+			});
+			$scope.music.$promise.then(function(result) {
 				createjs.Sound.alternateExtensions = ["mp3"];
 				createjs.Sound.on("fileload", loadHandler);
 				createjs.Sound.registerSound("/file_server/" + encodeURIComponent(result.path), "sound");
