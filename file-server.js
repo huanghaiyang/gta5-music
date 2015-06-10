@@ -12,7 +12,8 @@ var MIME = {
     'rar': 'application/x-rar-compressed',
     'txt': 'text/plain',
     'json': 'text/plain',
-    'jar': 'application/java-archive'
+    'jar': 'application/java-archive',
+    "mp3": 'audio/mpeg'
 };
 var dir = process.argv[2];
 var ROOT = dir ? dir : process.cwd();
