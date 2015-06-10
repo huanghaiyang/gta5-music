@@ -1,5 +1,6 @@
 <div class="dataTables_paginate paging_simple_numbers">
     <ul class="pagination pagination-sm">
+        <li class="paginate_button"><a>共 <font color=black>{{page.totalElements}} </font> 条记录 <font color=black>{{page.totalPages}} </font>页</a></li>
         <li ng-hide="page.isFirst()" class="paginate_button previous"><a ng-click="page.firstPage()">First</a></li>
         <li ng-hide="page.isFirst()" class="paginate_button previous"><a ng-click="page.pre()">Previous</a></li>
         <li ng-show="page.getNumber()  - index > 0" ng-repeat="index in [4,3,2,1]" class="paginate_button"><a
