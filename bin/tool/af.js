@@ -1,5 +1,6 @@
 var fs = require("fs");
 var Promise = require("bluebird");
+var async = require("async");
 
 var commander = require('commander');
 commander.option('-d --dirpath <dirpath>', 'set the music files dir path').parse(process.argv);
@@ -16,71 +17,85 @@ var dir = commander.dirpath ? commander.dirpath : __dirname.replace(/bin\/tool\/
 var readdirPromise = Promise.promisify(fs.readdir);
 /*读取文件夹下的所有mp3文件*/
 readdirPromise(dir).then(function(files) {
-	files.forEach(function(filename) {
-		if (/\.(mp3)$/.test(filename)) {
-			console.log(filename);
-			var fullpath = dir + "/" + filename;
-			/*读取mp3文件的标签*/
-			id3.localTags(fullpath, function() {
-				var tags = id3.getAllTags(fullpath);
-				for (var t in tags) {
-					if (t === "picture") {
-						var dataBuffer = new Buffer(tags[t].data);
-						/*将图片写到本地*/
-						fs.writeFile(dir + '/' + filename.replace(/.\w+$/, ".jpeg"), dataBuffer, function(err) {
-							assert.equal(err, null);
-							console.log("图片生成成功！");
-						});
-					}
+	files = files.filter(function(filename) {
+		return /\.(mp3)$/.test(filename);
+	});
+	var filesArray = [];
+	for (var i = 0; i < files.length; i++) {
+		if (!filesArray[Math.floor(i / 10)])
+			filesArray[Math.floor(i / 10)] = [];
+		filesArray[Math.floor(i / 10)][i % 10] = files[i];
+	}
+	console.log(filesArray);
+	console.log(files.length);
+	async.mapLimit(files, 10, function(filename, callback_) {
+		console.log(filename);
+		var fullpath = dir + "/" + filename;
+		/*读取mp3文件的标签*/
+		id3.localTags(fullpath, function() {
+			var tags = id3.getAllTags(fullpath);
+			for (var t in tags) {
+				if (t === "picture") {
+					var dataBuffer = new Buffer(tags[t].data);
+					/*将图片写到本地*/
+					fs.writeFile(dir + '/' + filename.replace(/.\w+$/, ".jpeg"), dataBuffer, function(err) {
+						assert.equal(err, null);
+						console.log("图片生成成功！");
+					});
 				}
+			}
 
-				/*要保存的数据*/
-				var music = {
-					name: filename,
-					artist: tags.artist,
-					title: tags.title,
-					album: tags.album,
-					year: tags.year,
-					comment: tags.comment,
-					addDate: new Date(),
-					path: filename
-				};
+			/*要保存的数据*/
+			var music = {
+				name: filename,
+				artist: tags.artist,
+				title: tags.title,
+				album: tags.album,
+				year: tags.year,
+				comment: tags.comment,
+				addDate: new Date(),
+				path: filename
+			};
 
-				/*插入一条数据*/
-				var insertMusic = function(db, callback) {
-					db.collection(collection).insertOne(music, function(err, result) {
-						assert.equal(err, null);
-						console.log("Inserted a document into the music collection.");
-						callback(result);
-					});
-				};
-				/*根据名称查找一条数据*/
-				var findMusic = function(db, callback) {
-					db.collection(collection).findOne({
-						name: filename
-					}, function(err, result) {
-						assert.equal(err, null);
-						console.log("finding music without error.");
-						callback(result);
-					});
-				};
-				/*打开数据库连接并操作*/
-				MongoClient.connect(url, function(err, db) {
+			/*插入一条数据*/
+			var insertMusic = function(db, callback) {
+				db.collection(collection).insertOne(music, function(err, result) {
 					assert.equal(err, null);
-					console.log("connect success.");
-					findMusic(db, function(result) {
-						if (result === null)
-							insertMusic(db, function() {
-								db.close();
-							});
-						else
-							db.close();
-					});
+					console.log("Inserted a document into the music collection.");
+					callback(result);
 				});
-			}, {
-				tags: ["artist", "title", "album", "year", "comment", "picture"]
+			};
+			/*根据名称查找一条数据*/
+			var findMusic = function(db, callback) {
+				db.collection(collection).findOne({
+					name: filename
+				}, function(err, result) {
+					assert.equal(err, null);
+					console.log("finding music without error.");
+					callback(result);
+				});
+			};
+			/*打开数据库连接并操作*/
+			MongoClient.connect(url, function(err, db) {
+				assert.equal(err, null);
+				console.log("connect success.");
+				findMusic(db, function(result) {
+					if (result === null)
+						insertMusic(db, function() {
+							db.close();
+							callback_();
+						});
+					else {
+						db.close();
+						callback_();
+					}
+				});
 			});
-		}
+		}, {
+			tags: ["artist", "title", "album", "year", "comment", "picture"]
+		});
+	}, function(err) {
+
 	});
 }).
 catch (SyntaxError, function(e) {
