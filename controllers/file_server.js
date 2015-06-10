@@ -1,5 +1,6 @@
 var http = require('http');
 var path = require('path');
+var BufferHelper = require('bufferHelper');
 var MIME = require('../lib/mine');
 var config = require('../config');
 
@@ -24,10 +25,10 @@ FileServerController.prototype.get = function(req, res, next) {
 		console.log('STATUS: ' + response.statusCode);
 		console.log('HEADERS: ' + JSON.stringify(response.headers));
 		response.setEncoding('utf8');
-		var data = "";
 		/*读取返回数据*/
+		var bufferHelper = new BufferHelper();
 		response.on("data", function(chunk) {
-			data += chunk;
+			bufferHelper.concat(chunk);
 		});
 
 		/*数据读取完成*/
@@ -43,7 +44,7 @@ FileServerController.prototype.get = function(req, res, next) {
 				'Content-Type': contentType
 			});
 			/*写返回流*/
-			res.write(data);
+			res.write(bufferHelper.toBuffer().toString('utf8'));
 			res.end();
 		});
 	});
