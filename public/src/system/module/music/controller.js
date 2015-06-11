@@ -67,7 +67,7 @@ define(["app", "fun"], function(app, Fun) {
 				createjs.Sound.alternateExtensions = ["mp3"];
 				createjs.Sound.on("fileload", loadHandler);
 				var path = "/file_server/" + encodeURIComponent(result.path);
-				//createjs.Sound.registerSound(path, "sound");
+				createjs.Sound.registerSound(path, "sound");
 				$scope.music.jpg = path.replace(/\.mp3/, '.jpeg');
 			});
 

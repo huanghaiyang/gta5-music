@@ -28,6 +28,7 @@ http.createServer(function(request, response) {
                 response.writeHead(200, {
                     'Content-Type': contentType
                 });
+                console.log(data.length);
                 response.write(data);
                 response.end();
             });

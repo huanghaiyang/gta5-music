@@ -24,11 +24,13 @@ FileServerController.prototype.get = function(req, res, next) {
 	var request = http.request(options, function(response) {
 		console.log('STATUS: ' + response.statusCode);
 		console.log('HEADERS: ' + JSON.stringify(response.headers));
-		response.setEncoding('utf8');
 		/*读取返回数据*/
 		var bufferHelper = new BufferHelper();
+		var l = 0;
 		response.on("data", function(chunk) {
-			bufferHelper.concat(chunk);
+			l += chunk.length;
+			console.log(l);
+			bufferHelper.concat(new Buffer(chunk));
 		});
 
 		/*数据读取完成*/
@@ -44,7 +46,7 @@ FileServerController.prototype.get = function(req, res, next) {
 				'Content-Type': contentType
 			});
 			/*写返回流*/
-			res.write(bufferHelper.toBuffer().toString('utf8'));
+			res.write(bufferHelper.toBuffer());
 			res.end();
 		});
 	});
