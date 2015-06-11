@@ -59,7 +59,8 @@ require.config({
 		"music.service": "../src/system/module/music/service",
 
 		/*mp3媒体播放插件*/
-		"audio.audiojs": "../src/system/plugin/audiojs/audio"
+		"audio.audiojs": "../src/system/plugin/audiojs/audio",
+		"audio.directives.audioJ": "../src/system/layout/directives/audiojs/audio"
 	},
 	shim: {
 		"angular": {
@@ -112,7 +113,7 @@ define([
 	"home.controller",
 	"usermenu.controller", "usermenu.service",
 	"music.controller", "music.service",
-	"audio.audiojs"
+	"audio.audiojs", "audio.directives.audioJ"
 ], function(require) {
 	'use strict';
 	/*文档可用*/

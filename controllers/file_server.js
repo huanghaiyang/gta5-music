@@ -26,10 +26,7 @@ FileServerController.prototype.get = function(req, res, next) {
 		console.log('HEADERS: ' + JSON.stringify(response.headers));
 		/*读取返回数据*/
 		var bufferHelper = new BufferHelper();
-		var l = 0;
 		response.on("data", function(chunk) {
-			l += chunk.length;
-			console.log(l);
 			bufferHelper.concat(new Buffer(chunk));
 		});
 

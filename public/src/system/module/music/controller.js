@@ -59,6 +59,13 @@ define(["app", "fun"], function(app, Fun) {
 		}
 	]).controller("MusicResouceController", ["$rootScope", "$scope", "$location", "MusicService",
 		function($rootScope, $scope, $location, MusicService) {
+
+			$scope.createAudio = function() {
+				audiojs.events.ready(function() {
+					audiojs.createAll();
+				});
+			};
+
 			$scope.music = MusicService.getSimple({
 				id: $location.$$search.id,
 				simple: 'simple'
@@ -67,10 +74,8 @@ define(["app", "fun"], function(app, Fun) {
 				var path = "/file_server/" + encodeURIComponent(result.path);
 				$scope.music.jpg = path.replace(/\.mp3/, '.jpeg');
 				$scope.music._path = path;
-				audiojs.events.ready(function() {
-					audiojs.createAll();
-				});
 			});
+
 		}
 	]);
 });
