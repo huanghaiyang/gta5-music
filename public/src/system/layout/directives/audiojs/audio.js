@@ -14,8 +14,8 @@ define(['app'], function(app) {
 						if ($('audio[a-tag]').length > 0) {
 							if (scope.callback) {
 								scope.callback();
-								timer = null;
 							}
+							timer = null;
 						}
 					}, 100);
 				}
