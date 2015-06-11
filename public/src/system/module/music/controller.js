@@ -64,19 +64,9 @@ define(["app", "fun"], function(app, Fun) {
 				simple: 'simple'
 			});
 			$scope.music.$promise.then(function(result) {
-				createjs.Sound.alternateExtensions = ["mp3"];
-				createjs.Sound.on("fileload", loadHandler);
 				var path = "/file_server/" + encodeURIComponent(result.path);
-				createjs.Sound.registerSound(path, "sound");
 				$scope.music.jpg = path.replace(/\.mp3/, '.jpeg');
 			});
-
-			function loadHandler(event) {
-				// This is fired for each sound that is registered.
-				var instance = createjs.Sound.play("sound"); // play using id.  Could also use full sourcepath or event.src.
-				instance.on("complete", function() {});
-				instance.volume = 0.5;
-			}
 		}
 	]);
 });
