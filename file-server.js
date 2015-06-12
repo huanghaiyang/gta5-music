@@ -41,7 +41,7 @@ http.createServer(function(request, response) {
                             range[1] = data.length;
                     }
                     console.log('range:' + range);
-                    var size = Math.abs(range[1] - range[0]);
+                    var size = Math.abs(range[1] - range[0]) + 1;
                     var bf = new Buffer(size);
                     fs.read(fd, bf, 0, size, range[0] , function(err, bytesRead, buffer) {
                         if (err) throw err;

@@ -38,6 +38,7 @@ FileServerController.prototype.get = function(req, res, next) {
 
 		/*数据读取完成*/
 		response.on("end", function() {
+			var statusCode = 200;
 			/*文件类型*/
 			var extname = path.extname(filename).slice(1);
 			var contentType = 'text/plain';
@@ -52,10 +53,15 @@ FileServerController.prototype.get = function(req, res, next) {
 			if (options.headers.range && extname === "mp3") {
 				responseHeaders['Accept-Ranges'] = 'bytes';
 				responseHeaders['Content-Length'] = buffer.length;
+				responseHeaders['Cache-Control'] = 'max-age=600';
+				responseHeaders['Age'] = '0';
+				responseHeaders['Access-Control-Allow-Origin'] = '*';
 				var range = ObjectUtils.parseInt(options.headers.range.replace('bytes=', '').split(/-/));
-				responseHeaders['Content-Range:'] = 'bytes ' + range[0] + ' ' + (buffer.length + range[0]) + '/' + (buffer.length + range[0]);
+				responseHeaders['Content-Range:'] = 'bytes ' + range[0] + '-' + (buffer.length + range[0] - 1) + '/' + (buffer.length + range[0] - 1);
+				if (range[0] > 0)
+					statusCode = 206;
 			}
-			res.writeHead(200, responseHeaders);
+			res.writeHead(statusCode, responseHeaders);
 			/*写返回流*/
 			res.write(buffer);
 			res.end();
