@@ -71,9 +71,9 @@ define(["app", "fun"], function(app, Fun) {
 				simple: 'simple'
 			});
 			$scope.music.$promise.then(function(result) {
-				var path = "/file_server/" + encodeURIComponent(result.path);
-				$scope.music.jpg = path.replace(/\.mp3/, '.jpeg');
-				$scope.music._path = path;
+				var p = '/file_server/';
+				$scope.music.jpg = p + encodeURIComponent(result.imgPath);
+				$scope.music._path = p + encodeURIComponent(result.path);
 			});
 
 		}

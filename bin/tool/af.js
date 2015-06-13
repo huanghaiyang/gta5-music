@@ -30,7 +30,11 @@ readdirPromise(dir).then(function(files) {
 	console.log(files.length);
 	async.mapLimit(files, 10, function(filename, callback_) {
 		console.log(filename);
+		var imagesDir = dir + '/images/';
+		if (!fs.existsSync(imagesDir))
+			fs.mkdirSync(imagesDir);
 		var fullpath = dir + "/" + filename;
+		var imgPath = '/images/' + filename.replace(/.\w+$/, ".jpeg");
 		/*读取mp3文件的标签*/
 		id3.localTags(fullpath, function() {
 			var tags = id3.getAllTags(fullpath);
@@ -38,7 +42,7 @@ readdirPromise(dir).then(function(files) {
 				if (t === "picture") {
 					var dataBuffer = new Buffer(tags[t].data);
 					/*将图片写到本地*/
-					fs.writeFile(dir + '/' + filename.replace(/.\w+$/, ".jpeg"), dataBuffer, function(err) {
+					fs.writeFile(dir + imgPath, dataBuffer, function(err) {
 						assert.equal(err, null);
 						console.log("图片生成成功！");
 					});
@@ -54,7 +58,8 @@ readdirPromise(dir).then(function(files) {
 				year: tags.year,
 				comment: tags.comment,
 				addDate: new Date(),
-				path: filename
+				path: filename,
+				imgPath: imgPath
 			};
 
 			/*插入一条数据*/

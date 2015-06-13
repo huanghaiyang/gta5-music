@@ -19,9 +19,12 @@ var MusicSchema = mongoose.Schema({
 		type: Date,
 		default: Date.now
 	},
-	path: String
+	path: String,
+	imgPath: String
 });
-MusicSchema.set('toJSON', { virtuals: true });
+MusicSchema.set('toJSON', {
+	virtuals: true
+});
 var Music = mongoose.model('music', MusicSchema);
 
 module.exports = Music;
