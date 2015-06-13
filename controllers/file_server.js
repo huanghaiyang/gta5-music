@@ -1,82 +1,139 @@
-var http = require('http');
-var path = require('path');
-var BufferHelper = require('bufferHelper');
-var MIME = require('../lib/mine');
-var config = require('../config');
-var ObjectUtils = require('../lib/object-utils');
+var commander = require('commander');
+commander.option('-d --dirpath <dirpath>', 'set the music files dir path').parse(process.argv);
+var initFolder = commander.dirpath;
+if (!initFolder) {
+    throw new Error('please use -d to set the dirpath.');
+}
 
-/*资源服务器请求选项*/
-var options = {
-	hostname: 'localhost',
-	port: config.port.file_server,
-	method: 'GET',
-	headers: {
-		'Content-Type': 'text/html; charset=utf-8'
-	}
+var fs = require("fs");
+var path = require("path");
+var url = require("url");
+
+// 将我们需要的文件扩展名和MIME名称列出一个字典
+var mimeNames = require('../lib/mine');
+
+function sendResponse(response, responseStatus, responseHeaders, readable) {
+	response.writeHead(responseStatus, responseHeaders);
+
+	if (readable == null)
+		response.end();
+	else
+		readable.on("open", function() {
+			readable.pipe(response);
+		});
+
+	return null;
+}
+
+function getMimeNameFromExt(ext) {
+	var result = mimeNames[ext.toLowerCase()];
+
+	// 最好给一个默认值
+	if (result == null)
+		result = "application/octet-stream";
+
+	return result;
 };
+
+function readRangeHeader(range, totalLength) {
+	/*
+	 * Example of the method &apos;split&apos; with regular expression.
+	 *
+	 * Input: bytes=100-200
+	 * Output: [null, 100, 200, null]
+	 *
+	 * Input: bytes=-200
+	 * Output: [null, null, 200, null]
+	 */
+
+	if (range == null || range.length == 0)
+		return null;
+
+	var array = range.split(/bytes=([0-9]*)-([0-9]*)/);
+	var start = parseInt(array[1]);
+	var end = parseInt(array[2]);
+	var result = {
+		Start: isNaN(start) ? 0 : start,
+		End: isNaN(end) ? (totalLength - 1) : end
+	};
+
+	if (!isNaN(start) && isNaN(end)) {
+		result.Start = start;
+		result.End = totalLength - 1;
+	}
+
+	if (isNaN(start) && !isNaN(end)) {
+		result.Start = totalLength - end;
+		result.End = totalLength - 1;
+	}
+
+	return result;
+}
 
 function FileServerController() {};
 
-FileServerController.prototype.get = function(req, res, next) {
-	var filename = req.params.filename;
-	options.path = "/" + encodeURIComponent(filename);
-
-	// 从文件指定位置开始传输
-	if (req.headers.range) {
-		options.headers.range = req.headers.range;
+FileServerController.prototype.get = function(request, response, next) {
+	// We will only accept 'GET' method. Otherwise will return 405 'Method Not Allowed'.
+	if (request.method != 'GET') {
+		sendResponse(response, 405, {
+			'Allow': 'GET'
+		}, null);
+		return null;
 	}
 
-	/*请求*/
-	var request = http.request(options, function(response) {
-		console.log('STATUS: ' + response.statusCode);
-		console.log('HEADERS: ' + JSON.stringify(response.headers));
-		/*读取返回数据*/
-		var bufferHelper = new BufferHelper();
-		response.on("data", function(chunk) {
-			bufferHelper.concat(chunk);
-		});
+	var filename =
+		initFolder + url.parse(request.url, true, true).pathname.split('/').join(path.sep);
 
-		/*数据读取完成*/
-		response.on("end", function() {
-			var statusCode = 200;
-			/*文件类型*/
-			var extname = path.extname(filename).slice(1);
-			var contentType = 'text/plain';
+	filename = decodeURIComponent(filename);
 
-			if (extname && MIME[extname]) {
-				contentType = MIME[extname];
-			}
-			var buffer = bufferHelper.toBuffer();
-			var responseHeaders = {
-				'Content-Type': contentType
-			};
-			if (options.headers.range && extname === "mp3") {
-				responseHeaders['Accept-Ranges'] = 'bytes';
-				responseHeaders['Content-Length'] = buffer.length;
-				responseHeaders['Cache-Control'] = 'max-age=600';
-				responseHeaders['Age'] = '0';
-				responseHeaders['Access-Control-Allow-Origin'] = '*';
-				var range = ObjectUtils.parseInt(options.headers.range.replace('bytes=', '').split(/-/));
-				responseHeaders['Content-Range:'] = 'bytes ' + range[0] + '-' + (buffer.length + range[0] - 1) + '/' + (buffer.length + range[0] - 1);
-				if (range[0] > 0)
-					statusCode = 206;
-			}
-			res.writeHead(statusCode, responseHeaders);
-			/*写返回流*/
-			res.write(buffer);
-			res.end();
-		});
-	});
-	/*错误处理*/
-	request.on('error', function(e) {
-		console.log('problem with request: ' + e.message);
-		res.writeHead(404, {
-			'Content-Type': 'text/plain'
-		});
-		res.write('Not Found');
-		res.end();
-	});
-	request.end();
+	// Check if file exists. If not, will return the 404 'Not Found'. 
+	if (!fs.existsSync(filename)) {
+		sendResponse(response, 404, null, null);
+		return null;
+	}
+
+	var responseHeaders = {};
+	var stat = fs.statSync(filename);
+	var rangeRequest = readRangeHeader(request.headers['range'], stat.size);
+
+	// If 'Range' header exists, we will parse it with Regular Expression.
+	if (rangeRequest == null) {
+		responseHeaders['Content-Type'] = getMimeNameFromExt(path.extname(filename));
+		responseHeaders['Content-Length'] = stat.size; // File size.
+		responseHeaders['Accept-Ranges'] = 'bytes';
+
+		//  If not, will return file directly.
+		sendResponse(response, 200, responseHeaders, fs.createReadStream(filename));
+		return null;
+	}
+
+	var start = rangeRequest.Start;
+	var end = rangeRequest.End;
+
+	// If the range can't be fulfilled. 
+	if (start >= stat.size || end >= stat.size) {
+		// Indicate the acceptable range.
+		responseHeaders['Content-Range'] = 'bytes */' + stat.size; // File size.
+
+		// Return the 416 'Requested Range Not Satisfiable'.
+		sendResponse(response, 416, responseHeaders, null);
+		return null;
+	}
+
+	// Indicate the current range. 
+	responseHeaders['Content-Range'] = 'bytes ' + start + '-' + end + '/' + stat.size;
+	responseHeaders['Content-Length'] = start == end ? 0 : (end - start + 1);
+	responseHeaders['Content-Type'] = getMimeNameFromExt(path.extname(filename));
+	responseHeaders['Accept-Ranges'] = 'bytes';
+	responseHeaders['Cache-Control'] = 'no-cache';
+	responseHeaders['Access-Control-Allow-Origin'] = '*';
+
+	// Return the 206 'Partial Content'.
+	sendResponse(response, 206,
+		responseHeaders, fs.createReadStream(filename, {
+			start: start,
+			end: end
+		}));
 };
 
 module.exports = FileServerController;
