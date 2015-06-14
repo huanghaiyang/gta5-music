@@ -1,5 +1,5 @@
 (function($) {
-	jQuery.fn.gta5Music = function(options) {
+	jQuery.fn.circle = function(options) {
 		var defaults = {};
 		var $opts = $.extend({}, defaults, options);
 
