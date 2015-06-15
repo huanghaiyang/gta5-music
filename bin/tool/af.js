@@ -59,7 +59,8 @@ readdirPromise(dir).then(function(files) {
 				comment: tags.comment,
 				addDate: new Date(),
 				path: filename,
-				imgPath: imgPath
+				imgPath: imgPath,
+				rand: Math.random()
 			};
 
 			/*插入一条数据*/
