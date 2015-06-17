@@ -2,7 +2,7 @@
 	$.ajax({
 		url: "/music/random",
 		data: {
-			number: 10
+			number: 7
 		},
 		dataType: "json",
 		type: 'GET'
