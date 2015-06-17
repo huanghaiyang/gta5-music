@@ -9,42 +9,26 @@ var debug = require('debug')('pili-music:server');
 var http = require('http');
 var config = require('../config');
 
-var cluster = require('cluster');
-var numCPUs = require('os').cpus().length;
-
-var server;
 /**
  * Get port from environment and store in Express.
  */
 
 var port = normalizePort(process.env.PORT || config.port.app);
-if (cluster.isMaster) {
-  console.log("master start...");
+app.set('port', port);
 
-  // Fork workers.
-  for (var i = 0; i < numCPUs; i++) {
-    cluster.fork();
-  }
+/**
+ * Create HTTP server.
+ */
 
-  cluster.on('listening', function(worker, address) {
-    console.log('listening: worker ' + worker.process.pid + ', Address: ' + address.address + ":" + address.port);
-  });
+var server = http.createServer(app);
 
-  cluster.on('exit', function(worker, code, signal) {
-    console.log('worker ' + worker.process.pid + ' died');
-  });
-} else {
-  server = http.createServer(app);
-  app.set('port', port);
+/**
+ * Listen on provided port, on all network interfaces.
+ */
 
-  /**
-   * Listen on provided port, on all network interfaces.
-   */
-
-  server.listen(port);
-  server.on('error', onError);
-  server.on('listening', onListening);
-}
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
 
 /**
  * Normalize a port into a number, string, or false.

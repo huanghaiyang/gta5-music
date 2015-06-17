@@ -27,7 +27,7 @@ MusicController.prototype.random = function(req, res, next) {
 		rand: ran[op]
 	}).limit(number).exec(function(err, docs) {
 		assert.equal(err, null);
-		console.log('random ' + op + ' query success' + 'with ' + docs.length + ' docs');
+		console.log('random ' + op + ' query success ' + 'with ' + docs.length + ' docs');
 		if (docs) {
 			if (docs.length < number) {
 				data.push(docs);
