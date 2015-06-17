@@ -12,7 +12,7 @@
 			if (data) {
 
 				for (var i = 0; i < data.length; i++) {
-					me.append($('<li><audio><source src="file_server/' + data[i].path + ' type="audio/mpeg"></source></audio></li>'));
+					me.append($('<li><audio><source src="file_server/' + data[i].path + '" type="audio/mpeg"></source></audio></li>'));
 				}
 				var inter = setInterval(function() {
 					if ($.fn.circle) {
