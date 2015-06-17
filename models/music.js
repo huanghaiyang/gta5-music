@@ -21,7 +21,7 @@ var MusicSchema = mongoose.Schema({
 	},
 	path: String,
 	imgPath: String,
-	rand: String
+	rand: Number
 });
 MusicSchema.set('toJSON', {
 	virtuals: true

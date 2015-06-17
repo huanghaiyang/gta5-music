@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var UserController = require("../../controllers/user");
+var UserController = require("../../controllers/system/user");
 var userController = new UserController();
 
 /* GET music page. */

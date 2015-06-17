@@ -1,7 +1,7 @@
-var Music = require('../models/music');
+var Music = require('../../models/music');
 var assert = require('assert');
-var DateUtils = require('../lib/date-utils');
-var RegExpUtils = require('../lib/regexp-utils');
+var DateUtils = require('../../lib/date-utils');
+var RegExpUtils = require('../../lib/regexp-utils');
 
 function MusicController() {};
 

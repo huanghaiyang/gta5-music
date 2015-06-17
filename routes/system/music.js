@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-var MusicController = require('../../controllers/music');
+var MusicController = require('../../controllers/system/music');
 var musicController = new MusicController();
 
 /* GET music page. */

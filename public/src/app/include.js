@@ -5,7 +5,8 @@ require.config({
 		"jquery": "jquery/dist/jquery",
 		"jquery.rotate": "../src/app/lib/jquery.rotate/jquery.rotate",
 
-		"circle": "../src/app/circle"
+		"circle": "../src/app/circle",
+		"app.index": "../src/app/index"
 	},
 	shim: {
 		'jquery.rotate': {
@@ -13,19 +14,17 @@ require.config({
 		},
 		'circle': {
 			'deps': ['jquery', 'jquery.rotate']
+		},
+		'index': {
+			'deps': ['jquery', 'circle']
 		}
 	},
 	waitSeconds: 15
 });
 /*加载文件*/
 define([
-	'jquery', 'jquery.rotate', 'circle'
+	'jquery', 'jquery.rotate', 'circle',
+	'app.index'
 ], function(require) {
 	'use strict';
-	/*文档可用*/
-	$(function() {
-		$('#me').circle({
-			centerFill: true
-		});
-	});
 });

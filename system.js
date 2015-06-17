@@ -8,7 +8,7 @@ var bodyParser = require('body-parser');
 var routes = require('./routes/system/index');
 var music = require('./routes/system/music');
 var user = require('./routes/system/user');
-var file_server = require('./routes/system/file_server');
+var file_server = require('./routes/file_server');
 
 var app = express();
 
