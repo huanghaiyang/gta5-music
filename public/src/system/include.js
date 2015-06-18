@@ -105,7 +105,7 @@ require.config({
 	waitSeconds: 15
 });
 /*加载文件*/
-define([
+require([
 	"require", "jquery", "angular", "angular-resource", "angular-cookies", "angular-messages", "angular-couch-potato", "angular-ui-router", "angular-bootstrap", "angular-route",
 	"smart.notification", "smart.widgets",
 	"ng-fab-form", "fun",

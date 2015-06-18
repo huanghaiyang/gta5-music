@@ -22,7 +22,7 @@ require.config({
 	waitSeconds: 15
 });
 /*加载文件*/
-define([
+require([
 	'jquery', 'jquery.rotate', 'circle',
 	'app.index'
 ], function(require) {
