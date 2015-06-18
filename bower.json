@@ -35,6 +35,8 @@
     "angular-bootstrap": "~0.13.0",
     "angular-route": "~1.4.0",
     "ng-fab-form": "~1.2.11",
-    "css-reset": "~2.5.1"
+    "css-reset": "~2.5.1",
+    "PreloadJS": "~0.6.1",
+    "SoundJS": "~0.6.1"
   }
 }

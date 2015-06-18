@@ -32,13 +32,13 @@
 			xhr.open("GET", url);
 			xhr.responseType = "arraybuffer";
 			xhr.load(function() {
-				
+
 			});
 		};
 
 		function loadList() {
 			$.ajax({
-				url: '/music/refresh',
+				url: '/music/random',
 				dataType: "json",
 				timeout: 60000,
 				type: 'GET',
@@ -115,13 +115,13 @@
 					left: x - _r,
 					top: y - _r
 				});
-				var $audio = $li.children("audio");
 				(function($li, index) {
-					var audio = $audio[0];
-					audio.loop = true;
-					audio.addEventListener('canplaythrough', function(e) {
-						$li.append($("<div class=\"box\"><div class=\"wrap\"><div class=\"content\">" + decodeURI($audio[0].currentSrc.replace(/.*\//, "").replace(/\.mp3/, "")) + "</div></div></div>"));
-					}, false);
+					$li.append($("<div class=\"box\"><div class=\"wrap\"><div class=\"content\">" + $li.data('title') + "</div></div></div>"));
+					var sound = createjs.Sound.play("sound_" + $li.data('id'), {
+						interrupt: createjs.Sound.INTERRUPT_ANY,
+						loop: 1
+					});
+					sound.stop();
 					var clickCount = 0;
 					var rotateCtrl = new RotateControl($li);
 					$li.bind("click", function() {
@@ -138,13 +138,13 @@
 					}).bind("pause", function(evt) {
 						$li.removeClass("active");
 						$li.find(".box").removeClass("active");
-						audio.pause();
+						sound.stop();
 						rotateCtrl.stop();
 						clickCount = 0;
 					}).bind("play", function(evt) {
 						$li.addClass("active");
 						$li.find(".box").addClass("active");
-						audio.play();
+						sound.play();
 						rotateCtrl.start();
 						clickCount = 1;
 					});

@@ -108,7 +108,7 @@ function random(number) {
 				if (arr.length < number) {
 					next();
 				} else {
-					resolve(arr.sort(ObjectUtils.randomSort)));
+					resolve(arr.sort(ObjectUtils.randomSort));
 				}
 			});
 		});
