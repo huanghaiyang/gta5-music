@@ -3,9 +3,11 @@
 		var defaults = {};
 		var $opts = $.extend({}, defaults, options);
 
+		/*旋转*/
 		function RotateControl($o) {
 			var rotate = null;
 
+			/*旋转*/
 			function start() {
 				rotate = setInterval(function() {
 					if (!$o.is(":animated")) {
@@ -16,6 +18,7 @@
 				}, 0);
 			};
 
+			/*停止旋转*/
 			function stop() {
 				clearInterval(rotate);
 				$o.stop();
@@ -26,43 +29,18 @@
 			};
 		};
 
-		var xhr = new XMLHttpRequest();
-
-		function load(url) {
-			xhr.open("GET", url);
-			xhr.responseType = "arraybuffer";
-			xhr.load(function() {
-
-			});
-		};
-
-		function loadList() {
-			$.ajax({
-				url: '/music/random',
-				dataType: "json",
-				timeout: 60000,
-				type: 'GET',
-				success: function(data, textStatus, jqXHR) {
-					if (data) {
-						for (var i in data) {
-							load(data[i].url);
-						}
-					}
-				},
-				error: function(jqXHR, textStatus, errorThrown) {
-
-				}
-			});
-		};
-
+		/*刷新按钮*/
 		var RefreshButton = $("<div class=\"refresh-button\"><a>换一组</a></div>");
+		/*点击刷新触发请求*/
 		RefreshButton.bind("click", function(evt) {
-			loadList();
+			// loadList();
 		});
 		return this.each(function(index, t) {
 			var $t = $(this);
 			var refreshButton = RefreshButton.clone(true);
+			/*刷线按钮插入文档中*/
 			refreshButton.insertAfter($t);
+			/*如果填充父容器*/
 			if ($opts.centerFill) {
 				var $parent = $t.parent();
 				var parentWidth = $parent.width();
@@ -123,6 +101,7 @@
 					});
 					sound.stop();
 					var clickCount = 0;
+					var firstPlay = true;
 					var rotateCtrl = new RotateControl($li);
 					$li.bind("click", function() {
 						if (clickCount === 0) {
@@ -138,13 +117,18 @@
 					}).bind("pause", function(evt) {
 						$li.removeClass("active");
 						$li.find(".box").removeClass("active");
-						sound.stop();
+						sound._pause();
 						rotateCtrl.stop();
 						clickCount = 0;
 					}).bind("play", function(evt) {
 						$li.addClass("active");
 						$li.find(".box").addClass("active");
-						sound.play();
+						if (firstPlay === true) {
+							sound.play();
+							firstPlay = false;
+						} else {
+							sound._resume();
+						}
 						rotateCtrl.start();
 						clickCount = 1;
 					});
