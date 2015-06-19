@@ -13,7 +13,7 @@
 					if (!$o.is(":animated")) {
 						$o.animate({
 							rotate: "360deg"
-						}, 10000, 'linear');
+						}, 5000, 'linear');
 					}
 				}, 0);
 			};
