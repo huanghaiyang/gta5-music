@@ -1,3 +1,3 @@
-db.createCollection("music", {
+db.createCollection("musics", {
 	autoIndex: true
 });
