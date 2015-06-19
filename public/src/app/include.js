@@ -18,7 +18,7 @@ require.config({
 		'circle': {
 			'deps': ['jquery', 'jquery.rotate']
 		},
-		'index': {
+		'app.index': {
 			'deps': ['jquery', 'circle']
 		}
 	},
