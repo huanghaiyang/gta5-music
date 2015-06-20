@@ -7,6 +7,7 @@
 	</head>
 	<meta charset="utf-8">
 	<link rel="stylesheet" type="text/css" href="bower_components/css-reset/reset.css">
+	<link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="/stylesheets/app/index.css">
 	<link rel="stylesheet" type="text/css" href="/stylesheets/app/style.css">
 	<script type="text/javascript" data-main="src/app/include" src="bower_components/requirejs/require.js"></script>
@@ -18,11 +19,21 @@
 		}
 	</style>
 	<body>
-		
+		<nav class="navbar navbar-default navbar-static-top">
+		  <div class="container">
+		  	<a class="navbar-brand" href="#">MUSIC FM</a>
+		  </div>
+		</nav>
 		<div class="container">
-			<ul id="me" class="music-ul">
+			<div class="row">
+				<div class='col-12'>
+					<div class="ul-container">
+						<ul id="me" class="music-ul">
 				
-			</ul>
+						</ul>
+					</div>
+				</div>
+			</div>
 		</div>
 		<div id="progress"></div>
 

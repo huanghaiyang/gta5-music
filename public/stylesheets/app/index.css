@@ -65,4 +65,5 @@
 .refresh-button{
 	position: absolute;
 	display: inline;
+	cursor: pointer;
 }  
