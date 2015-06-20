@@ -8,8 +8,6 @@ $(document).ready(function() {
 		type: 'GET'
 	}).done(function(data, status) {
 		var me = $('#me');
-		var eleArr = [];
-
 		var queue = new createjs.LoadQueue();
 		queue.installPlugin(createjs.Sound);
 		queue.on("fileload", handleFileLoad, this);
@@ -33,18 +31,7 @@ $(document).ready(function() {
 		};
 
 		function handleComplete(e) {
-			for (var i in eleArr) {
-				me.append(eleArr[i]);
-			}
-			var inter = setInterval(function() {
-				if ($.fn.circle) {
-					$('#me').circle({
-						centerFill: true
-					});
-					clearInterval(inter);
-					inter = null;
-				}
-			}, 10);
+			
 		};
 
 		function handleProgress(e) {
@@ -60,13 +47,16 @@ $(document).ready(function() {
 
 				for (var i = 0; i < data.length; i++) {
 					var d = data[i];
+					me.append($('<li data-title="' + d.title + '" data-id="' + d.id + '"></li>'));
 					queue.loadFile({
 						id: "sound_" + d.id,
 						src: 'file_server/' + d.path,
 						type: createjs.AbstractLoader.SOUND
 					});
-					eleArr.push($('<li data-title="' + d.title + '" data-id="' + d.id + '"></li>'));
 				}
+				$('#me').circle({
+					centerFill: true
+				});
 			}
 		}
 	});
