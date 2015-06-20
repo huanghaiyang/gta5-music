@@ -31,7 +31,7 @@ $(document).ready(function() {
 		};
 
 		function handleComplete(e) {
-			
+
 		};
 
 		function handleProgress(e) {
@@ -47,7 +47,7 @@ $(document).ready(function() {
 
 				for (var i = 0; i < data.length; i++) {
 					var d = data[i];
-					me.append($('<li data-title="' + d.title + '" data-id="' + d.id + '"></li>'));
+					me.append($('<li data-title="' + d.title + '" data-id="' + d.id + '" data-img="' + d.imgPath + '"></li>'));
 					queue.loadFile({
 						id: "sound_" + d.id,
 						src: 'file_server/' + d.path,
