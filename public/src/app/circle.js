@@ -11,9 +11,16 @@
 			function start() {
 				rotate = setInterval(function() {
 					if (!$o.is(":animated")) {
+						var rotated = $o.css('rotate');
 						$o.animate({
 							rotate: "360deg"
-						}, 5000, 'linear');
+						}, (function() {
+							if (rotated === 0 || rotated === "")
+								return 5000;
+							else {
+								return 5000 * (360 - parseInt(rotated)) / 360;
+							}
+						})(), 'linear');
 					}
 				}, 0);
 			};
@@ -94,7 +101,7 @@
 					top: y - _r
 				});
 				(function($li, index) {
-					$li.append($("<div class=\"box\"><img src='file_server/"+encodeURIComponent($li.data('img'))+"'></img></div>"));
+					$li.append($("<div class=\"box\"><img src='file_server/" + encodeURIComponent($li.data('img')) + "'></img></div>"));
 					var sound = createjs.Sound.play("sound_" + $li.data('id'), {
 						interrupt: createjs.Sound.INTERRUPT_ANY,
 						loop: 1
