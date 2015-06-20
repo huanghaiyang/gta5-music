@@ -62,8 +62,6 @@
 	z-index:50;
 	border-radius: 50%;
 }
-.refresh-button{
-	position: absolute;
-	display: inline;
+.glyphicon-refresh{
 	cursor: pointer;
-}  
+}

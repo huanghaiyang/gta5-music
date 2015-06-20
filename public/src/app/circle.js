@@ -37,7 +37,7 @@
 		};
 
 		/*刷新按钮*/
-		var RefreshButton = $("<div class=\"refresh-button\"><a>换一组</a></div>");
+		var RefreshButton = $("<span class=\"glyphicon glyphicon-refresh\" aria-hidden=\"true\" title=\"刷新音乐列表\"></span>");
 		/*点击刷新触发请求*/
 		RefreshButton.bind("click", function(evt) {
 			// loadList();
