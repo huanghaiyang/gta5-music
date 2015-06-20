@@ -37,7 +37,7 @@
 		};
 
 		/*刷新按钮*/
-		var RefreshButton = $("<span class=\"glyphicon glyphicon-refresh\" aria-hidden=\"true\" title=\"刷新音乐列表\"></span>");
+		var RefreshButton = $("<span class=\"glyphicon glyphicon-refresh refresh-btn\" aria-hidden=\"true\" title=\"刷新音乐列表\"></span>");
 		/*点击刷新触发请求*/
 		RefreshButton.bind("click", function(evt) {
 			// loadList();
@@ -101,7 +101,7 @@
 					top: y - _r
 				});
 				(function($li, index) {
-					$li.append($("<div class=\"box\" title=\""+$li.data('title')+"\"><img src='file_server/" + encodeURIComponent($li.data('img')) + "'></img></div>"));
+					$li.append($("<div class=\"box\" title=\"" + $li.data('title') + "\"><img src='file_server/" + encodeURIComponent($li.data('img')) + "'></img></div>"));
 					var sound = createjs.Sound.play("sound_" + $li.data('id'), {
 						interrupt: createjs.Sound.INTERRUPT_ANY,
 						loop: 1
@@ -110,7 +110,7 @@
 					var clickCount = 0;
 					var firstPlay = true;
 					var rotateCtrl = new RotateControl($li);
-					$li.bind("click", function() {
+					$li.on("click", function() {
 						if (clickCount === 0) {
 							$lis.filter(function(index_) {
 								if (index_ !== index) {
