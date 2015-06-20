@@ -94,7 +94,7 @@
 					top: y - _r
 				});
 				(function($li, index) {
-					$li.append($("<div class=\"box\"><div class=\"wrap\"><div class=\"content\">" + $li.data('title') + "</div></div></div>"));
+					$li.append($("<div class=\"box\"><img src='file_server/"+encodeURIComponent($li.data('img'))+"'></img></div>"));
 					var sound = createjs.Sound.play("sound_" + $li.data('id'), {
 						interrupt: createjs.Sound.INTERRUPT_ANY,
 						loop: 1

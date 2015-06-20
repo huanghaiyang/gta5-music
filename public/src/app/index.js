@@ -2,7 +2,7 @@ $(document).ready(function() {
 	$.ajax({
 		url: "/music/random",
 		data: {
-			number: 2
+			number: 8
 		},
 		dataType: "json",
 		type: 'GET'
@@ -48,11 +48,11 @@ $(document).ready(function() {
 				for (var i = 0; i < data.length; i++) {
 					var d = data[i];
 					me.append($('<li data-title="' + d.title + '" data-id="' + d.id + '" data-img="' + d.imgPath + '"></li>'));
-					queue.loadFile({
+					/*queue.loadFile({
 						id: "sound_" + d.id,
 						src: 'file_server/' + d.path,
 						type: createjs.AbstractLoader.SOUND
-					});
+					});*/
 				}
 				$('#me').circle({
 					centerFill: true
