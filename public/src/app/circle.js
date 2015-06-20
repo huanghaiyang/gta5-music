@@ -86,8 +86,8 @@
 			};
 
 			refreshButton.css({
-				left: centerPoint.x - refreshButton.width() / 2,
-				top: centerPoint.y - refreshButton.height() / 2
+				left: centerPoint.x - refreshButton.width() / 2 + $t.position().left,
+				top: centerPoint.y - refreshButton.height() / 2 + $t.position().top
 			});
 
 			var $lis = $t.find(">li");
@@ -101,7 +101,7 @@
 					top: y - _r
 				});
 				(function($li, index) {
-					$li.append($("<div class=\"box\"><img src='file_server/" + encodeURIComponent($li.data('img')) + "'></img></div>"));
+					$li.append($("<div class=\"box\" title=\""+$li.data('title')+"\"><img src='file_server/" + encodeURIComponent($li.data('img')) + "'></img></div>"));
 					var sound = createjs.Sound.play("sound_" + $li.data('id'), {
 						interrupt: createjs.Sound.INTERRUPT_ANY,
 						loop: 1
