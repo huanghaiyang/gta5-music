@@ -30,14 +30,18 @@ function randomOne(next) {
 		try {
 			Music.find({
 				rand: ran[op]
-			}).limit(1).select('name title artist year path imgPath album').exec(function(err, docs) {
+			}).limit(1).sort({
+				rand: op === '$gte' ? 'asc' : 'desc'
+			}).select('name title artist year path imgPath album').exec(function(err, docs) {
 				assert.equal(err, null);
 				console.log('random ' + op + ' query success ' + 'with ' + docs.length + ' docs');
 				if (docs) {
 					if (docs.length < 1) {
 						Music.find({
 							rand: ran[yepo[op]]
-						}).limit(1).exec(function(err, docs) {
+						}).limit(1).sort({
+							rand: yepo[op] === '$gte' ? 'asc' : 'desc'
+						}).select('name title artist year path imgPath album').exec(function(err, docs) {
 							assert.equal(err, null);
 							console.log('random ' + yepo[op] + ' query success' + 'with ' + docs.length + ' docs');
 							resolve(docs);
