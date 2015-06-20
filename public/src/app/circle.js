@@ -93,7 +93,8 @@
 			var $lis = $t.find(">li");
 			$lis.each(function(index, li) {
 				$li = $(li);
-				var c = (2 * Math.PI / 360) * (360 / $lis.length) * index;
+				var c = (2 * Math.PI / 360) * (360 / $lis.length) * ($lis.length - index) + Math.PI;
+				console.log(c);
 				var x = centerPoint.x + Math.sin(c) * r;
 				var y = centerPoint.y + Math.cos(c) * r;
 				$li.css({
@@ -102,6 +103,13 @@
 				});
 				(function($li, index) {
 					$li.append($("<div class=\"box\" title=\"" + $li.data('title') + "\"><img src='file_server/" + encodeURIComponent($li.data('img')) + "'></img></div>"));
+					$li.circleProgress({
+						value: 0,
+						size: 120,
+						fill: {
+							gradient: ['#FF6666']
+						}
+					});
 					var sound = createjs.Sound.play("sound_" + $li.data('id'), {
 						interrupt: createjs.Sound.INTERRUPT_ANY,
 						loop: 1

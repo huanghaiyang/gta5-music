@@ -13,12 +13,13 @@
 	height: 120px;
 	border-radius: 50%;
 	text-align: center;
-	background-color: #FF6666;
 	-webkit-transition:background-color 0.3s ease-in;
 	-moz-transition:background-color 0.3s ease-in;
 	-ms-transition:background-color 0.3s ease-in;
 	-o-transition:background-color 0.3s ease-in;
 	transition:background-color 0.3s ease-in;
+	overflow: hidden;
+	background-color: #0099CC;
 }
 .music-ul>li:hover,.music-ul>li.active:hover{
 	background-color: #0099CC;

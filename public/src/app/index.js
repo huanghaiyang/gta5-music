@@ -1,6 +1,6 @@
 $(document).ready(function() {
 	$.ajax({
-		url: "/music/random",
+		url: "/music/random?t=" + Math.random(),
 		data: {
 			number: 8
 		},
@@ -27,6 +27,9 @@ $(document).ready(function() {
 		};
 
 		function handleFileProgress(e) {
+			me.find('li[data-id=' + e.item.id.replace(/^sound_/, "") + ']').circleProgress({
+				value: e.progress
+			});
 			console.log(e.item.id + " is loaded " + e.progress);
 		};
 
@@ -48,11 +51,12 @@ $(document).ready(function() {
 				for (var i = 0; i < data.length; i++) {
 					var d = data[i];
 					me.append($('<li data-title="' + d.title + '" data-id="' + d.id + '" data-img="' + d.imgPath + '"></li>'));
-					/*queue.loadFile({
+
+					queue.loadFile({
 						id: "sound_" + d.id,
 						src: 'file_server/' + d.path,
 						type: createjs.AbstractLoader.SOUND
-					});*/
+					});
 				}
 				$('#me').circle({
 					centerFill: true
