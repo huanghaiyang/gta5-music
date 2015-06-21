@@ -31,9 +31,9 @@ $(document).ready(function() {
 			$li.circleProgress({
 				value: e.progress
 			});
-			if(e.progress === 1)
-			{
+			if (e.progress === 1) {
 				$li.addClass('normal');
+				$li.data('status', 'loaded');
 				$li.find('canvas').remove();
 			}
 			console.log(e.item.id + " is loaded " + e.progress);

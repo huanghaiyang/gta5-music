@@ -136,16 +136,18 @@
 						rotateCtrl.stop();
 						clickCount = 0;
 					}).bind("play", function(evt) {
-						$li.addClass("active");
-						$li.find(".box").addClass("active");
-						if (firstPlay === true) {
-							sound.play();
-							firstPlay = false;
-						} else {
-							sound._resume();
+						if ($li.data('status') === 'loaded') {
+							$li.addClass("active");
+							$li.find(".box").addClass("active");
+							if (firstPlay === true) {
+								sound.play();
+								firstPlay = false;
+							} else {
+								sound._resume();
+							}
+							rotateCtrl.start();
+							clickCount = 1;
 						}
-						rotateCtrl.start();
-						clickCount = 1;
 					});
 				})($li, index);
 			});
