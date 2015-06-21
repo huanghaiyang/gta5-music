@@ -27,9 +27,15 @@ $(document).ready(function() {
 		};
 
 		function handleFileProgress(e) {
-			me.find('li[data-id=' + e.item.id.replace(/^sound_/, "") + ']').circleProgress({
+			var $li = me.find('li[data-id=' + e.item.id.replace(/^sound_/, "") + ']');
+			$li.circleProgress({
 				value: e.progress
 			});
+			if(e.progress === 1)
+			{
+				$li.addClass('normal');
+				$li.find('canvas').remove();
+			}
 			console.log(e.item.id + " is loaded " + e.progress);
 		};
 

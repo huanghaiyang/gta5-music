@@ -107,7 +107,7 @@
 						value: 0,
 						size: 120,
 						fill: {
-							gradient: ['#FF6666']
+							gradient: ['#0099CC']
 						}
 					});
 					var sound = createjs.Sound.play("sound_" + $li.data('id'), {

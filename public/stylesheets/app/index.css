@@ -19,13 +19,16 @@
 	-o-transition:background-color 0.3s ease-in;
 	transition:background-color 0.3s ease-in;
 	overflow: hidden;
-	background-color: #0099CC;
+	background-color: #000000;
 }
-.music-ul>li:hover,.music-ul>li.active:hover{
+.music-ul>li.active:hover,.music-ul>li.normal:hover{
+	background-color: #FF6666;
+}
+.music-ul>li.normal{
 	background-color: #0099CC;
 }
 .music-ul>li.active{
-	background-color: #0099CC;
+	background-color: #FF6666;
 }
 
 .music-ul>li>.box{
