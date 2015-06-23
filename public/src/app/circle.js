@@ -4,10 +4,12 @@
 		var $opts = $.extend({}, defaults, options);
 
 		/*旋转*/
+
 		function RotateControl($o) {
 			var rotate = null;
 
 			/*旋转*/
+
 			function start() {
 				rotate = setInterval(function() {
 					if (!$o.is(":animated")) {
@@ -26,6 +28,7 @@
 			};
 
 			/*停止旋转*/
+
 			function stop() {
 				clearInterval(rotate);
 				$o.stop();
@@ -108,7 +111,8 @@
 						size: 120,
 						fill: {
 							gradient: ['#0099CC']
-						}
+						},
+						startAngle: -Math.PI/2
 					});
 					var sound = createjs.Sound.play("sound_" + $li.data('id'), {
 						interrupt: createjs.Sound.INTERRUPT_ANY,

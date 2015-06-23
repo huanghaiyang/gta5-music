@@ -11,7 +11,7 @@ $(document).ready(function() {
 		var queue = new createjs.LoadQueue();
 		queue.installPlugin(createjs.Sound);
 		queue.on("fileload", handleFileLoad, this);
-		queue.on("fileprogress", handleFileProgress, this);
+		queue.on("fileprogress", handleFileProgressProxy(), this);
 		queue.on("complete", handleComplete, this);
 		queue.on("progress", handleProgress, this);
 		queue.on("error", handleError, this);
@@ -26,17 +26,22 @@ $(document).ready(function() {
 			}
 		};
 
-		function handleFileProgress(e) {
-			var $li = me.find('li[data-id=' + e.item.id.replace(/^sound_/, "") + ']');
-			$li.circleProgress({
-				value: e.progress
-			});
-			if (e.progress === 1) {
-				$li.addClass('normal');
-				$li.data('status', 'loaded');
-				$li.find('canvas').remove();
-			}
-			console.log(e.item.id + " is loaded " + e.progress);
+		function handleFileProgressProxy() {
+			var animationStartValue = 0.0;
+			return function(e) {
+				var $li = me.find('li[data-id=' + e.item.id.replace(/^sound_/, "") + ']');
+				$li.circleProgress({
+					value: e.progress,
+					animationStartValue: animationStartValue
+				});
+				animationStartValue = e.progress;
+				if (e.progress === 1) {
+					$li.addClass('normal');
+					$li.data('status', 'loaded');
+					$li.find('canvas').remove();
+				}
+				console.log(e.item.id + " is loaded " + e.progress);
+			};
 		};
 
 		function handleComplete(e) {
