@@ -115,7 +115,6 @@
 						startAngle: -Math.PI/2
 					});
 					var sound = createjs.Sound.play("sound_" + $li.data('id'), {
-						interrupt: createjs.Sound.INTERRUPT_ANY,
 						loop: 1
 					});
 					sound.stop();
