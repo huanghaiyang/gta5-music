@@ -30,7 +30,8 @@
 			/*停止旋转*/
 
 			function stop() {
-				clearInterval(rotate);
+				if (rotate)
+					clearInterval(rotate);
 				$o.stop();
 			};
 			return {
