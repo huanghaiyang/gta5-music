@@ -24,7 +24,7 @@
 							}
 						})(), 'linear');
 					}
-				}, 0);
+				}, (rotate === null ? 0 : 100));
 			};
 
 			/*停止旋转*/
@@ -97,51 +97,52 @@
 			$lis.each(function(index, li) {
 				$li = $(li);
 				var c = (2 * Math.PI / 360) * (360 / $lis.length) * ($lis.length - index) + Math.PI;
-				console.log(c);
 				var x = centerPoint.x + Math.sin(c) * r;
 				var y = centerPoint.y + Math.cos(c) * r;
 				$li.css({
 					left: x - _r,
 					top: y - _r
 				});
-				(function($li, index) {
-					$li.append($("<div class=\"box\" title=\"" + $li.data('title') + "\"><img src='file_server/" + encodeURIComponent($li.data('img')) + "'></img></div>"));
-					$li.circleProgress({
+				(function(that, index) {
+					that.append($("<div class=\"box\" title=\"" + that.data('title') + "\"><img src='file_server/" + encodeURIComponent(that.data('img')) + "'></img></div>"));
+					that.circleProgress({
 						value: 0,
 						size: 120,
 						fill: {
 							gradient: ['#0099CC']
 						},
-						startAngle: -Math.PI/2
+						startAngle: -Math.PI / 2
 					});
-					var sound = createjs.Sound.play("sound_" + $li.data('id'), {
+					var sound = createjs.Sound.play("sound_" + that.data('id'), {
 						loop: 1
 					});
 					sound.stop();
 					var clickCount = 0;
 					var firstPlay = true;
-					var rotateCtrl = new RotateControl($li);
-					$li.on("click", function() {
+					var rotateCtrl = new RotateControl(that);
+					that.on("click", function() {
 						if (clickCount === 0) {
 							$lis.filter(function(index_) {
 								if (index_ !== index) {
-									$($lis[index_]).trigger("pause");
+									var other = $($lis[index_]);
+									if (other.data('status') === 'loaded')
+										other.trigger("pause");
 								}
 							});
-							$li.trigger("play");
+							that.trigger("play");
 						} else {
-							$li.trigger("pause");
+							that.trigger("pause");
 						}
 					}).bind("pause", function(evt) {
-						$li.removeClass("active");
-						$li.find(".box").removeClass("active");
+						that.removeClass("active");
+						that.find(".box").removeClass("active");
 						sound._pause();
 						rotateCtrl.stop();
 						clickCount = 0;
 					}).bind("play", function(evt) {
-						if ($li.data('status') === 'loaded') {
-							$li.addClass("active");
-							$li.find(".box").addClass("active");
+						if (that.data('status') === 'loaded') {
+							that.addClass("active");
+							that.find(".box").addClass("active");
 							if (firstPlay === true) {
 								sound.play();
 								firstPlay = false;
