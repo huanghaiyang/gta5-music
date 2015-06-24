@@ -103,16 +103,16 @@ FileServerController.prototype.get = function(request, response, next) {
 	if (request.headers['connection'] === 'keep-alive')
 		responseHeaders['Connection'] = 'keep-alive';
 
+	var contentType = path.extname(filename).replace(/^\./, '');
 
 	var stat = fs.statSync(filename);
 	var rangeRequest = readRangeHeader(request.headers['range'], stat.size);
 
 	// If 'Range' header exists, we will parse it with Regular Expression.
 	if (rangeRequest == null) {
-		responseHeaders['Content-Type'] = getMimeNameFromExt(path.extname(filename));
-		responseHeaders['Content-Length'] = stat.size; // File size.
-		responseHeaders['Accept-Ranges'] = 'bytes';
 
+		responseHeaders['Content-Type'] = getMimeNameFromExt(contentType);
+		responseHeaders['Content-Length'] = stat.size; // File size.
 		//  If not, will return file directly.
 		sendResponse(response, 200, responseHeaders, fs.createReadStream(filename));
 		return null;
@@ -134,10 +134,10 @@ FileServerController.prototype.get = function(request, response, next) {
 	// Indicate the current range. 
 	responseHeaders['Content-Range'] = 'bytes ' + start + '-' + end + '/' + stat.size;
 	responseHeaders['Content-Length'] = start == end ? 0 : (end - start + 1);
-	responseHeaders['Content-Type'] = getMimeNameFromExt(path.extname(filename));
-	responseHeaders['Accept-Ranges'] = 'bytes';
+	responseHeaders['Content-Type'] = getMimeNameFromExt(contentType);
 	responseHeaders['Cache-Control'] = 'no-cache';
-	responseHeaders['Connection'] = 'keep-alive';
+	if (start || end)
+		responseHeaders['Accept-Ranges'] = 'bytes';
 
 	// Return the 206 'Partial Content'.
 	sendResponse(response, 206,
