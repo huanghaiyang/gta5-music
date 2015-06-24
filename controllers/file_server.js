@@ -2,7 +2,7 @@ var commander = require('commander');
 commander.option('-d --dirpath <dirpath>', 'set the music files dir path').parse(process.argv);
 var initFolder = commander.dirpath;
 if (!initFolder) {
-    throw new Error('please use -d to set the dirpath.');
+	throw new Error('please use -d to set the dirpath.');
 }
 
 var fs = require("fs");
@@ -14,13 +14,19 @@ var mimeNames = require('../lib/mine');
 
 function sendResponse(response, responseStatus, responseHeaders, readable) {
 	response.writeHead(responseStatus, responseHeaders);
-
-	if (readable == null)
+	response.on('end', function() {
+		response.flush();
+	});
+	if (readable == null) {
 		response.end();
-	else
+	} else
 		readable.on("open", function() {
 			readable.pipe(response);
 		});
+	readable.on('end', function() {
+		readable.close();
+		readable.destroy();
+	});
 
 	return null;
 }
@@ -93,6 +99,11 @@ FileServerController.prototype.get = function(request, response, next) {
 	}
 
 	var responseHeaders = {};
+	// 只有客户端主动请求长连接，服务端才嗲长连接
+	if (request.headers['connection'] === 'keep-alive')
+		responseHeaders['Connection'] = 'keep-alive';
+
+
 	var stat = fs.statSync(filename);
 	var rangeRequest = readRangeHeader(request.headers['range'], stat.size);
 
@@ -126,7 +137,7 @@ FileServerController.prototype.get = function(request, response, next) {
 	responseHeaders['Content-Type'] = getMimeNameFromExt(path.extname(filename));
 	responseHeaders['Accept-Ranges'] = 'bytes';
 	responseHeaders['Cache-Control'] = 'no-cache';
-	responseHeaders['Access-Control-Allow-Origin'] = '*';
+	responseHeaders['Connection'] = 'keep-alive';
 
 	// Return the 206 'Partial Content'.
 	sendResponse(response, 206,
