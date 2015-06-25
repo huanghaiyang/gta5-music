@@ -54,7 +54,7 @@
 			$li.data('status', 'loaded');
 			$li.find('canvas').remove();
 
-			$li.on("click", function() {
+			$li.bind("click", function() {
 				if (clickCount === 0) {
 					$lis.filter(function(index) {
 						var other = $($lis[index]);
@@ -148,9 +148,6 @@
 		};
 
 		function render($ul) {
-			var refreshButton = $("<span class=\"glyphicon glyphicon-refresh refresh-btn\" aria-hidden=\"true\" title=\"刷新音乐列表\"></span>")
-			/*刷线按钮插入文档中*/
-			refreshButton.insertAfter($ul);
 			/*如果填充父容器*/
 			if ($opts.centerFill) {
 				var $parent = $ul.parent();
@@ -181,14 +178,24 @@
 				if ($opts.left)
 					$ul.css('top', $opts.left);
 			}
-
-			var _r = $ul.children("li").first().width() / 2;
+			var $lis = $ul.children("li");
+			var _r = $lis.first().width() / 2;
 			var r = $ul.width() / 2 - _r;
 			var centerPoint = {
 				x: $ul.width() / 2,
 				y: $ul.height() / 2
 			};
 
+			var refreshButton = $("<span title=\"刷新音乐列表\" class=\"refresh-btn\"><i class=\"glyphicon glyphicon-refresh\"></i></span>")
+			refreshButton.bind('click', function(e) {
+				$lis.filter(function(index) {
+					var other = $($lis[index]);
+					if (other.data('status') === 'loaded')
+						other.trigger("pause");
+				});
+			});
+			/*刷线按钮插入文档中*/
+			refreshButton.insertAfter($ul);
 			refreshButton.css({
 				left: centerPoint.x - refreshButton.width() / 2 + $ul.position().left,
 				top: centerPoint.y - refreshButton.height() / 2 + $ul.position().top

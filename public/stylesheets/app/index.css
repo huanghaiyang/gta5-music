@@ -69,4 +69,5 @@
 }
 .refresh-btn{
 	cursor: pointer;
+	position: absolute;
 }
