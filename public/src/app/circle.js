@@ -207,7 +207,7 @@
 				$li.append($("<div class=\"box\" title=\"" + $li.data('title') + "\"><img src='file_server/" + encodeURIComponent($li.data('img')) + "'></img></div>"));
 				$li.circleProgress({
 					value: 0,
-					size: 120,
+					size: 100,
 					fill: {
 						gradient: ['#0099CC']
 					},

@@ -99,14 +99,23 @@ FileServerController.prototype.get = function(request, response, next) {
 	}
 
 	var responseHeaders = {};
-	// 只有客户端主动请求长连接，服务端才嗲长连接
-	if (request.headers['connection'] === 'keep-alive')
-		responseHeaders['Connection'] = 'keep-alive';
+	responseHeaders['Connection'] = 'close';
 
 	var contentType = path.extname(filename).replace(/^\./, '');
 
 	var stat = fs.statSync(filename);
 	var rangeRequest = readRangeHeader(request.headers['range'], stat.size);
+	if (rangeRequest) {
+		var start = rangeRequest.Start;
+		var end = rangeRequest.End;
+		if (start || end) {
+			responseHeaders['Accept-Ranges'] = 'bytes';
+			// 只有客户端主动请求长连接，服务端才嗲长连接
+			if (request.headers['connection'] === 'keep-alive')
+				responseHeaders['Connection'] = 'keep-alive';
+		}
+	}
+
 
 	// If 'Range' header exists, we will parse it with Regular Expression.
 	if (rangeRequest == null) {
@@ -117,10 +126,6 @@ FileServerController.prototype.get = function(request, response, next) {
 		sendResponse(response, 200, responseHeaders, fs.createReadStream(filename));
 		return null;
 	}
-
-	var start = rangeRequest.Start;
-	var end = rangeRequest.End;
-
 	// If the range can't be fulfilled. 
 	if (start >= stat.size || end >= stat.size) {
 		// Indicate the acceptable range.
@@ -136,8 +141,6 @@ FileServerController.prototype.get = function(request, response, next) {
 	responseHeaders['Content-Length'] = start == end ? 0 : (end - start + 1);
 	responseHeaders['Content-Type'] = getMimeNameFromExt(contentType);
 	responseHeaders['Cache-Control'] = 'no-cache';
-	if (start || end)
-		responseHeaders['Accept-Ranges'] = 'bytes';
 
 	// Return the 206 'Partial Content'.
 	sendResponse(response, 206,
