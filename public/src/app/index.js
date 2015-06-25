@@ -2,7 +2,7 @@ $(document).ready(function() {
 	$.ajax({
 		url: "/music/random?t=" + Math.random(),
 		data: {
-			number: 8
+			number: 18
 		},
 		dataType: "json",
 		type: 'GET'

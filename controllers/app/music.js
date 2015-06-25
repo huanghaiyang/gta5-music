@@ -4,7 +4,10 @@ var Promise = require('bluebird');
 var async = require("async");
 var ObjectUtils = require('../../lib/object-utils');
 
-function MusicController() {};
+function MusicController() {
+	// 最多随机数
+	this.maxNumber = 8;
+};
 
 /*随机查询一条记录*/
 
@@ -122,6 +125,8 @@ function random(number) {
 /*随机查询多条记录并返回*/
 MusicController.prototype.random = function(req, res, next) {
 	var number = req.query.number ? parseInt(req.query.number) : 10;
+	if (number > this.maxNumber)
+		number = this.maxNumber;
 	random(number).then(function(data) {
 		res.send(data);
 		res.end();
