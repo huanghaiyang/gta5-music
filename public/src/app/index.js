@@ -2,13 +2,14 @@ $(document).ready(function() {
 	$.ajax({
 		url: "/music/random?t=" + Math.random(),
 		data: {
-			number: 18
+			number: 8
 		},
 		dataType: "json",
 		type: 'GET'
 	}).done(function(data, status) {
 		var me = $('#me');
 		var queue = new createjs.LoadQueue();
+		queue.setMaxConnections(1);
 		queue.installPlugin(createjs.Sound);
 		queue.on("fileload", handleFileLoad, this);
 		queue.on("fileprogress", handleFileProgressProxy(), this);
@@ -58,17 +59,19 @@ $(document).ready(function() {
 
 		if (status === "success") {
 			if (data) {
-
+				var arr = [];
 				for (var i = 0; i < data.length; i++) {
 					var d = data[i];
 					me.append($('<li data-title="' + d.title + '" data-id="' + d.id + '" data-img="' + d.imgPath + '"></li>'));
 
-					queue.loadFile({
+					arr.push({
 						id: "sound_" + d.id,
 						src: 'file_server/' + d.path,
-						type: createjs.AbstractLoader.SOUND
+						type: createjs.AbstractLoader.SOUND,
+						maintainOrder: true
 					});
 				}
+				queue.loadManifest(arr);
 				$('#me').circle({
 					centerFill: true
 				});
