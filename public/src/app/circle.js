@@ -217,6 +217,9 @@ define(['async'], function(async) {
 											other.trigger("pause");
 									});
 									var animateIndex = 0;
+									var _width = $ls.eq(0).width();
+									var _r = _width / 4;
+									var r = $u.width() / 4 - _r;
 									async.mapLimit($ls, 1, function(li, callback) {
 										setTimeout(function() {
 											if (animateIndex < len - 1)
@@ -224,9 +227,6 @@ define(['async'], function(async) {
 											callback();
 										}, 100);
 										var $li = $(li);
-										var _width = $ls.eq(0).width();
-										var _r = _width / 4;
-										var r = $u.width() / 4 - _r;
 										var position = getPosition(animateIndex, r);
 										$li.animate({
 											left: position.x - _r,
@@ -256,13 +256,12 @@ define(['async'], function(async) {
 										top: centerPoint.y - refreshButton.height() / 2 + $u.position().top
 									});
 								}
-								if (firstLoad)
+								if (firstLoad) {
 									refreshButton.bind('click', refreshList);
 
-								$ls.each(function(index, li) {
-									$li = $(li);
-									var _width = $ls.eq(0).width();
-									if (firstLoad) {
+									$ls.each(function(index, li) {
+										$li = $(li);
+										var _width = $ls.eq(0).width();
 										var _r = _width / 2;
 										var r = $u.width() / 2 - _r;
 										var position = getPosition(index, r);
@@ -278,17 +277,27 @@ define(['async'], function(async) {
 											},
 											startAngle: -Math.PI / 2
 										});
-									} else {
-										var _r = _width * 2 / 2;
-										var r = $u.width() / 2 - _r;
-										var position = getPosition(index, r);
+									});
+								} else {
+									var animateIndex = 0;
+									var _width = $ls.eq(0).width();
+									var _r = _width * 2 / 2;
+									var r = $u.width() / 2 - _r;
+									async.mapLimit($ls, 1, function(li, callback) {
+										var $li = $(li);
+										setTimeout(function() {
+											if (animateIndex < len - 1)
+												animateIndex++;
+											callback();
+										}, 100);
+										var position = getPosition(animateIndex, r);
 										$li.animate({
 											left: position.x - _r,
 											top: position.y - _r,
 											width: _width * 2,
 											height: _width * 2
 										}, {
-											easing: 'easeInBack',
+											easing: 'easeInOutBack',
 											duration: 300,
 											complete: function() {
 												$li.find('canvas').show();
@@ -296,12 +305,14 @@ define(['async'], function(async) {
 													value: 0,
 													startAngle: -Math.PI / 2
 												});
-												if (index === len - 1)
+												if (animateIndex === len - 1) {
 													refreshButton.bind('click', refreshList);
+													animateIndex = 0;
+												}
 											}
 										});
-									}
-								});
+									});
+								}
 								//开始加载
 								queue.loadManifest(arr, false);
 								queue.load();
