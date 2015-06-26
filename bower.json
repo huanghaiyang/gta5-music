@@ -38,6 +38,8 @@
     "css-reset": "~2.5.1",
     "PreloadJS": "~0.6.1",
     "SoundJS": "~0.6.1",
-    "jquery-circle-progress": "~1.1.3"
+    "jquery-circle-progress": "~1.1.3",
+    "jquery-easing": "*",
+    "async": "~1.2.1"
   }
 }
