@@ -8,7 +8,7 @@
 	<meta charset="utf-8">
 	<link rel="stylesheet" type="text/css" href="bower_components/css-reset/reset.css">
 	<link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.css">
-	<link rel="stylesheet" type="text/css" href="/stylesheets/app/index.css">
+	<link rel="stylesheet" type="text/css" href="/stylesheets/app/music.css">
 	<link rel="stylesheet" type="text/css" href="/stylesheets/app/style.css">
 	<script type="text/javascript" data-main="src/app/include" src="bower_components/requirejs/require.js"></script>
 
@@ -19,11 +19,7 @@
 		}
 	</style>
 	<body>
-		<nav class="navbar navbar-default navbar-static-top">
-		  <div class="container">
-		  	<a class="navbar-brand" href="#">MUSIC FM</a>
-		  </div>
-		</nav>
+		<%include nav%>
 		<div class="container">
 			<div class="row">
 				<div class='col-12'>
@@ -35,6 +31,48 @@
 				</div>
 			</div>
 		</div>
-
+		<nav class="navbar navbar-default navbar-fixed-bottom">
+		  <div class="container">
+		  	<div class="row play-row">
+		  		<div class='col-md-1 text-left play-col'>
+		  			<div class='play-btn play-btn-backward'>
+		  				<span class="glyphicon glyphicon-step-backward" id='playbackward'></span>
+		  			</div>
+		  			<div class='play-btn play-btn-play'>
+		  				<span class="glyphicon glyphicon-play" id='playnow'></span>
+		  			</div>
+		  			<div class='play-btn play-btn-forward'>
+		  				<span class="glyphicon glyphicon-step-forward" id='playforward'></span>
+		  			</div>
+		  		</div>
+		  		<div class='col-md-9 text-left play-col'>
+		  			<div class="media">
+					  <div class="media-left">
+					    <a href="#">
+					      <img class="media-object music-thumb" id="musicthumb">
+					    </a>
+					  </div>
+					  <div class="media-body">
+					    <h6 class="media-heading music-title" id='musictitle'></h6>
+					  </div>
+					</div>
+		  		</div>
+		  		<div class='col-md-2 text-right play-col'>
+		  			<div class='list-btn list-btn-volume'>
+		  				<span class="glyphicon glyphicon-volume-off"></span>
+		  			</div>
+		  			<div class='list-btn list-btn-volume'>
+		  				<span class="glyphicon glyphicon-volume-down"></span>
+		  			</div>
+		  			<div class='list-btn list-btn-volume'>
+		  				<span class="glyphicon glyphicon-volume-up"></span>
+		  			</div>
+		  			<div class='list-btn'>
+		  				<span class="glyphicon glyphicon-menu-hamburger"></span>
+		  			</div>
+		  		</div>
+		  	</div>
+		  </div>
+		</nav>
 	</body>
 </html>

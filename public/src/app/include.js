@@ -9,7 +9,7 @@ require.config({
 
 		"async": "async/lib/async",
 
-		"circle": "../src/app/circle",
+		"music": "../src/app/music",
 		"app.index": "../src/app/index",
 
 		'PreloadJS': 'PreloadJS/lib/preloadjs-0.6.1.combined',
@@ -25,18 +25,18 @@ require.config({
 		'jquery-circle-progress': {
 			'deps': ['jquery']
 		},
-		'circle': {
+		'music': {
 			'deps': ['jquery', 'jquery.rotate', 'jquery.easing', 'async']
 		},
 		'app.index': {
-			'deps': ['jquery', 'circle']
+			'deps': ['jquery', 'music']
 		}
 	},
 	waitSeconds: 15
 });
 /*加载文件*/
 require([
-	'jquery', 'jquery.rotate', 'jquery.easing', 'async', 'jquery-circle-progress', 'circle', 'PreloadJS', 'SoundJS',
+	'jquery', 'jquery.rotate', 'jquery.easing', 'async', 'jquery-circle-progress', 'music', 'PreloadJS', 'SoundJS',
 	'app.index'
 ], function(require) {
 	'use strict';

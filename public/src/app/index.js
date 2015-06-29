@@ -1,5 +1,5 @@
 $(document).ready(function() {
-	$('#me').circle({
+	$('#me').pilimusic({
 		centerFill: true,
 		url: '/music/random?t=' + Math.random() , 
 		number : 8

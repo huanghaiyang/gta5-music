@@ -1,7 +1,7 @@
 define(['async'], function(async) {
 	(function($) {
 		'use strict';
-		jQuery.fn.circle = function(options) {
+		jQuery.fn.pilimusic = function(options) {
 			var defaults = {};
 			var $opts = $.extend({}, defaults, options);
 
@@ -101,6 +101,33 @@ define(['async'], function(async) {
 			return this.each(function(index, t) {
 				var $u = $(this);
 				var refreshButton;
+				var currentSound;
+				var $musicthumb = $('#musicthumb');
+				var $musictitle = $('#musictitle');
+				var $playnow = $('#playnow');
+				var $playbackward = $('#playbackward');
+				var $playforward = $('#playforward');
+
+				$playnow.on('click', function() {
+					if (currentSound) {
+						var $current_li = $u.find('li[data-id=' + currentSound + ']');
+						if ($playnow.hasClass('glyphicon-play')) {
+							$current_li.trigger('play');
+							if ($current_li.attr('data-firstplay') === 'false') {
+								$playnow.trigger('pause');
+							}
+						} else if ($playnow.hasClass('glyphicon-pause')) {
+							$current_li.trigger('pause');
+							$playnow.trigger('play');
+						}
+					}
+				}).on('pause', function() {
+					$playnow.addClass('glyphicon-pause');
+					$playnow.removeClass('glyphicon-play');
+				}).on('play', function() {
+					$playnow.addClass('glyphicon-play');
+					$playnow.removeClass('glyphicon-pause');
+				});
 
 				var rotateControllerCollection = new RotateControllerCollection();
 
@@ -128,6 +155,8 @@ define(['async'], function(async) {
 					soundCollection.add(soundInstance);
 					rotateControllerCollection.get(id).rotate();
 					$li.trigger('instance');
+					$li.attr('data-firstplay', false);
+					$playnow.trigger('pause');
 				};
 
 				function handleFileProgressProxy() {
@@ -153,7 +182,7 @@ define(['async'], function(async) {
 						var soundInstance, rotateController, id = $li.attr('data-id'),
 							$li = $li,
 							clickCount = 0,
-							firstPlay = true;
+							firstPlay = $li.attr('data-firstplay');
 
 						rotateController = new RotateController(id, $li.find('img'));
 						rotateControllerCollection.add(rotateController);
@@ -216,6 +245,8 @@ define(['async'], function(async) {
 
 					function refreshList() {
 						refreshButton.unbind('click', refreshList);
+						$playnow.trigger('play');
+						currentSound = null;
 
 						queue.close();
 						queue.removeAll();
@@ -251,7 +282,7 @@ define(['async'], function(async) {
 								height: _width / 2
 							}, {
 								easing: 'easeInBack',
-								duration: 200,
+								duration: 300,
 								complete: function() {
 									if (animateIndex === len - 1) {
 										load();
@@ -272,7 +303,7 @@ define(['async'], function(async) {
 								var imgPath = 'file_server/' + encodeURIComponent(d.imgPath);
 								var $li;
 								if (firstLoad) {
-									$li = $('<li data-title="' + d.title + '" data-id="sound_' + d.id + '" data-img="' + d.imgPath + '" data-path="' + d.path + '"></li>');
+									$li = $('<li data-title="' + d.title + '" data-id="sound_' + d.id + '" data-img="' + d.imgPath + '" data-path="' + d.path + '" data-firstplay=true></li>');
 									$li.append($("<div class=\"box\" title=\"" + d.title + "\"><img src='" + imgPath + "'></img></div>"));
 									$u.append($li);
 								} else {
@@ -281,6 +312,7 @@ define(['async'], function(async) {
 									$li.attr('data-id', d.id);
 									$li.attr('data-img', d.imgPath);
 									$li.attr('data-path', d.path);
+									$li.attr('data-firstPlay', true);
 									$li.removeClass();
 									var $box = $li.find('div');
 									$box.attr('title', d.title);
@@ -288,6 +320,13 @@ define(['async'], function(async) {
 									$img.attr('src', imgPath);
 								}
 								bindAction($li);
+
+								if (i === 0) {
+									$musicthumb.attr('src', imgPath);
+									$musicthumb.attr('alt', d.title);
+									$musictitle.html(d.name);
+									currentSound = 'sound_' + d.id;
+								}
 							}
 							//渲染页面
 							if (firstLoad) {
@@ -387,7 +426,7 @@ define(['async'], function(async) {
 										height: _width * 2
 									}, {
 										easing: 'easeInOutBack',
-										duration: 200,
+										duration: 300,
 										complete: function() {
 											$li.find('canvas').show();
 											$li.circleProgress({

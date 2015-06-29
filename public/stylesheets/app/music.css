@@ -68,8 +68,48 @@
 	border-radius: 50%;
 }
 .refresh-btn{
-	cursor: pointer;
 	position: absolute;
 	width:14px;
 	height: 16px;
+}
+
+.glyphicon{
+	cursor: pointer;
+}
+
+.play-row{
+	height:50px;
+	line-height:50px;
+}
+.play-col{
+	height:50px;
+	line-height:50px;
+}
+.play-btn,.list-btn{
+	vertical-align: middle;
+	display: inline-block;
+	text-align: center;
+}
+.play-btn .glyphicon,.list-btn .glyphicon{
+	font-size: 16px;
+	top: 0;
+}
+.play-btn-play .glyphicon{
+	font-size: 24px;
+}
+.play-btn-backward .glyphicon,.play-btn-forward .glyphicon{
+	font-size: 16px;
+}
+.list-btn-volume .glyphicon{
+	font-size: 20px;
+}
+
+.music-thumb{
+	width: 44px;
+	height: 44px;
+	margin-top:3px; 
+	border-radius: 3px;
+}
+.music-title{
+	margin-top: 3px;
 }
