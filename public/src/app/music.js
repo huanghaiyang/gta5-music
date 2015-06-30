@@ -141,6 +141,16 @@ define(['async'], function(async) {
 				this.setRemainProgress(100 - value);
 			};
 
+			function convertTime(time) {
+				var m = Math.floor(Math.floor(time) / 60);
+				var s = parseInt(Math.floor(time) % 60);
+				if ((m + '').length === 1)
+					m = '0' + m;
+				if ((s + '').length === 1)
+					s = '0' + s;
+				return m + ':' + s;
+			};
+
 
 			return this.each(function(index, t) {
 				var $u = $(this);
@@ -155,6 +165,8 @@ define(['async'], function(async) {
 				var $remainProgress = $('#remainProgress');
 				var $nowProgress = $('#nowProgress');
 				var progressBar = new ProgressBar($remainProgress, $nowProgress);
+
+				var $playTime = $('#playTime');
 
 				$playnow.on('click', function() {
 					if (currentSound) {
@@ -194,17 +206,15 @@ define(['async'], function(async) {
 				queue.on("complete", handleComplete);
 
 				queue.on("fileload", function(e) {
-					e.item._loader._tag.addEventListener('progress',createjs.proxy(function(){
-						return function(e){
-
-						};
-					}));
+					$playTime.html('0:00/' + convertTime(e.result.duration));
 					e.item._loader._tag.addEventListener('timeupdate', createjs.proxy(throttle(function(e) {
 						var audio = e.target;
 						var currentTime = Math.floor(audio.currentTime);
 						var duration = Math.floor(audio.duration);
+						$playTime.html(convertTime(currentTime) +
+							'/' + convertTime(duration));
 						progressBar.setProgress(currentTime / duration * 100);
-					}, 10)));
+					}, 100)));
 				});
 
 				createjs.Sound.registerPlugins([createjs.HTMLAudioPlugin]);
@@ -226,15 +236,17 @@ define(['async'], function(async) {
 				function handleFileProgressProxy() {
 					var animationStartValue = 0.0;
 					return function(e) {
-						var id = e.item.id;
-						var $li = $u.find('li[data-id=' + id + ']');
-						$li.circleProgress({
-							value: e.progress,
-							animationStartValue: animationStartValue
-						});
-						progressBar.setRemainProgress(100 * e.progress);
-						animationStartValue = e.progress;
-						console.log(e.item.id + " is loaded " + e.progress);
+						if (e.progress !== 0) {
+							var id = e.item.id;
+							var $li = $u.find('li[data-id=' + id + ']');
+							$li.circleProgress({
+								value: e.progress,
+								animationStartValue: animationStartValue
+							});
+							progressBar.setRemainProgress(100 * e.progress);
+							animationStartValue = e.progress;
+							console.log(e.item.id + " is loaded " + e.progress);
+						}
 					};
 				};
 
