@@ -1,6 +1,17 @@
 define(['async'], function(async) {
 	(function($) {
 		'use strict';
+		var throttle = function(fn, delay) {
+			var timer = null;
+			return function() {
+				var context = this,
+					args = arguments;
+				clearTimeout(timer);
+				timer = setTimeout(function() {
+					fn.apply(context, args);
+				}, delay);
+			};
+		};
 		jQuery.fn.pilimusic = function(options) {
 			var defaults = {};
 			var $opts = $.extend({}, defaults, options);
@@ -98,6 +109,39 @@ define(['async'], function(async) {
 			SoundCollection.prototype.removeAll = function() {
 				this.collection = {};
 			};
+
+			function ProgressBar(remainProgress, nowProgress) {
+				this.remainProgress = remainProgress;
+				this.nowProgress = nowProgress
+			};
+			ProgressBar.prototype.clearRemainProgress = function() {
+				this.setRemainProgress(0);
+			};
+			ProgressBar.prototype.clearNowProgress = function() {
+				this.setNowProgress(0);
+			};
+			ProgressBar.prototype.clearAll = function() {
+				this.clearNowProgress();
+				this.clearRemainProgress();
+			};
+			ProgressBar.prototype.setNowProgress = function(value) {
+				this.nowProgress.css({
+					width: value + "%"
+				});
+				this.nowProgress.attr('aria-valuenow', value);
+			};
+			ProgressBar.prototype.setRemainProgress = function(value) {
+				this.remainProgress.css({
+					width: value + "%"
+				});
+				this.remainProgress.attr('aria-valuenow', value);
+			};
+			ProgressBar.prototype.setProgress = function(value) {
+				this.setNowProgress(value);
+				this.setRemainProgress(100 - value);
+			};
+
+
 			return this.each(function(index, t) {
 				var $u = $(this);
 				var refreshButton;
@@ -107,6 +151,10 @@ define(['async'], function(async) {
 				var $playnow = $('#playnow');
 				var $playbackward = $('#playbackward');
 				var $playforward = $('#playforward');
+
+				var $remainProgress = $('#remainProgress');
+				var $nowProgress = $('#nowProgress');
+				var progressBar = new ProgressBar($remainProgress, $nowProgress);
 
 				$playnow.on('click', function() {
 					if (currentSound) {
@@ -131,7 +179,7 @@ define(['async'], function(async) {
 
 				var rotateControllerCollection = new RotateControllerCollection();
 
-				var soundCollection = new SoundCollection();
+				var soundInstanceCollection = new SoundCollection();
 
 				//文件预加载队列
 				var queue = new createjs.LoadQueue();
@@ -145,6 +193,17 @@ define(['async'], function(async) {
 
 				queue.on("complete", handleComplete);
 
+				queue.on("fileload", function(e) {
+					e.item._loader._tag.addEventListener('timeupdate', createjs.proxy(throttle(function(e) {
+						var audio = e.target;
+						var currentTime = Math.floor(audio.currentTime);
+						var duration = Math.floor(audio.duration);
+						progressBar.setProgress(currentTime / duration * 100);
+					}, 10)));
+				});
+
+				createjs.Sound.registerPlugins([createjs.HTMLAudioPlugin]);
+
 				function handleComplete(event) {
 					var id = queue._loadedScripts[queue._loadedScripts.length - 1].id;
 					var $li = $u.find('li[data-id=' + id + ']');
@@ -152,7 +211,7 @@ define(['async'], function(async) {
 					$li.find('canvas').hide();
 					var sound = createjs.Sound.play(id);
 					var soundInstance = new SoundInstance(id, sound);
-					soundCollection.add(soundInstance);
+					soundInstanceCollection.add(soundInstance);
 					rotateControllerCollection.get(id).rotate();
 					$li.trigger('instance');
 					$li.attr('data-firstplay', false);
@@ -168,6 +227,7 @@ define(['async'], function(async) {
 							value: e.progress,
 							animationStartValue: animationStartValue
 						});
+						progressBar.setRemainProgress(100 * e.progress);
 						animationStartValue = e.progress;
 						console.log(e.item.id + " is loaded " + e.progress);
 					};
@@ -210,7 +270,7 @@ define(['async'], function(async) {
 							}
 						}).bind("play", function(evt) {
 							if (!firstPlay) {
-								soundInstance = soundCollection.get(id);
+								soundInstance = soundInstanceCollection.get(id);
 								if (soundInstance) {
 									soundInstance.resume();
 									$li.addClass("active");
@@ -218,6 +278,7 @@ define(['async'], function(async) {
 									rotateController.rotate();
 								}
 							} else {
+								progressBar.clearAll();
 								queue.loadFile({
 									id: id,
 									src: 'file_server/' + $li.attr('data-path'),
@@ -228,7 +289,7 @@ define(['async'], function(async) {
 							firstPlay = false;
 							clickCount = 1;
 						}).bind('instance', function() {
-							soundInstance = soundCollection.get(id);
+							soundInstance = soundInstanceCollection.get(id);
 						});
 					};
 
@@ -252,8 +313,7 @@ define(['async'], function(async) {
 						queue.removeAll();
 
 						rotateControllerCollection.removeAll();
-						soundCollection.removeAll();
-
+						soundInstanceCollection.removeAll();
 
 						$ls.filter(function(index) {
 							var other = $($ls[index]);
