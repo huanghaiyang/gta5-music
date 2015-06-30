@@ -194,6 +194,11 @@ define(['async'], function(async) {
 				queue.on("complete", handleComplete);
 
 				queue.on("fileload", function(e) {
+					e.item._loader._tag.addEventListener('progress',createjs.proxy(function(){
+						return function(e){
+
+						};
+					}));
 					e.item._loader._tag.addEventListener('timeupdate', createjs.proxy(throttle(function(e) {
 						var audio = e.target;
 						var currentTime = Math.floor(audio.currentTime);

@@ -21,7 +21,7 @@ MusicController.prototype.getSimple = function(req, res, next) {
 	var id = req.params.id;
 	Music.findOne({
 		_id: id
-	}).select("_id , name ,  title , path , imgPath").exec(function(err, doc) {
+	}).select("_id , name ,  title , path , imgPath , time").exec(function(err, doc) {
 		assert.equal(err, null);
 		console.log('find success.');
 		res.send(doc);

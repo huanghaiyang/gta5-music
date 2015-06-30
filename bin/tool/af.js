@@ -98,7 +98,7 @@ readdirPromise(dir).then(function(files) {
 				});
 			});
 		}, {
-			tags: ["artist", "title", "album", "year", "comment", "picture"]
+			tags: ["artist", "title", "album", "year", "comment", "picture","TIME"]
 		});
 	}, function(err) {
 
