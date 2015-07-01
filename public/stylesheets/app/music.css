@@ -22,18 +22,6 @@
 	background-color: #000000;
 	opacity: .7;
 }
-.music-ul>li.active:hover,.music-ul>li.normal:hover{
-	background-color: #FF6666;
-	opacity: 1;
-}
-.music-ul>li.normal{
-	background-color: #0099CC;
-	opacity: .7;
-}
-.music-ul>li.active{
-	background-color: #FF6666;
-	opacity: 1;
-}
 
 .music-ul>li>.box{
 	width: 94%;
@@ -48,14 +36,6 @@
 	-ms-transition:background-color 0.3s ease-in;
 	-o-transition:background-color 0.3s ease-in;
 	transition:background-color 0.3s ease-in;
-}
-.music-ul>li>.box:hover,.music-ul>li>.box.active:hover{
-	background-color: black;
-	color: white;
-}
-.music-ul>li>.box.active{
-	background-color: black;
-	color: white;
 }
 
 .music-ul>li>.box>img{

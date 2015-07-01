@@ -48,7 +48,7 @@ readdirPromise(dir).then(function(files) {
 					});
 				}
 			}
-
+			var size = fs.statSync(fullpath).size;
 			/*要保存的数据*/
 			var music = {
 				name: filename,
@@ -60,6 +60,7 @@ readdirPromise(dir).then(function(files) {
 				addDate: new Date(),
 				path: filename,
 				imgPath: imgPath,
+				size: size,
 				rand: Math.random()
 			};
 
@@ -98,7 +99,7 @@ readdirPromise(dir).then(function(files) {
 				});
 			});
 		}, {
-			tags: ["artist", "title", "album", "year", "comment", "picture","TIME"]
+			tags: ["artist", "title", "album", "year", "comment", "picture"]
 		});
 	}, function(err) {
 

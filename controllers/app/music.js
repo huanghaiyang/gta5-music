@@ -35,7 +35,7 @@ function randomOne(next) {
 				rand: ran[op]
 			}).limit(1).sort({
 				rand: op === '$gte' ? 'asc' : 'desc'
-			}).select('name title artist year path imgPath album time').exec(function(err, docs) {
+			}).select('name title artist year path imgPath album size').exec(function(err, docs) {
 				assert.equal(err, null);
 				console.log('random ' + op + ' query success ' + 'with ' + docs.length + ' docs');
 				if (docs) {
@@ -44,7 +44,7 @@ function randomOne(next) {
 							rand: ran[yepo[op]]
 						}).limit(1).sort({
 							rand: yepo[op] === '$gte' ? 'asc' : 'desc'
-						}).select('name title artist year path imgPath album time').exec(function(err, docs) {
+						}).select('name title artist year path imgPath album size').exec(function(err, docs) {
 							assert.equal(err, null);
 							console.log('random ' + yepo[op] + ' query success' + 'with ' + docs.length + ' docs');
 							resolve(docs);

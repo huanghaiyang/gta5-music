@@ -77,15 +77,18 @@ define(['async'], function(async) {
 				this.status = SoundInstance.prototype.status.paused;
 			};
 			SoundInstance.prototype.play = function(props) {
-				this.sound.play(props);
+				if (this.sound._playbackResource)
+					this.sound.play(props);
 				this.status = SoundInstance.prototype.status.playing;
 			};
 			SoundInstance.prototype.resume = function() {
-				this.sound._resume();
+				if (this.sound._playbackResource)
+					this.sound._resume();
 				this.status = SoundInstance.prototype.status.playing;
 			};
 			SoundInstance.prototype.pause = function() {
-				this.sound._pause();
+				if (this.sound._playbackResource)
+					this.sound._pause();
 				this.status = SoundInstance.prototype.status.paused;
 			};
 			SoundInstance.prototype.status = {
@@ -200,21 +203,43 @@ define(['async'], function(async) {
 				//安装声音插件
 				queue.installPlugin(createjs.Sound);
 
-				//检测单个文件加载进度
-				queue.on("fileprogress", handleFileProgressProxy());
-
 				queue.on("complete", handleComplete);
 
 				queue.on("fileload", function(e) {
 					$playTime.html('0:00/' + convertTime(e.result.duration));
+					var remainProgress = 0;
+					var nowProgress = 0;
 					e.item._loader._tag.addEventListener('timeupdate', createjs.proxy(throttle(function(e) {
 						var audio = e.target;
 						var currentTime = Math.floor(audio.currentTime);
 						var duration = Math.floor(audio.duration);
 						$playTime.html(convertTime(currentTime) +
 							'/' + convertTime(duration));
-						progressBar.setProgress(currentTime / duration * 100);
-					}, 100)));
+						nowProgress = currentTime / duration * 100;
+						progressBar.setNowProgress(nowProgress);
+						progressBar.setRemainProgress(remainProgress - nowProgress);
+					}, 1)));
+					e.item._loader._tag.addEventListener('progress', createjs.proxy(throttle(function(id) {
+						var animationStartValue = 0.0;
+						return function(e) {
+							var progress = e.target.buffered.end(0) / e.target.duration;
+							var $li = $u.find('li[data-id=' + id + ']');
+							$li.circleProgress({
+								value: progress,
+								animationStartValue: animationStartValue
+							});
+							remainProgress = 100 * progress;
+							progressBar.setRemainProgress(remainProgress - nowProgress);
+							animationStartValue = progress;
+							console.log(id + " is loaded " + progress);
+						};
+					}(e.item.id), 1)));
+					e.item._loader._tag.addEventListener('ended', createjs.proxy(function(id) {
+						return function() {
+							var $li = $u.find('li[data-id=' + id + ']');
+							$li.trigger('pause');
+						};
+					}(e.item.id)));
 				});
 
 				createjs.Sound.registerPlugins([createjs.HTMLAudioPlugin]);
@@ -222,8 +247,6 @@ define(['async'], function(async) {
 				function handleComplete(event) {
 					var id = queue._loadedScripts[queue._loadedScripts.length - 1].id;
 					var $li = $u.find('li[data-id=' + id + ']');
-					$li.addClass('active');
-					$li.find('canvas').hide();
 					var sound = createjs.Sound.play(id);
 					var soundInstance = new SoundInstance(id, sound);
 					soundInstanceCollection.add(soundInstance);
@@ -231,23 +254,6 @@ define(['async'], function(async) {
 					$li.trigger('instance');
 					$li.attr('data-firstplay', false);
 					$playnow.trigger('pause');
-				};
-
-				function handleFileProgressProxy() {
-					var animationStartValue = 0.0;
-					return function(e) {
-						if (e.progress !== 0) {
-							var id = e.item.id;
-							var $li = $u.find('li[data-id=' + id + ']');
-							$li.circleProgress({
-								value: e.progress,
-								animationStartValue: animationStartValue
-							});
-							progressBar.setRemainProgress(100 * e.progress);
-							animationStartValue = e.progress;
-							console.log(e.item.id + " is loaded " + e.progress);
-						}
-					};
 				};
 
 				function done(data, status) {
@@ -263,8 +269,6 @@ define(['async'], function(async) {
 
 						rotateController = new RotateController(id, $li.find('img'));
 						rotateControllerCollection.add(rotateController);
-
-						$li.find('canvas').hide();
 						$li.bind("click", function() {
 							if (clickCount === 0) {
 								$ls.filter(function(index) {
@@ -280,8 +284,6 @@ define(['async'], function(async) {
 						}).bind("pause", function(evt) {
 							if (soundInstance) {
 								soundInstance.pause();
-								$li.removeClass("active");
-								$li.addClass('normal');
 								rotateController.stop();
 								clickCount = 0;
 							}
@@ -290,8 +292,6 @@ define(['async'], function(async) {
 								soundInstance = soundInstanceCollection.get(id);
 								if (soundInstance) {
 									soundInstance.resume();
-									$li.addClass("active");
-									$li.removeClass('normal');
 									rotateController.rotate();
 								}
 							} else {
@@ -300,7 +300,8 @@ define(['async'], function(async) {
 									id: id,
 									src: 'file_server/' + $li.attr('data-path'),
 									type: createjs.AbstractLoader.SOUND,
-									maintainOrder: true
+									maintainOrder: true,
+									size: $li.attr('data-size')
 								}, true);
 							}
 							firstPlay = false;
@@ -332,13 +333,19 @@ define(['async'], function(async) {
 						rotateControllerCollection.removeAll();
 						soundInstanceCollection.removeAll();
 
-						$ls.filter(function(index) {
-							var other = $($ls[index]);
+						async.mapLimit($ls, 1, function(other, callback) {
+							var other = $(other);
 							other.trigger("pause");
 							other.unbind('click');
 							other.unbind('pause');
 							other.unbind('play');
 							other.unbind('instance');
+							callback();
+						}, function() {
+							// 延迟
+							setTimeout(function() {
+								progressBar.clearAll();
+							}, 10);
 						});
 						var animateIndex = 0;
 						var _width = $ls.eq(0).width();
@@ -380,7 +387,7 @@ define(['async'], function(async) {
 								var imgPath = 'file_server/' + encodeURIComponent(d.imgPath);
 								var $li;
 								if (firstLoad) {
-									$li = $('<li data-title="' + d.title + '" data-id="sound_' + d.id + '" data-img="' + d.imgPath + '" data-path="' + d.path + '" data-firstplay=true></li>');
+									$li = $('<li data-title="' + d.title + '" data-id="sound_' + d.id + '" data-size="' + d.size + '" data-img="' + d.imgPath + '" data-path="' + d.path + '" data-firstplay=true></li>');
 									$li.append($("<div class=\"box\" title=\"" + d.title + "\"><img src='" + imgPath + "'></img></div>"));
 									$u.append($li);
 								} else {
@@ -390,6 +397,7 @@ define(['async'], function(async) {
 									$li.attr('data-img', d.imgPath);
 									$li.attr('data-path', d.path);
 									$li.attr('data-firstPlay', true);
+									$li.attr('data-size', d.size);
 									$li.removeClass();
 									var $box = $li.find('div');
 									$box.attr('title', d.title);
@@ -474,7 +482,7 @@ define(['async'], function(async) {
 										fill: {
 											gradient: ['#0099CC']
 										},
-										rotateAngle: -Math.PI / 2
+										startAngle: -Math.PI / 2
 									});
 								});
 							} else {
@@ -505,10 +513,9 @@ define(['async'], function(async) {
 										easing: 'easeInOutBack',
 										duration: 300,
 										complete: function() {
-											$li.find('canvas').show();
 											$li.circleProgress({
 												value: 0,
-												rotateAngle: -Math.PI / 2
+												startAngle: -Math.PI / 2
 											});
 											if (animateIndex === len - 1) {
 												refreshButton.bind('click', refreshList);
