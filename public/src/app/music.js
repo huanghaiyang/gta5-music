@@ -12,6 +12,10 @@ define(['async'], function(async) {
 				}, delay);
 			};
 		};
+		var config = {
+			file_server: 'file_server/',
+			sound: 'sound_'
+		};
 		jQuery.fn.pilimusic = function(options) {
 			var defaults = {};
 			var $opts = $.extend({}, defaults, options);
@@ -20,15 +24,9 @@ define(['async'], function(async) {
 				this.id = id;
 				this.interval = null;
 				this.$o = $o;
-				this.status = RotateController.prototype.status.stopped;
-			};
-			RotateController.prototype.status = {
-				stopped: 0,
-				rotating: 1
 			};
 
 			RotateController.prototype.rotate = function() {
-				this.status = RotateController.prototype.status.rotating;
 				var $o = this.$o;
 				this.interval = setInterval(function() {
 					if (!$o.is(":animated")) {
@@ -51,7 +49,6 @@ define(['async'], function(async) {
 					clearInterval(this.interval);
 				this.interval = null;
 				this.$o.stop();
-				this.status = RotateController.prototype.status.stopped;
 			};
 
 			function RotateControllerCollection() {
@@ -71,29 +68,28 @@ define(['async'], function(async) {
 				this.collection = {};
 			};
 
-			function SoundInstance(id, sound) {
+			function SoundInstance(id, sound, tag) {
 				this.id = id;
 				this.sound = sound;
-				this.status = SoundInstance.prototype.status.paused;
+				this.tag = tag;
 			};
 			SoundInstance.prototype.play = function(props) {
 				if (this.sound._playbackResource)
 					this.sound.play(props);
-				this.status = SoundInstance.prototype.status.playing;
+				else if (this.tag)
+					this.tag.play();
 			};
 			SoundInstance.prototype.resume = function() {
 				if (this.sound._playbackResource)
 					this.sound._resume();
-				this.status = SoundInstance.prototype.status.playing;
+				else if (this.tag)
+					this.tag.resume();
 			};
 			SoundInstance.prototype.pause = function() {
 				if (this.sound._playbackResource)
 					this.sound._pause();
-				this.status = SoundInstance.prototype.status.paused;
-			};
-			SoundInstance.prototype.status = {
-				playing: 0,
-				paused: 1
+				else if (this.tag)
+					this.tag.pause();
 			};
 
 			function SoundCollection() {
@@ -176,12 +172,8 @@ define(['async'], function(async) {
 						var $current_li = $u.find('li[data-id=' + currentSound + ']');
 						if ($playnow.hasClass('glyphicon-play')) {
 							$current_li.trigger('play');
-							if ($current_li.attr('data-firstplay') === 'false') {
-								$playnow.trigger('pause');
-							}
 						} else if ($playnow.hasClass('glyphicon-pause')) {
 							$current_li.trigger('pause');
-							$playnow.trigger('play');
 						}
 					}
 				}).on('pause', function() {
@@ -209,17 +201,24 @@ define(['async'], function(async) {
 					$playTime.html('0:00/' + convertTime(e.result.duration));
 					var remainProgress = 0;
 					var nowProgress = 0;
-					e.item._loader._tag.addEventListener('timeupdate', createjs.proxy(throttle(function(e) {
+					var _tag = e.item._loader._tag;
+					soundInstanceCollection.add(new SoundInstance(e.item.id, null, _tag));
+					_tag.addEventListener('timeupdate', createjs.proxy(throttle(function(e) {
 						var audio = e.target;
 						var currentTime = Math.floor(audio.currentTime);
 						var duration = Math.floor(audio.duration);
 						$playTime.html(convertTime(currentTime) +
 							'/' + convertTime(duration));
 						nowProgress = currentTime / duration * 100;
-						progressBar.setNowProgress(nowProgress);
-						progressBar.setRemainProgress(remainProgress - nowProgress);
+						if (nowProgress === 100) {
+							progressBar.setNowProgress(0);
+							progressBar.setRemainProgress(100);
+						} else {
+							progressBar.setNowProgress(nowProgress);
+							progressBar.setRemainProgress(remainProgress - nowProgress);
+						}
 					}, 1)));
-					e.item._loader._tag.addEventListener('progress', createjs.proxy(throttle(function(id) {
+					_tag.addEventListener('progress', createjs.proxy(throttle(function(id) {
 						var animationStartValue = 0.0;
 						return function(e) {
 							var progress = e.target.buffered.end(0) / e.target.duration;
@@ -234,7 +233,7 @@ define(['async'], function(async) {
 							console.log(id + " is loaded " + progress);
 						};
 					}(e.item.id), 1)));
-					e.item._loader._tag.addEventListener('ended', createjs.proxy(function(id) {
+					_tag.addEventListener('ended', createjs.proxy(function(id) {
 						return function() {
 							var $li = $u.find('li[data-id=' + id + ']');
 							$li.trigger('pause');
@@ -248,8 +247,7 @@ define(['async'], function(async) {
 					var id = queue._loadedScripts[queue._loadedScripts.length - 1].id;
 					var $li = $u.find('li[data-id=' + id + ']');
 					var sound = createjs.Sound.play(id);
-					var soundInstance = new SoundInstance(id, sound);
-					soundInstanceCollection.add(soundInstance);
+					soundInstanceCollection.get(id).sound = sound;
 					rotateControllerCollection.get(id).rotate();
 					$li.trigger('instance');
 					$li.attr('data-firstplay', false);
@@ -287,18 +285,23 @@ define(['async'], function(async) {
 								rotateController.stop();
 								clickCount = 0;
 							}
+							$playnow.trigger('play');
 						}).bind("play", function(evt) {
 							if (!firstPlay) {
 								soundInstance = soundInstanceCollection.get(id);
 								if (soundInstance) {
-									soundInstance.resume();
+									if (!soundInstance.sound._playbackResource)
+										soundInstance.play();
+									else
+										soundInstance.resume();
 									rotateController.rotate();
 								}
+								$playnow.trigger('pause');
 							} else {
 								progressBar.clearAll();
 								queue.loadFile({
 									id: id,
-									src: 'file_server/' + $li.attr('data-path'),
+									src: $li.attr('data-path'),
 									type: createjs.AbstractLoader.SOUND,
 									maintainOrder: true,
 									size: $li.attr('data-size')
@@ -306,6 +309,9 @@ define(['async'], function(async) {
 							}
 							firstPlay = false;
 							clickCount = 1;
+							currentSound = id;
+							$musicthumb.attr('src', $li.attr('data-img'));
+							$musictitle.html($li.attr('data-title'));
 						}).bind('instance', function() {
 							soundInstance = soundInstanceCollection.get(id);
 						});
@@ -384,33 +390,41 @@ define(['async'], function(async) {
 							var arr = [];
 							for (var i = 0; i < data.length; i++) {
 								var d = data[i];
-								var imgPath = 'file_server/' + encodeURIComponent(d.imgPath);
+								var imgPath = config.file_server + encodeURIComponent(d.imgPath);
+								var dataPath = config.file_server + d.path;
+								var dataId = config.sound + d.id;
 								var $li;
+								var $box;
+								var $img;
 								if (firstLoad) {
-									$li = $('<li data-title="' + d.title + '" data-id="sound_' + d.id + '" data-size="' + d.size + '" data-img="' + d.imgPath + '" data-path="' + d.path + '" data-firstplay=true></li>');
-									$li.append($("<div class=\"box\" title=\"" + d.title + "\"><img src='" + imgPath + "'></img></div>"));
+									$li = $('<li></li>');
+									$box = $("<div class=\"box\"></div>");
+									$li.append($box);
+									$img = $("<img/>");
+									$box.append($img);
 									$u.append($li);
 								} else {
 									$li = $u.find('li').eq(i);
-									$li.attr('data-title', d.title);
-									$li.attr('data-id', d.id);
-									$li.attr('data-img', d.imgPath);
-									$li.attr('data-path', d.path);
-									$li.attr('data-firstPlay', true);
-									$li.attr('data-size', d.size);
-									$li.removeClass();
-									var $box = $li.find('div');
-									$box.attr('title', d.title);
-									var $img = $box.find('img');
-									$img.attr('src', imgPath);
+									$box = $li.find('div');
+									$img = $box.find('img');
 								}
+								$li.attr({
+									'data-title': d.title,
+									'data-id': dataId,
+									'data-firstPlay': true,
+									'data-img': imgPath,
+									'data-path': dataPath,
+									'data-size': d.size
+								});
+								$box.attr('title', d.title);
+								$img.attr('src', imgPath);
 								bindAction($li);
 
 								if (i === 0) {
 									$musicthumb.attr('src', imgPath);
 									$musicthumb.attr('alt', d.title);
 									$musictitle.html(d.name);
-									currentSound = 'sound_' + d.id;
+									currentSound = dataId;
 								}
 							}
 							//渲染页面
