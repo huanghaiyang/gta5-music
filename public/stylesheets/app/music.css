@@ -26,7 +26,17 @@
 	border-radius: 50%;
 }
 
-.music-ul>li>.box>img{
+.music-ul>li>.box>.rotation{
+	position: absolute;
+	top:0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	border-radius: 50%;
+}
+
+.music-ul>li>.box>.rotation>img{
 	position: absolute;
 	top:0;
 	left: 0;
@@ -34,6 +44,7 @@
 	height: 100%;
 	z-index:50;
 	border-radius: 50%;
+	opacity: 0.9;
 }
 .refresh-btn{
 	position: absolute;

@@ -56,21 +56,26 @@ define(['async'], function(async) {
 							if (!$o.is(":animated")) {
 								t.rotate(360, 5000);
 							}
-						}, (this.interval === null ? 0 : 100));
+						}, (this.interval === null ? 0 : 300));
 					},
 					stop: function() {
+						this.clearInterval();
+						this.$o.stop();
+					},
+					clearInterval: function() {
 						if (this.interval)
 							clearInterval(this.interval);
 						this.interval = null;
-						this.$o.stop();
 					},
 					rotate: function(deg, duration, callback) {
+						var t = this;
 						var rotated = this.$o.css('rotate');
 						if (deg === 0 && deg === rotated) {
 							if (callback)
 								callback();
 							return;
 						}
+						this.clearInterval();
 						this.$o.animate({
 							rotate: deg + 'deg'
 						}, {
@@ -84,6 +89,7 @@ define(['async'], function(async) {
 								}
 							})(),
 							complete: function() {
+								t.rotate360();
 								if (callback)
 									callback();
 							}
@@ -384,10 +390,12 @@ define(['async'], function(async) {
 
 						var soundInstance, rotateController, id = $li.attr('data-id'),
 							$li = $li,
+							$rotation = $li.find('.rotation'),
+							$img = $li.find('img'),
 							clickCount = 0,
 							firstPlay = $li.attr('data-firstplay');
 
-						rotateController = new RotateController(id, $li.find('img'));
+						rotateController = new RotateController(id, $rotation);
 						rotateControllerCollection.add(rotateController);
 						$li.bind("click", function() {
 							if (clickCount === 0) {
@@ -436,6 +444,38 @@ define(['async'], function(async) {
 							$musictitle.html($li.attr('data-title'));
 						}).bind('instance', function() {
 							soundInstance = soundInstanceCollection.get(id);
+						});
+
+						var imgWidth = $img.width();
+
+						$img.bind('mouseover', function() {
+							var css = {
+								width: imgWidth * 1.4,
+								height: imgWidth * 1.4,
+								top: -imgWidth * 0.2,
+								left: -imgWidth * 0.2
+							};
+							$img.animate(css, {
+								easing: 'linear',
+								duration: 200,
+								complete: function() {
+									$img.css(css);
+								}
+							});
+						}).bind('mouseout', function() {
+							var css = {
+								width: imgWidth,
+								height: imgWidth,
+								top: 0,
+								left: 0
+							};
+							$img.animate(css, {
+								easing: 'linear',
+								duration: 200,
+								complete: function() {
+									$img.css(css);
+								}
+							});
 						});
 					};
 
@@ -518,14 +558,16 @@ define(['async'], function(async) {
 									imgPath = config.file_server + encodeURIComponent(d.imgPath),
 									dataPath = config.file_server + d.path,
 									dataId = config.sound + d.id,
-									$li, $box, $img;
+									$li, $box, $rotation, $img;
 								if (firstLoad) {
 									$li = $('<li></li>');
+									$u.append($li);
 									$box = $("<div class=\"box\"></div>");
 									$li.append($box);
+									$rotation = $('<div class=\"rotation\"></div>');
+									$box.append($rotation);
 									$img = $("<img/>");
-									$box.append($img);
-									$u.append($li);
+									$rotation.append($img);
 								} else {
 									$li = $u.find('li').eq(i);
 									$box = $li.find('div');
