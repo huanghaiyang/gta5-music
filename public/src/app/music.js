@@ -37,14 +37,15 @@ define(['async'], function(async) {
 			pause: 'glyphicon-pause',
 			play: 'glyphicon-play'
 		};
+
 		jQuery.fn.pilimusic = function(options) {
 			var defaults = {};
 			var $opts = $.extend({}, defaults, options);
 
 			function RotateController(id, $o) {
 				this.id = id;
-				this.interval = null;
 				this.$o = $o;
+				this.timeout = null;
 			};
 
 			RotateController.prototype = (function() {
@@ -52,31 +53,31 @@ define(['async'], function(async) {
 					rotate360: function() {
 						var t = this;
 						var $o = t.$o;
-						this.interval = setInterval(function() {
+						this.timeout = setTimeout(function() {
 							if (!$o.is(":animated")) {
 								t.rotate(360, 5000);
 							}
-						}, (this.interval === null ? 0 : 300));
+						}, (this.timeout === null ? 0 : 300));
 					},
 					stop: function() {
-						this.clearInterval();
+						this.clearTimeout();
 						this.$o.stop();
 					},
-					clearInterval: function() {
-						if (this.interval)
-							clearInterval(this.interval);
-						this.interval = null;
+					clearTimeout: function() {
+						if (this.timeout)
+							clearTimeout(this.timeout);
+						this.timeout = null;
 					},
 					rotate: function(deg, duration, callback) {
 						var t = this;
 						var rotated = this.$o.css('rotate');
-						if (deg === 0 && deg === rotated) {
+						if (deg === 0 && rotated == "") {
 							if (callback)
 								callback();
 							return;
 						}
-						this.clearInterval();
-						this.$o.animate({
+						this.clearTimeout();
+						this.$o.stop(true,false).animate({
 							rotate: deg + 'deg'
 						}, {
 							easing: 'linear',
@@ -89,7 +90,8 @@ define(['async'], function(async) {
 								}
 							})(),
 							complete: function() {
-								t.rotate360();
+								if (deg !== 0)
+									t.rotate360();
 								if (callback)
 									callback();
 							}
@@ -139,23 +141,26 @@ define(['async'], function(async) {
 				function() {
 					return {
 						play: function(props) {
-							if (this.sound._playbackResource)
+							if (this.hasPlaybackResource())
 								this.sound.play(props);
 							else if (this.tag)
 								this.tag.play();
 						},
 						resume: function() {
-							if (this.sound._playbackResource)
+							if (this.hasPlaybackResource())
 								this.sound._resume();
 							else if (this.tag)
 								this.tag.resume();
 						},
 						pause: function() {
-							if (this.sound._playbackResource)
+							if (this.hasPlaybackResource())
 								this.sound._pause();
 							else if (this.tag)
 								this.tag.pause();
 						},
+						hasPlaybackResource: function() {
+							return this.sound && this.sound._playbackResource;
+						}
 					};
 				})();
 
@@ -241,9 +246,43 @@ define(['async'], function(async) {
 				};
 			})();
 
+			function HoverDelay() {
+				this.interval = null;
+				this.count = 0;
+				this.total = 10;
+				this.step = 1;
+				this.time = 10;
+			};
+			HoverDelay.prototype = (function() {
+
+				return {
+					config: function(config) {
+						this.total = config.total;
+						this.step = config.step;
+						this.time = config.time;
+					},
+					over: function(fn) {
+						var t = this;
+						this.interval = setInterval(function() {
+							t.count += t.step;
+							if (t.count >= t.total) {
+								fn();
+								t.clear();
+							}
+						}, this.time);
+					},
+					clear: function() {
+						clearInterval(this.interval);
+						this.interval = null;
+						this.count = 0;
+					}
+				};
+			})();
+
 			return this.each(function(index, t) {
 				var $u = $(this),
 					firstLoad = true,
+					imgWidth,
 					$refreshButton, currentSound, $musicthumb = $('#musicthumb'),
 					$musictitle = $('#musictitle'),
 					$playnow = $('#playnow'),
@@ -342,7 +381,7 @@ define(['async'], function(async) {
 								progressBar.setRemainProgress(remainProgress - nowProgress);
 							}
 						}
-					}, 1)));
+					}, 100)));
 					_tag.addEventListener('progress', createjs.proxy(throttle(function(id) {
 						var animationStartValue = 0.0;
 						return function(e) {
@@ -356,14 +395,21 @@ define(['async'], function(async) {
 								remainProgress = 100 * progress;
 								progressBar.setRemainProgress(remainProgress - nowProgress);
 								animationStartValue = progress;
+								if (progress === 1)
+									$remainProgress.removeClass('active');
+								else {
+									if (!$remainProgress.hasClass('active'))
+										$remainProgress.addClass('active');
+								}
 								console.log(id + " is loaded " + progress);
 							}
 						};
-					}(e.item.id), 1)));
+					}(e.item.id), 100)));
 					_tag.addEventListener('ended', createjs.proxy(function(id) {
 						return function() {
 							var $li = getLiByDataId(id);
 							$li.trigger('pause');
+							rotateControllerCollection.get(id).reset0();
 							playforward(id);
 						};
 					}(e.item.id)));
@@ -420,7 +466,7 @@ define(['async'], function(async) {
 							if (!firstPlay) {
 								soundInstance = soundInstanceCollection.get(id);
 								if (soundInstance) {
-									if (!soundInstance.sound._playbackResource)
+									if (!soundInstance.hasPlaybackResource())
 										soundInstance.play();
 									else
 										soundInstance.resume();
@@ -446,35 +492,34 @@ define(['async'], function(async) {
 							soundInstance = soundInstanceCollection.get(id);
 						});
 
-						var imgWidth = $img.width();
+						var hoverDelay = new HoverDelay();
+						if (!imgWidth)
+							imgWidth = $img.width();
 
 						$img.bind('mouseover', function() {
-							var css = {
-								width: imgWidth * 1.4,
-								height: imgWidth * 1.4,
-								top: -imgWidth * 0.2,
-								left: -imgWidth * 0.2
-							};
-							$img.animate(css, {
-								easing: 'linear',
-								duration: 200,
-								complete: function() {
-									$img.css(css);
-								}
+							hoverDelay.over(function() {
+								var css = {
+									width: imgWidth * 1.4,
+									height: imgWidth * 1.4,
+									top: -imgWidth * 0.2,
+									left: -imgWidth * 0.2
+								};
+								$img.stop(true,false).animate(css, {
+									easing: 'linear',
+									duration: 200
+								});
 							});
 						}).bind('mouseout', function() {
+							hoverDelay.clear();
 							var css = {
-								width: imgWidth,
-								height: imgWidth,
+								width: '100%',
+								height: '100%',
 								top: 0,
 								left: 0
 							};
-							$img.animate(css, {
+							$img.stop(true,false).animate(css, {
 								easing: 'linear',
-								duration: 200,
-								complete: function() {
-									$img.css(css);
-								}
+								duration: 200
 							});
 						});
 					};
@@ -530,7 +575,7 @@ define(['async'], function(async) {
 							}, 100);
 							var $li = $(li),
 								position = getPosition(animateIndex, r);
-							$li.animate({
+							$li.stop(true,false).animate({
 								left: position.x - _r,
 								top: position.y - _r,
 								width: _width / 2,
@@ -689,7 +734,7 @@ define(['async'], function(async) {
 										callback();
 									}, 100);
 									var position = getPosition(animateIndex, r);
-									$li.animate({
+									$li.stop(true,false).animate({
 										left: position.x - _r,
 										top: position.y - _r,
 										width: _width * 2,
