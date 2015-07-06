@@ -13,7 +13,9 @@ require.config({
 		"app.index": "../src/app/index",
 
 		'PreloadJS': 'PreloadJS/lib/preloadjs-0.6.1.combined',
-		'SoundJS': 'SoundJS/lib/soundjs-0.6.1.combined'
+		'SoundJS': 'SoundJS/lib/soundjs-0.6.1.combined',
+
+		'Vague': 'Vague.js/Vague'
 	},
 	shim: {
 		'jquery.rotate': {
@@ -23,6 +25,9 @@ require.config({
 			'deps': ['jquery']
 		},
 		'jquery-circle-progress': {
+			'deps': ['jquery']
+		},
+		'Vague': {
 			'deps': ['jquery']
 		},
 		'music': {
@@ -36,7 +41,7 @@ require.config({
 });
 /*加载文件*/
 require([
-	'jquery', 'jquery.rotate', 'jquery.easing', 'async', 'jquery-circle-progress', 'music', 'PreloadJS', 'SoundJS',
+	'jquery', 'jquery.rotate', 'jquery.easing', 'async', 'jquery-circle-progress', 'Vague', 'music', 'PreloadJS', 'SoundJS',
 	'app.index'
 ], function(require) {
 	'use strict';

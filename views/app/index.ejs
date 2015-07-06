@@ -19,6 +19,7 @@
 		}
 	</style>
 	<body>
+		<div class='bk'></div>
 		<%include nav%>
 		<div class="container">
 			<div class="row">
@@ -31,18 +32,18 @@
 				</div>
 			</div>
 		</div>
-		<nav class="navbar navbar-default navbar-fixed-bottom">
+		<nav class="navbar navbar-default navbar-fixed-bottom navbar-transparent">
 		  <div class="container">
 		  	<div class="row play-row">
 		  		<div class='col-md-1 text-left play-col'>
 		  			<div class='play-btn play-btn-backward'>
-		  				<span class="glyphicon glyphicon-step-backward" id='playbackward'></span>
+		  				<span class="glyphicon glyphicon-step-backward" aria-hidden="true" id='playbackward'></span>
 		  			</div>
 		  			<div class='play-btn play-btn-play'>
-		  				<span class="glyphicon glyphicon-play" id='playnow'></span>
+		  				<span class="glyphicon glyphicon-play" aria-hidden="true" id='playnow'></span>
 		  			</div>
 		  			<div class='play-btn play-btn-forward'>
-		  				<span class="glyphicon glyphicon-step-forward" id='playforward'></span>
+		  				<span class="glyphicon glyphicon-step-forward" aria-hidden="true" id='playforward'></span>
 		  			</div>
 		  		</div>
 		  		<div class='col-md-9 text-left play-col'>
@@ -69,16 +70,16 @@
 		  		</div>
 		  		<div class='col-md-2 text-right play-col'>
 		  			<div class='list-btn list-btn-volume'>
-		  				<span class="glyphicon glyphicon-volume-off"></span>
+		  				<span class="glyphicon glyphicon-volume-off" aria-hidden="true"></span>
 		  			</div>
 		  			<div class='list-btn list-btn-volume'>
-		  				<span class="glyphicon glyphicon-volume-down"></span>
+		  				<span class="glyphicon glyphicon-volume-down" aria-hidden="true"></span>
 		  			</div>
 		  			<div class='list-btn list-btn-volume'>
-		  				<span class="glyphicon glyphicon-volume-up"></span>
+		  				<span class="glyphicon glyphicon-volume-up" aria-hidden="true"></span>
 		  			</div>
 		  			<div class='list-btn'>
-		  				<span class="glyphicon glyphicon-menu-hamburger"></span>
+		  				<span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
 		  			</div>
 		  		</div>
 		  	</div>

@@ -14,6 +14,49 @@ define(['async'], function(async) {
 			};
 		};
 
+		var vagueToggle = (function() {
+			var vague, fnCollection = {};
+
+			function init(v, fn) {
+				vague = v;
+				if (fn)
+					fn();
+			};
+
+			function exist() {
+				return !!vague;
+			};
+
+			function regist(name, fn) {
+				fnCollection[name] = fn;
+			};
+
+			function trigger(name, isRemove) {
+				vague.animate(10, {
+					duration: 500,
+					easing: 'linear'
+				}).done(function() {
+					if (fnCollection[name])
+						fnCollection[name];
+					vague.animate(60, {
+						duration: 500,
+						easing: 'linear'
+					}).done(function() {
+						if (isRemove) {
+							fnCollection[name] = null;
+							delete fnCollection[name];
+						}
+					});
+				});
+			};
+			return {
+				init: init,
+				exist: exist,
+				regist: regist,
+				trigger: trigger
+			};
+		})();
+
 		function convertTime(time) {
 			var m = Math.floor(Math.floor(time) / 60),
 				s = parseInt(Math.floor(time) % 60);
@@ -77,7 +120,7 @@ define(['async'], function(async) {
 							return;
 						}
 						this.clearTimeout();
-						this.$o.stop(true,false).animate({
+						this.$o.stop(true, false).animate({
 							rotate: deg + 'deg'
 						}, {
 							easing: 'linear',
@@ -280,7 +323,8 @@ define(['async'], function(async) {
 			})();
 
 			return this.each(function(index, t) {
-				var $u = $(this),
+				var $bk = $('.bk'),
+					$u = $(this),
 					firstLoad = true,
 					imgWidth,
 					$refreshButton, currentSound, $musicthumb = $('#musicthumb'),
@@ -292,6 +336,8 @@ define(['async'], function(async) {
 					$nowProgress = $('#nowProgress'),
 					progressBar = new ProgressBar($remainProgress, $nowProgress),
 					$playTime = $('#playTime');
+
+
 
 				function getLiByDataId(id) {
 					return $u.find('li[data-id=' + id + ']');
@@ -433,7 +479,6 @@ define(['async'], function(async) {
 					var $ls, len;
 
 					function bindAction($li) {
-
 						var soundInstance, rotateController, id = $li.attr('data-id'),
 							$li = $li,
 							$rotation = $li.find('.rotation'),
@@ -461,6 +506,9 @@ define(['async'], function(async) {
 								rotateController.stop();
 								clickCount = 0;
 							}
+							vagueToggle.trigger('changeBk', true);
+							$li.removeClass('active');
+							$img.removeClass('active');
 							$playnow.trigger('play');
 						}).bind("play", function(evt) {
 							if (!firstPlay) {
@@ -483,44 +531,39 @@ define(['async'], function(async) {
 									size: $li.attr('data-size')
 								}, true);
 							}
+							$li.addClass('active');
+							$img.addClass('active');
 							firstPlay = false;
 							clickCount = 1;
 							currentSound = id;
 							$musicthumb.attr('src', $li.attr('data-img'));
+							if (!vagueToggle.exist()) {
+								vagueToggle.init(function() {
+									var vague = $bk.Vague({
+										intensity: 60,
+										forceSVGUrl: false,
+										animationOptions: {
+											duration: 1000,
+											easing: 'linear'
+										}
+									});
+									vague.blur();
+									return vague;
+								}(), function() {
+									$bk.css({
+										backgroundImage: 'url(' + $li.attr('data-img') + ')'
+									});
+								});
+							} else {
+								vagueToggle.regist('changeBk', function() {
+									$bk.css({
+										backgroundImage: 'url(' + $li.attr('data-img') + ')'
+									});
+								});
+							}
 							$musictitle.html($li.attr('data-title'));
 						}).bind('instance', function() {
 							soundInstance = soundInstanceCollection.get(id);
-						});
-
-						var hoverDelay = new HoverDelay();
-						if (!imgWidth)
-							imgWidth = $img.width();
-
-						$img.bind('mouseover', function() {
-							hoverDelay.over(function() {
-								var css = {
-									width: imgWidth * 1.4,
-									height: imgWidth * 1.4,
-									top: -imgWidth * 0.2,
-									left: -imgWidth * 0.2
-								};
-								$img.stop(true,false).animate(css, {
-									easing: 'linear',
-									duration: 200
-								});
-							});
-						}).bind('mouseout', function() {
-							hoverDelay.clear();
-							var css = {
-								width: '100%',
-								height: '100%',
-								top: 0,
-								left: 0
-							};
-							$img.stop(true,false).animate(css, {
-								easing: 'linear',
-								duration: 200
-							});
 						});
 					};
 
@@ -569,13 +612,13 @@ define(['async'], function(async) {
 							r = $u.width() / 4 - _r;
 						async.mapLimit($ls, 1, function(li, callback) {
 							setTimeout(function() {
-								if (animateIndex < len - 1)
+								if (animateIndex <= len - 1)
 									animateIndex++;
 								callback();
 							}, 100);
 							var $li = $(li),
 								position = getPosition(animateIndex, r);
-							$li.stop(true,false).animate({
+							$li.animate({
 								left: position.x - _r,
 								top: position.y - _r,
 								width: _width / 2,
@@ -584,7 +627,7 @@ define(['async'], function(async) {
 								easing: 'easeInBack',
 								duration: 300,
 								complete: function() {
-									if (animateIndex === len - 1) {
+									if (animateIndex === len) {
 										load();
 										animateIndex = 0;
 									}
@@ -709,6 +752,7 @@ define(['async'], function(async) {
 									$li.circleProgress({
 										value: 0,
 										size: 100,
+										thickness: 3,
 										fill: {
 											gradient: ['#0099CC']
 										},
@@ -729,12 +773,12 @@ define(['async'], function(async) {
 								})(), 1, function(li, callback) {
 									var $li = $(li);
 									setTimeout(function() {
-										if (animateIndex < len - 1)
+										if (animateIndex <= len - 1)
 											animateIndex++;
 										callback();
 									}, 100);
 									var position = getPosition(animateIndex, r);
-									$li.stop(true,false).animate({
+									$li.animate({
 										left: position.x - _r,
 										top: position.y - _r,
 										width: _width * 2,
@@ -747,7 +791,7 @@ define(['async'], function(async) {
 												value: 0,
 												startAngle: -Math.PI / 2
 											});
-											if (animateIndex === len - 1) {
+											if (animateIndex === len) {
 												$refreshButton.bind('click', refreshList);
 												animateIndex = 0;
 											}
