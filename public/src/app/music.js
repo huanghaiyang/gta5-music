@@ -37,7 +37,7 @@ define(['async'], function(async) {
 					easing: 'linear'
 				}).done(function() {
 					if (fnCollection[name])
-						fnCollection[name];
+						fnCollection[name]();
 					vague.animate(60, {
 						duration: 500,
 						easing: 'linear'
@@ -490,12 +490,7 @@ define(['async'], function(async) {
 						rotateControllerCollection.add(rotateController);
 						$li.bind("click", function() {
 							if (clickCount === 0) {
-								$ls.filter(function(index) {
-									var other = $($ls[index]);
-									if (other.attr('data-id') !== id) {
-										other.trigger("pause");
-									}
-								});
+								getLiByDataId(currentSound).trigger('pause');
 								$li.trigger("play");
 							} else {
 								$li.trigger("pause");
@@ -594,7 +589,8 @@ define(['async'], function(async) {
 
 						async.mapLimit($ls, 1, function(other, callback) {
 							var other = $(other);
-							other.trigger("pause");
+							if (other.attr('data-id') === currentSound)
+								other.trigger("pause");
 							other.unbind('click');
 							other.unbind('pause');
 							other.unbind('play');
