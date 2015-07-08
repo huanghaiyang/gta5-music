@@ -81,246 +81,246 @@ define(['async'], function(async) {
 			play: 'glyphicon-play'
 		};
 
+		function RotateController(id, $o) {
+			this.id = id;
+			this.$o = $o;
+			this.timeout = null;
+		};
+
+		RotateController.prototype = (function() {
+			return {
+				rotate360: function() {
+					var t = this;
+					var $o = t.$o;
+					this.timeout = setTimeout(function() {
+						if (!$o.is(":animated")) {
+							t.rotate(360, 5000);
+						}
+					}, (this.timeout === null ? 0 : 300));
+				},
+				stop: function() {
+					this.clearTimeout();
+					this.$o.stop();
+				},
+				clearTimeout: function() {
+					if (this.timeout)
+						clearTimeout(this.timeout);
+					this.timeout = null;
+				},
+				rotate: function(deg, duration, callback) {
+					var t = this;
+					var rotated = this.$o.css('rotate');
+					if (deg === 0 && rotated == "") {
+						if (callback)
+							callback();
+						return;
+					}
+					this.clearTimeout();
+					this.$o.stop(true, false).animate({
+						rotate: deg + 'deg'
+					}, {
+						easing: 'linear',
+						duration: (function() {
+
+							if (rotated === 0 || rotated === "")
+								return duration;
+							else {
+								return duration * (360 - parseInt(rotated)) / 360;
+							}
+						})(),
+						complete: function() {
+							if (deg !== 0)
+								t.rotate360();
+							if (callback)
+								callback();
+						}
+					});
+				},
+				reset0: function(callback) {
+					this.rotate(0, 100, callback);
+				}
+			};
+		})();
+
+		function RotateControllerCollection() {
+			this.collection = {};
+		};
+		RotateControllerCollection.prototype = (function() {
+			return {
+				add: function(rotateController) {
+					this.collection[rotateController.id] = rotateController;
+				},
+				get: function(id) {
+					return this.collection[id];
+				},
+				remove: function(id) {
+					this.collection[id] = null;
+					delete this.collection[id];
+				},
+				removeAll: function() {
+					this.collection = {};
+				},
+				resetAll: function(callback) {
+					async.eachOf(this.collection, function(rot, id, cb) {
+						rot.reset0(cb);
+					}, function() {
+						if (callback)
+							callback();
+					});
+				}
+			};
+		})();
+
+		function SoundInstance(id, sound, tag) {
+			this.id = id;
+			this.sound = sound;
+			this.tag = tag;
+		};
+		SoundInstance.prototype = (
+			function() {
+				return {
+					play: function(props) {
+						if (this.hasPlaybackResource())
+							this.sound.play(props);
+						else if (this.tag)
+							this.tag.play();
+					},
+					resume: function() {
+						if (this.hasPlaybackResource())
+							this.sound._resume();
+						else if (this.tag)
+							this.tag.resume();
+					},
+					pause: function() {
+						if (this.hasPlaybackResource())
+							this.sound._pause();
+						else if (this.tag)
+							this.tag.pause();
+					},
+					hasPlaybackResource: function() {
+						return this.sound && this.sound._playbackResource;
+					}
+				};
+			})();
+
+		function SoundCollection() {
+			this.indexes = {};
+			this.collection = [];
+		};
+		SoundCollection.prototype = (function() {
+			return {
+				add: function(soundInstance) {
+					this.collection[this.collection.length] = soundInstance;
+					this.indexes[soundInstance.id] = this.collection.length - 1;
+				},
+				get: function(id) {
+					return this.getByIndex(this.indexes[id]);
+				},
+				remove: function(id) {
+					var index = this.indexes[id];
+					this.indexes[id] = null;
+					delete this.indexes[id];
+					this.collection.slice(index, 1);
+				},
+				getByIndex: function(index) {
+					return this.collection[index];
+				},
+				getNext: function(id) {
+					if (this.indexes[id] + 1 === this.collection.length)
+						return this.getByIndex(0);
+					else
+						return this.getByIndex(this.indexes[id] + 1);
+				},
+				getPre: function(id) {
+					if (this.indexes[id] - 1 < 0)
+						return this.getByIndex(this.collection.length - 1)
+					else
+						return this.getByIndex(this.indexes[id] - 1);
+				},
+				getFirst: function() {
+					return this.getByIndex(0);
+				},
+				getLast: function() {
+					return this.getByIndex(this.collection.length - 1);
+				},
+				removeAll: function() {
+					this.collection = [];
+					this.indexes = {};
+				}
+			};
+		})();
+
+		function ProgressBar(remainProgress, nowProgress) {
+			this.remainProgress = remainProgress;
+			this.nowProgress = nowProgress
+		};
+		ProgressBar.prototype = (function() {
+			return {
+				clearRemainProgress: function() {
+					this.setRemainProgress(0);
+				},
+				clearNowProgress: function() {
+					this.setNowProgress(0);
+				},
+				clearAll: function() {
+					this.clearNowProgress();
+					this.clearRemainProgress();
+				},
+				setNowProgress: function(value) {
+					this.nowProgress.css({
+						width: value + "%"
+					});
+					this.nowProgress.attr('aria-valuenow', value);
+				},
+				setRemainProgress: function(value) {
+					this.remainProgress.css({
+						width: value + "%"
+					});
+					this.remainProgress.attr('aria-valuenow', value);
+				},
+				setProgress: function(value) {
+					this.setNowProgress(value);
+					this.setRemainProgress(100 - value);
+				}
+			};
+		})();
+
+		function HoverDelay() {
+			this.interval = null;
+			this.count = 0;
+			this.total = 10;
+			this.step = 1;
+			this.time = 10;
+		};
+		HoverDelay.prototype = (function() {
+
+			return {
+				config: function(config) {
+					this.total = config.total;
+					this.step = config.step;
+					this.time = config.time;
+				},
+				over: function(fn) {
+					var t = this;
+					this.interval = setInterval(function() {
+						t.count += t.step;
+						if (t.count >= t.total) {
+							fn();
+							t.clear();
+						}
+					}, this.time);
+				},
+				clear: function() {
+					clearInterval(this.interval);
+					this.interval = null;
+					this.count = 0;
+				}
+			};
+		})();
+
 		jQuery.fn.pilimusic = function(options) {
 			var defaults = {};
 			var $opts = $.extend({}, defaults, options);
-
-			function RotateController(id, $o) {
-				this.id = id;
-				this.$o = $o;
-				this.timeout = null;
-			};
-
-			RotateController.prototype = (function() {
-				return {
-					rotate360: function() {
-						var t = this;
-						var $o = t.$o;
-						this.timeout = setTimeout(function() {
-							if (!$o.is(":animated")) {
-								t.rotate(360, 5000);
-							}
-						}, (this.timeout === null ? 0 : 300));
-					},
-					stop: function() {
-						this.clearTimeout();
-						this.$o.stop();
-					},
-					clearTimeout: function() {
-						if (this.timeout)
-							clearTimeout(this.timeout);
-						this.timeout = null;
-					},
-					rotate: function(deg, duration, callback) {
-						var t = this;
-						var rotated = this.$o.css('rotate');
-						if (deg === 0 && rotated == "") {
-							if (callback)
-								callback();
-							return;
-						}
-						this.clearTimeout();
-						this.$o.stop(true, false).animate({
-							rotate: deg + 'deg'
-						}, {
-							easing: 'linear',
-							duration: (function() {
-
-								if (rotated === 0 || rotated === "")
-									return duration;
-								else {
-									return duration * (360 - parseInt(rotated)) / 360;
-								}
-							})(),
-							complete: function() {
-								if (deg !== 0)
-									t.rotate360();
-								if (callback)
-									callback();
-							}
-						});
-					},
-					reset0: function(callback) {
-						this.rotate(0, 100, callback);
-					}
-				};
-			})();
-
-			function RotateControllerCollection() {
-				this.collection = {};
-			};
-			RotateControllerCollection.prototype = (function() {
-				return {
-					add: function(rotateController) {
-						this.collection[rotateController.id] = rotateController;
-					},
-					get: function(id) {
-						return this.collection[id];
-					},
-					remove: function(id) {
-						this.collection[id] = null;
-						delete this.collection[id];
-					},
-					removeAll: function() {
-						this.collection = {};
-					},
-					resetAll: function(callback) {
-						async.eachOf(this.collection, function(rot, id, cb) {
-							rot.reset0(cb);
-						}, function() {
-							if (callback)
-								callback();
-						});
-					}
-				};
-			})();
-
-			function SoundInstance(id, sound, tag) {
-				this.id = id;
-				this.sound = sound;
-				this.tag = tag;
-			};
-			SoundInstance.prototype = (
-				function() {
-					return {
-						play: function(props) {
-							if (this.hasPlaybackResource())
-								this.sound.play(props);
-							else if (this.tag)
-								this.tag.play();
-						},
-						resume: function() {
-							if (this.hasPlaybackResource())
-								this.sound._resume();
-							else if (this.tag)
-								this.tag.resume();
-						},
-						pause: function() {
-							if (this.hasPlaybackResource())
-								this.sound._pause();
-							else if (this.tag)
-								this.tag.pause();
-						},
-						hasPlaybackResource: function() {
-							return this.sound && this.sound._playbackResource;
-						}
-					};
-				})();
-
-			function SoundCollection() {
-				this.indexes = {};
-				this.collection = [];
-			};
-			SoundCollection.prototype = (function() {
-				return {
-					add: function(soundInstance) {
-						this.collection[this.collection.length] = soundInstance;
-						this.indexes[soundInstance.id] = this.collection.length - 1;
-					},
-					get: function(id) {
-						return this.getByIndex(this.indexes[id]);
-					},
-					remove: function(id) {
-						var index = this.indexes[id];
-						this.indexes[id] = null;
-						delete this.indexes[id];
-						this.collection.slice(index, 1);
-					},
-					getByIndex: function(index) {
-						return this.collection[index];
-					},
-					getNext: function(id) {
-						if (this.indexes[id] + 1 === this.collection.length)
-							return this.getByIndex(0);
-						else
-							return this.getByIndex(this.indexes[id] + 1);
-					},
-					getPre: function(id) {
-						if (this.indexes[id] - 1 < 0)
-							return this.getByIndex(this.collection.length - 1)
-						else
-							return this.getByIndex(this.indexes[id] - 1);
-					},
-					getFirst: function() {
-						return this.getByIndex(0);
-					},
-					getLast: function() {
-						return this.getByIndex(this.collection.length - 1);
-					},
-					removeAll: function() {
-						this.collection = [];
-						this.indexes = {};
-					}
-				};
-			})();
-
-			function ProgressBar(remainProgress, nowProgress) {
-				this.remainProgress = remainProgress;
-				this.nowProgress = nowProgress
-			};
-			ProgressBar.prototype = (function() {
-				return {
-					clearRemainProgress: function() {
-						this.setRemainProgress(0);
-					},
-					clearNowProgress: function() {
-						this.setNowProgress(0);
-					},
-					clearAll: function() {
-						this.clearNowProgress();
-						this.clearRemainProgress();
-					},
-					setNowProgress: function(value) {
-						this.nowProgress.css({
-							width: value + "%"
-						});
-						this.nowProgress.attr('aria-valuenow', value);
-					},
-					setRemainProgress: function(value) {
-						this.remainProgress.css({
-							width: value + "%"
-						});
-						this.remainProgress.attr('aria-valuenow', value);
-					},
-					setProgress: function(value) {
-						this.setNowProgress(value);
-						this.setRemainProgress(100 - value);
-					}
-				};
-			})();
-
-			function HoverDelay() {
-				this.interval = null;
-				this.count = 0;
-				this.total = 10;
-				this.step = 1;
-				this.time = 10;
-			};
-			HoverDelay.prototype = (function() {
-
-				return {
-					config: function(config) {
-						this.total = config.total;
-						this.step = config.step;
-						this.time = config.time;
-					},
-					over: function(fn) {
-						var t = this;
-						this.interval = setInterval(function() {
-							t.count += t.step;
-							if (t.count >= t.total) {
-								fn();
-								t.clear();
-							}
-						}, this.time);
-					},
-					clear: function() {
-						clearInterval(this.interval);
-						this.interval = null;
-						this.count = 0;
-					}
-				};
-			})();
 
 			return this.each(function(index, t) {
 				var $bk = $('.bk'),
@@ -336,8 +336,6 @@ define(['async'], function(async) {
 					$nowProgress = $('#nowProgress'),
 					progressBar = new ProgressBar($remainProgress, $nowProgress),
 					$playTime = $('#playTime');
-
-
 
 				function getLiByDataId(id) {
 					return $u.find('li[data-id=' + id + ']');
