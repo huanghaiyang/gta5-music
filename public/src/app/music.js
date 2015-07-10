@@ -1,7 +1,8 @@
 define(['async'], function(async) {
 	(function($) {
 		'use strict';
-
+		window.AudioContext = window.AudioContext || window.webkitAudioContext || window.mozAudioContext || window.msAudioContext;
+		var audioContext=new window.AudioContext();
 		function throttle(fn, delay) {
 			var timer = null;
 			return function() {
@@ -38,7 +39,7 @@ define(['async'], function(async) {
 				}).done(function() {
 					if (fnCollection[name])
 						fnCollection[name]();
-					vague.animate(60, {
+					vague.animate(30, {
 						duration: 500,
 						easing: 'linear'
 					}).done(function() {
@@ -501,7 +502,6 @@ define(['async'], function(async) {
 								rotateController.stop();
 								clickCount = 0;
 							}
-							vagueToggle.trigger('changeBk', true);
 							$li.removeClass('active');
 							$img.removeClass('active');
 							$playnow.trigger('play');
@@ -535,7 +535,7 @@ define(['async'], function(async) {
 							if (!vagueToggle.exist()) {
 								vagueToggle.init(function() {
 									var vague = $bk.Vague({
-										intensity: 60,
+										intensity: 30,
 										forceSVGUrl: false,
 										animationOptions: {
 											duration: 1000,
@@ -557,6 +557,7 @@ define(['async'], function(async) {
 								});
 							}
 							$musictitle.html($li.attr('data-title'));
+							vagueToggle.trigger('changeBk', true);
 						}).bind('instance', function() {
 							soundInstance = soundInstanceCollection.get(id);
 						});
@@ -578,8 +579,6 @@ define(['async'], function(async) {
 						clearAudioTags();
 						$refreshButton.unbind('click', refreshList);
 						$playnow.trigger('play');
-						currentSound = null;
-
 						queue.close();
 						queue.removeAll();
 						rotateControllerCollection.resetAll(function() {
@@ -600,6 +599,7 @@ define(['async'], function(async) {
 							// 延迟
 							setTimeout(function() {
 								progressBar.clearAll();
+								currentSound = null;
 							}, 10);
 						});
 						var animateIndex = 0,
@@ -785,7 +785,11 @@ define(['async'], function(async) {
 										complete: function() {
 											$li.circleProgress({
 												value: 0,
-												startAngle: -Math.PI / 2
+												startAngle: -Math.PI / 2,
+												animationStartValue: 0,
+												animation: {
+													duration: 0
+												}
 											});
 											if (animateIndex === len) {
 												$refreshButton.bind('click', refreshList);
