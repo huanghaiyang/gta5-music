@@ -426,7 +426,7 @@ define(['async'], function(async) {
 								progressBar.setRemainProgress(remainProgress - nowProgress);
 							}
 						}
-					}, 100)));
+					}, 1)));
 					_tag.addEventListener('progress', createjs.proxy(throttle(function(id) {
 						var animationStartValue = 0.0;
 						return function(e) {
@@ -449,7 +449,7 @@ define(['async'], function(async) {
 								console.log(id + " is loaded " + progress);
 							}
 						};
-					}(e.item.id), 100)));
+					}(e.item.id), 1)));
 					_tag.addEventListener('ended', createjs.proxy(function(id) {
 						return function() {
 							var $li = getLiByDataId(id);
