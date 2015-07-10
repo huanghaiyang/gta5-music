@@ -5,6 +5,7 @@ require.config({
 		"jquery": "jquery/dist/jquery",
 		"jquery.rotate": "../src/app/lib/jquery.rotate/jquery.rotate",
 		"jquery.easing": "jquery-easing/jquery.easing",
+		"velocity": "velocity/velocity.min",
 		"jquery-circle-progress": "jquery-circle-progress/dist/circle-progress",
 
 		"async": "async/lib/async",
@@ -24,6 +25,9 @@ require.config({
 		'jquery.easing': {
 			'deps': ['jquery']
 		},
+		'velocity': {
+			'deps': ['jquery']
+		},
 		'jquery-circle-progress': {
 			'deps': ['jquery']
 		},
@@ -41,7 +45,7 @@ require.config({
 });
 /*加载文件*/
 require([
-	'jquery', 'jquery.rotate', 'jquery.easing', 'async', 'jquery-circle-progress', 'Vague', 'music', 'PreloadJS', 'SoundJS',
+	'jquery', 'jquery.rotate', 'jquery.easing', 'velocity', 'async', 'jquery-circle-progress', 'Vague', 'music', 'PreloadJS', 'SoundJS',
 	'app.index'
 ], function(require) {
 	'use strict';
