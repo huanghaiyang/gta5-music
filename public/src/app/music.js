@@ -32,14 +32,14 @@ define(['async'], function(async) {
 			};
 
 			function trigger(name, isRemove) {
-				vague.animate(2, {
-					duration: 1000,
+				vague.animate(10, {
+					duration: 500,
 					easing: 'linear'
 				}).done(function() {
 					if (fnCollection[name])
 						fnCollection[name]();
-					vague.animate(10, {
-						duration: 1000,
+					vague.animate(60, {
+						duration: 500,
 						easing: 'linear'
 					}).done(function() {
 						if (isRemove) {
@@ -533,7 +533,7 @@ define(['async'], function(async) {
 							if (!vagueToggle.exist()) {
 								vagueToggle.init(function() {
 									var vague = $bk.Vague({
-										intensity: 10,
+										intensity: 60,
 										forceSVGUrl: false,
 										animationOptions: {
 											duration: 1000,
@@ -782,7 +782,8 @@ define(['async'], function(async) {
 										duration: 300,
 										complete: function() {
 											$li.circleProgress({
-												value: 0
+												value: 0,
+												startAngle: -Math.PI / 2
 											});
 											if (animateIndex === len) {
 												$refreshButton.bind('click', refreshList);
