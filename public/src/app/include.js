@@ -9,8 +9,9 @@ require.config({
 		"jquery-circle-progress": "jquery-circle-progress/dist/circle-progress",
 
 		"async": "async/lib/async",
-
+		"fly": "../src/app/fly",
 		"music": "../src/app/music",
+		"cnknot": "../src/app/cnknot",
 		"app.index": "../src/app/index",
 
 		'PreloadJS': 'PreloadJS/lib/preloadjs-0.6.1.combined',
@@ -34,8 +35,14 @@ require.config({
 		'Vague': {
 			'deps': ['jquery']
 		},
+		'fly': {
+			'deps': ['jquery']
+		},
 		'music': {
-			'deps': ['jquery', 'jquery.rotate', 'jquery.easing', 'async']
+			'deps': ['jquery', 'jquery.rotate', 'jquery.easing', 'async', 'fly']
+		},
+		'cnknot': {
+			'deps': ['jquery']
 		},
 		'app.index': {
 			'deps': ['jquery', 'music']
@@ -45,7 +52,7 @@ require.config({
 });
 /*加载文件*/
 require([
-	'jquery', 'jquery.rotate', 'jquery.easing', 'velocity', 'async', 'jquery-circle-progress', 'Vague', 'music', 'PreloadJS', 'SoundJS',
+	'jquery', 'jquery.rotate', 'jquery.easing', 'velocity', 'async', 'jquery-circle-progress', 'Vague', 'fly', 'music', 'cnknot', 'PreloadJS', 'SoundJS',
 	'app.index'
 ], function(require) {
 	'use strict';

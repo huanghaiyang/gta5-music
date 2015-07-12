@@ -1,0 +1,312 @@
+<!doctype html>
+<html>
+	<head>
+		<title></title>
+		<meta charset='utf-8'>
+		<style type="text/css">
+		:root,body{
+			height: 100%;
+			width: 100%;
+		}
+		.z{
+			width:200px;
+			height: 400px;
+			left: 400px;
+			position: absolute;
+		}
+		.z div{
+			position: absolute;
+			
+		}
+		.z .red{
+			background-color: red;
+		}
+		.f1{
+			width: 18px;
+			height: 18px;
+			transform:rotate(45deg);
+			top:0;
+			border-radius: 2px;
+		}
+		.l1,.l2,.l3,.l4{
+			width:2px;
+			height: 10px;
+		}
+		.c1{
+			width:14px;
+			height: 14px;
+			border-radius: 7px;
+		}
+		.r{
+			width:80px;
+			height: 80px;
+			transform:rotate(45deg);
+		}
+		.r .ro{
+			position: relative;
+			display: table;
+			border-collapse:separate;
+ 			border-spacing: 1px;
+		}
+		.r .b{
+			width:15px;
+			height: 14px;
+			position: relative;
+			display: table-cell;
+			border-radius: 2px;
+		}
+		.c2{
+			width:10px;
+			height: 10px;
+			border-radius: 5px;
+		}
+		.c3{
+			width:10px;
+			height: 10px;
+			border-radius: 5px 5px 0 0;
+		}
+		.c4{
+			width:14px;
+			height: 14px;
+			border-radius: 8px;
+		}
+		.k{
+			width: 10px;
+			height: 12px;
+		}
+		.k1{
+			width: 14px;
+			height: 6px;
+		}
+		.s{
+			height: 150px;
+			display: table;
+			border-collapse:separate;
+ 			border-spacing: 1px;
+		}
+		.ss{
+			width: 1px;
+			height: 100%;
+			position: relative !important;
+			display: table-cell;
+		}
+		.i1 {
+		    position: relative;
+		    width: 162px;
+		    height: 46px;
+		}
+		 
+		.i1:before,
+		.i1:after {
+		    content: "";
+		    position: absolute;
+		    top: 0;
+		    left: 0;
+		    width: 30px;
+		    height: 40px;    
+		    border: 3px solid red;
+   			border-radius:50%   50%  50%  50%  / 40%   40%   60%  60%;
+		    -webkit-transform: rotate(-90deg);
+		       -moz-transform: rotate(-90deg);
+		        -ms-transform: rotate(-90deg);
+		         -o-transform: rotate(-90deg);
+		            transform: rotate(-90deg);
+		}
+		 
+		.i1:after,.i2:after {
+		    left: auto;
+		    right: 0;
+		    border-radius:50%   50%  50%  50%  / 60%   60%   40%  40%;
+		    -webkit-transform: rotate(-90deg);
+		       -moz-transform: rotate(-90deg);
+		        -ms-transform: rotate(-90deg);
+		         -o-transform: rotate(-90deg);
+		            transform: rotate(-90deg);
+		} 
+		.i2 {
+		    position: relative;
+		    width: 126px;
+		    height: 24px;
+		}
+		.i2:before,
+		.i2:after {
+		    content: "";
+		    position: absolute;
+		    top: 0;
+		    left: 0;
+		    width: 12px;
+		    height: 20px;    
+		    border: 2px solid red;
+		    border-radius:50%   50%  50%  50%  / 40%   40%   60%  60%;
+		    -webkit-transform: rotate(-90deg);
+		       -moz-transform: rotate(-90deg);
+		        -ms-transform: rotate(-90deg);
+		         -o-transform: rotate(-90deg);
+		            transform: rotate(-90deg);
+		}
+		 
+		.i2:after {
+		    left: auto;
+		    right: 0;
+		    border-radius:50%   50%  50%  50%  / 60%   60%   40%  40%;
+		    -webkit-transform: rotate(-90deg);
+		       -moz-transform: rotate(-90deg);
+		        -ms-transform: rotate(-90deg);
+		         -o-transform: rotate(-90deg);
+		            transform: rotate(-90deg);
+		}  
+		.e1 {
+		    position: relative;
+		    width: 12px;
+		    height: 24px;
+		}
+		.e1:before,
+		.e1:after {
+		    content: "";
+		    position: absolute;
+		    top: 0;
+		    left: 0;
+		    width: 12px;
+		    height: 20px;    
+		    border: 2px solid red;
+		    border-radius:50%   50%  50%  50%  / 40%   40%   60%  60%;
+		    -webkit-transform: rotate(-90deg);
+		       -moz-transform: rotate(-90deg);
+		        -ms-transform: rotate(-90deg);
+		         -o-transform: rotate(-90deg);
+		            transform: rotate(-90deg);
+		} 
+		</style>
+		<script type="text/javascript" src='bower_components/jquery/dist/jquery.js'></script>
+		<script type="text/javascript">
+		$(document).ready(function(){
+			var $z  = $('.z'), $f1 = $('.f1') , $l1 = $('.l1') , $c1 = $('.c1') , $l2 = $('.l2') , $r = $('.r') , $l3 = $('.l3') , $c2 = $('.c2') , $l4 = $('.l4') , $c3 = $('.c3') , $c4 = $('.c4'),
+				$k = $('.k') , $k1 = $('.k1') , $s = $('.s') , $i1 = $('.i1') , $i2 = $('.i2'),
+				$e1 = $('.e1');
+			$f1.css({
+				left : ($z.width()  - $f1.width()) / 2 , 
+				top : Math.sqrt(2 * Math.pow($f1.height() / 2 , 2)) - $f1.height() / 2
+			});
+			$l1.css({
+				left : ($z.width()  - $l1.width()) / 2,
+				top : Math.sqrt(2 * Math.pow($f1.height() , 2))
+			});
+			$c1.css({
+				left : ($z.width()  - $c1.width()) / 2,
+				top : Math.sqrt(2 * Math.pow($f1.height() , 2)) + $l1.height()
+			});
+			$l2.css({
+				left : ($z.width()  - $l2.width()) / 2,
+				top : Math.sqrt(2 * Math.pow($f1.height() , 2)) + $l1.height() + $c1.height()
+			});
+			$r.css({
+				left : ($z.width()  - $r.width()) / 2,
+				top : Math.sqrt(2 * Math.pow($f1.height() , 2)) + $l1.height() + $c1.height() + $l2.height() + Math.sqrt(2 * Math.pow($r.height() / 2 , 2)) - $r.height() / 2
+			});
+			$l3.css({
+				left : ($z.width()  - $l3.width()) / 2,
+				top : Math.sqrt(2 * Math.pow($f1.height() , 2)) + $l1.height() + $c1.height() + $l2.height() + Math.sqrt(2 * Math.pow($r.height() , 2))
+			});
+			$c2.css({
+				left : ($z.width()  - $c2.width()) / 2,
+				top : Math.sqrt(2 * Math.pow($f1.height() , 2)) + $l1.height() + $c1.height() + $l2.height() + Math.sqrt(2 * Math.pow($r.height() , 2)) + $l3.height()
+			});
+			$l4.css({
+				left : ($z.width()  - $l4.width()) / 2,
+				top : Math.sqrt(2 * Math.pow($f1.height() , 2)) + $l1.height() + $c1.height() + $l2.height() + Math.sqrt(2 * Math.pow($r.height() , 2)) + $l3.height() + $c2.height()
+			});
+			$c3.css({
+				left : ($z.width()  - $c3.width()) / 2,
+				top : Math.sqrt(2 * Math.pow($f1.height() , 2)) + $l1.height() + $c1.height() + $l2.height() + Math.sqrt(2 * Math.pow($r.height() , 2)) + $l3.height() + $c2.height() + $l4.height()
+			});
+			$c4.css({
+				left : ($z.width()  - $c4.width()) / 2,
+				top : Math.sqrt(2 * Math.pow($f1.height() , 2)) + $l1.height() + $c1.height() + $l2.height() + Math.sqrt(2 * Math.pow($r.height() , 2)) + $l3.height() + $c2.height() + $l4.height() + $c3.height() - 4
+			});
+			$k.css({
+				left : ($z.width()  - $k.width()) / 2,
+				top : Math.sqrt(2 * Math.pow($f1.height() , 2)) + $l1.height() + $c1.height() + $l2.height() + Math.sqrt(2 * Math.pow($r.height() , 2)) + $l3.height() + $c2.height() + $l4.height() + $c3.height() - 4 +  $c4.height() - 4
+			});
+			$k1.css({
+				left : ($z.width()  - $k1.width()) / 2,
+				top : Math.sqrt(2 * Math.pow($f1.height() , 2)) + $l1.height() + $c1.height() + $l2.height() + Math.sqrt(2 * Math.pow($r.height() , 2)) + $l3.height() + $c2.height() + $l4.height() + $c3.height() - 4 +  $c4.height() - 4 + $k.height()
+			});
+			$s.css({
+				left : ($z.width()  - $k1.width()) / 2,
+				top : Math.sqrt(2 * Math.pow($f1.height() , 2)) + $l1.height() + $c1.height() + $l2.height() + Math.sqrt(2 * Math.pow($r.height() , 2)) + $l3.height() + $c2.height() + $l4.height() + $c3.height() - 4 +  $c4.height() - 4 + $k.height() + $k1.height()
+			});
+
+			$i1.css({
+				left : ($z.width()  - $i1.width()) / 2,
+				top : Math.sqrt(2 * Math.pow($f1.height() , 2)) + $l1.height() + $c1.height() + $l2.height() + Math.sqrt(2 * Math.pow($r.height() , 2)) / 2 - $i1.height() / 2
+			});
+			$i2.css({
+				left : ($z.width()  - $i2.width()) / 2,
+				top : Math.sqrt(2 * Math.pow($f1.height() , 2)) + $l1.height() + $c1.height() + $l2.height() + Math.sqrt(2 * Math.pow($r.height() , 2)) / 2 - $i2.height() / 2
+			});
+		});
+		</script>
+	</head>
+	<body>
+		<div class='z'>
+			<div class='f1 red'></div>
+			<div class='l1 red'></div>
+			<div class='c1 red'></div>
+			<div class='l2 red'></div>
+			<div class="r">
+				<div class='ro'>
+					<div class='b red'></div>
+					<div class='b red'></div>
+					<div class='b red'></div>
+					<div class='b red'></div>
+					<div class='b red'></div>
+				</div>
+				<div class='ro'>
+					<div class='b red'></div>
+					<div class='b red'></div>
+					<div class='b red'></div>
+					<div class='b red'></div>
+					<div class='b red'></div>
+				</div>
+				<div class='ro'>
+					<div class='b red'></div>
+					<div class='b red'></div>
+					<div class='b red'></div>
+					<div class='b red'></div>
+					<div class='b red'></div>
+				</div>
+				<div class='ro'>
+					<div class='b red'></div>
+					<div class='b red'></div>
+					<div class='b red'></div>
+					<div class='b red'></div>
+					<div class='b red'></div>
+				</div>
+				<div class='ro'>
+					<div class='b red'></div>
+					<div class='b red'></div>
+					<div class='b red'></div>
+					<div class='b red'></div>
+					<div class='b red'></div>
+				</div>
+			</div>
+			<div class='l3 red'></div>
+			<div class='c2 red'></div>
+			<div class='l4 red'></div>
+			<div class='c3 red'></div>
+			<div class='c4 red'></div>
+			<div class='k red'></div>
+			<div class='k1 red'></div>
+			<div class='s'>
+				<div class='ss red'></div>
+				<div class='ss red'></div>
+				<div class='ss red'></div>
+				<div class='ss red'></div>
+				<div class='ss red'></div>
+				<div class='ss red'></div>
+			</div>
+			<div class='i1'></div>
+			<div class='i2'></div>
+		</div>
+	</body>
+</html>

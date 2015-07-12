@@ -2,7 +2,8 @@ define(['async'], function(async) {
 	(function($) {
 		'use strict';
 		window.AudioContext = window.AudioContext || window.webkitAudioContext || window.mozAudioContext || window.msAudioContext;
-		var audioContext=new window.AudioContext();
+		var audioContext = new window.AudioContext();
+
 		function throttle(fn, delay) {
 			var timer = null;
 			return function() {
@@ -247,6 +248,18 @@ define(['async'], function(async) {
 				removeAll: function() {
 					this.collection = [];
 					this.indexes = {};
+				},
+				getFirstId: function() {
+					return this.collection[0].id;
+				},
+				getLastId: function() {
+					return this.collection[this.collection.length - 1].id;
+				},
+				getPreId: function(id) {
+					return this.getPre(id).id;
+				},
+				getNextId: function(id) {
+					return this.getNext(id).id
 				}
 			};
 		})();
@@ -328,7 +341,9 @@ define(['async'], function(async) {
 					$u = $(this),
 					firstLoad = true,
 					imgWidth,
-					$refreshButton, currentSound, $musicthumb = $('#musicthumb'),
+					$refreshButton,
+					currentSound,
+					$musicthumb = $('#musicthumb'),
 					$musictitle = $('#musictitle'),
 					$playnow = $('#playnow'),
 					$playbackward = $('#playbackward'),
@@ -336,7 +351,11 @@ define(['async'], function(async) {
 					$remainProgress = $('#remainProgress'),
 					$nowProgress = $('#nowProgress'),
 					progressBar = new ProgressBar($remainProgress, $nowProgress),
-					$playTime = $('#playTime');
+					$playTime = $('#playTime'),
+					$ls,
+					len,
+					centerPoint,
+					$listbtn = $('#listbtn');
 
 				function getLiByDataId(id) {
 					return $u.find('li[data-id=' + id + ']');
@@ -473,164 +492,272 @@ define(['async'], function(async) {
 					$playnow.trigger('pause');
 				};
 
-				function done(data, status) {
+				function bindAction($li) {
+					var soundInstance,
+						rotateController,
+						id = $li.attr('data-id'),
+						$li = $li,
+						$rotation = $li.find('.rotation'),
+						$img = $li.find('img'),
+						clickCount = 0,
+						firstPlay = $li.attr('data-firstplay');
 
-					var $ls, len;
-
-					function bindAction($li) {
-						var soundInstance, rotateController, id = $li.attr('data-id'),
-							$li = $li,
-							$rotation = $li.find('.rotation'),
-							$img = $li.find('img'),
-							clickCount = 0,
-							firstPlay = $li.attr('data-firstplay');
-
-						rotateController = new RotateController(id, $rotation);
-						rotateControllerCollection.add(rotateController);
-						$li.bind("click", function() {
-							if (clickCount === 0) {
-								getLiByDataId(currentSound).trigger('pause');
-								$li.trigger("play");
-							} else {
-								$li.trigger("pause");
-							}
-						}).bind("pause", function(evt) {
-							if (soundInstance) {
-								soundInstance.pause();
-								rotateController.stop();
-								clickCount = 0;
-							}
-							$li.removeClass('active');
-							$img.removeClass('active');
-							$playnow.trigger('play');
-						}).bind("play", function(evt) {
-							if (!firstPlay) {
-								soundInstance = soundInstanceCollection.get(id);
-								if (soundInstance) {
-									if (!soundInstance.hasPlaybackResource())
-										soundInstance.play();
-									else
-										soundInstance.resume();
-									rotateController.rotate360();
-								}
-								$playnow.trigger('pause');
-							} else {
-								progressBar.clearAll();
-								queue.loadFile({
-									id: id,
-									src: $li.attr('data-path'),
-									type: createjs.AbstractLoader.SOUND,
-									maintainOrder: true,
-									size: $li.attr('data-size')
-								}, true);
-							}
-							$li.addClass('active');
-							$img.addClass('active');
-							firstPlay = false;
-							clickCount = 1;
-							currentSound = id;
-							$musicthumb.attr('src', $li.attr('data-img'));
-							if (!vagueToggle.exist()) {
-								vagueToggle.init(function() {
-									var vague = $bk.Vague({
-										intensity: 30,
-										forceSVGUrl: false,
-										animationOptions: {
-											duration: 1000,
-											easing: 'linear'
-										}
-									});
-									vague.blur();
-									return vague;
-								}(), function() {
-									$bk.css({
-										backgroundImage: 'url(' + $li.attr('data-img') + ')'
-									});
-								});
-							} else {
-								vagueToggle.regist('changeBk', function() {
-									$bk.css({
-										backgroundImage: 'url(' + $li.attr('data-img') + ')'
-									});
-								});
-							}
-							$musictitle.html($li.attr('data-title'));
-							vagueToggle.trigger('changeBk', true);
-						}).bind('instance', function() {
-							soundInstance = soundInstanceCollection.get(id);
-						});
-					};
-
-					function getPosition(index, r) {
-						var c = (2 * Math.PI / 360) * (360 / len) * (len - index) + Math.PI;
-						var x = centerPoint.x + Math.sin(c) * r;
-						var y = centerPoint.y + Math.cos(c) * r;
-						return {
-							c: c,
-							x: x,
-							y: y
-						};
-					};
-
-					function refreshList() {
-						firstLoad = false;
-						clearAudioTags();
-						$refreshButton.unbind('click', refreshList);
+					rotateController = new RotateController(id, $rotation);
+					rotateControllerCollection.add(rotateController);
+					$li.bind("click", function() {
+						if (clickCount === 0) {
+							getLiByDataId(currentSound).trigger('pause');
+							$li.trigger("play");
+						} else {
+							$li.trigger("pause");
+						}
+					}).bind("pause", function(evt) {
+						if (soundInstance) {
+							soundInstance.pause();
+							rotateController.stop();
+							clickCount = 0;
+						}
+						$li.removeClass('active');
+						$img.removeClass('active');
 						$playnow.trigger('play');
-						queue.close();
-						queue.removeAll();
-						rotateControllerCollection.resetAll(function() {
-							rotateControllerCollection.removeAll();
-						});
-						soundInstanceCollection.removeAll();
-
-						async.mapLimit($ls, 1, function(other, callback) {
-							var other = $(other);
-							if (other.attr('data-id') === currentSound)
-								other.trigger("pause");
-							other.unbind('click');
-							other.unbind('pause');
-							other.unbind('play');
-							other.unbind('instance');
-							callback();
-						}, function() {
-							// 延迟
-							setTimeout(function() {
-								progressBar.clearAll();
-								currentSound = null;
-							}, 10);
-						});
-						var animateIndex = 0,
-							_width = $ls.eq(0).width(),
-							_r = _width / 4,
-							r = $u.width() / 4 - _r;
-						async.mapLimit($ls, 1, function(li, callback) {
-							setTimeout(function() {
-								if (animateIndex <= len - 1)
-									animateIndex++;
-								callback();
-							}, 100);
-							var $li = $(li),
-								position = getPosition(animateIndex, r);
-							$li.animate({
-								left: position.x - _r,
-								top: position.y - _r,
-								width: _width / 2,
-								height: _width / 2
-							}, {
-								easing: 'easeInBack',
-								duration: 300,
-								complete: function() {
-									if (animateIndex === len) {
-										load();
-										animateIndex = 0;
+					}).bind("play", function(evt) {
+						if (!firstPlay) {
+							soundInstance = soundInstanceCollection.get(id);
+							if (soundInstance) {
+								if (!soundInstance.hasPlaybackResource())
+									soundInstance.play();
+								else
+									soundInstance.resume();
+								rotateController.rotate360();
+							}
+							$playnow.trigger('pause');
+						} else {
+							progressBar.clearAll();
+							queue.loadFile({
+								id: id,
+								src: $li.attr('data-path'),
+								type: createjs.AbstractLoader.SOUND,
+								maintainOrder: true,
+								size: $li.attr('data-size')
+							}, true);
+						}
+						$li.addClass('active');
+						$img.addClass('active');
+						firstPlay = false;
+						clickCount = 1;
+						currentSound = id;
+						$musicthumb.attr('src', $li.attr('data-img'));
+						if (!vagueToggle.exist()) {
+							vagueToggle.init(function() {
+								var vague = $bk.Vague({
+									intensity: 30,
+									forceSVGUrl: false,
+									animationOptions: {
+										duration: 1000,
+										easing: 'linear'
 									}
+								});
+								vague.blur();
+								return vague;
+							}(), function() {
+								$bk.css({
+									backgroundImage: 'url(' + $li.attr('data-img') + ')'
+								});
+							});
+						} else {
+							vagueToggle.regist('changeBk', function() {
+								$bk.css({
+									backgroundImage: 'url(' + $li.attr('data-img') + ')'
+								});
+							});
+						}
+						$musictitle.html($li.attr('data-title'));
+						vagueToggle.trigger('changeBk', true);
+					}).bind('instance', function() {
+						soundInstance = soundInstanceCollection.get(id);
+					});
+				};
+
+				function getPosition(index, r) {
+					var c = (2 * Math.PI / 360) * (360 / len) * (len - index) + Math.PI;
+					var x = centerPoint.x + Math.sin(c) * r;
+					var y = centerPoint.y + Math.cos(c) * r;
+					return {
+						c: c,
+						x: x,
+						y: y
+					};
+				};
+
+				function listProxy(sort) {
+					var listed = false,
+						totalTime = 400,
+						eachTime = totalTime / len;
+					var uStyle = {
+						width: $u.width(),
+						height: $u.height()
+					};
+					var $firstLi = getLiByDataId(soundInstanceCollection.getFirstId());
+					var _width = $firstLi.width();
+					var gapWidth = (uStyle.width - (len * _width)) / (len - 1);
+					var positions = [];
+					var _top = (uStyle.height - _width) / 2;
+					for (var i = 0; i < len; i++) {
+						if (sort === true) {
+							if (i === 0)
+								positions.push({
+									top: _top,
+									left: uStyle.width - _width
+								});
+							else {
+								var prePosition = positions[positions.length - 1];
+								positions.push({
+									top: _top,
+									left: prePosition.left - gapWidth - _width
+								});
+							}
+						} else {
+							if (i === 0)
+								positions.push({
+									top: _top,
+									left: 0
+								});
+							else {
+								var prePosition = positions[positions.length - 1];
+								positions.push({
+									top: _top,
+									left: prePosition.left + gapWidth + _width
+								});
+							}
+						}
+					}
+					var backPositions = [];
+					return function() {
+						if (listed === false) {
+							async.mapLimit(soundInstanceCollection.collection, 1, function(c, callback) {
+								var index = soundInstanceCollection.indexes[c.id];
+								setTimeout(function() {
+									callback();
+								}, 100);
+								var $li = getLiByDataId(c.id);
+								backPositions.push({
+									top: $li.position().top,
+									left: $li.position().left
+								});
+								$li.fly({
+									start: backPositions[index],
+									end: positions[index],
+									autoPlay: true,
+									speed: 1.1,
+									vertex_Rtop: 0,
+									onEnd: function() {
+										var $cnknot = $('.z').first().clone(true);
+										$('body').append($cnknot);
+										$cnknot.show();
+										$cnknot.css({
+											top: $li.offset().top + $li.height(),
+											left: $li.offset().left - $cnknot.width() / 2 + $li.width() / 2,
+											opacity: 0.9
+										});
+									}
+								});
+							}, function() {
+								if (index === 0) {
+									listed = true;
+									$listbtn.attr('data-listed', listed);
 								}
 							});
-						}, function(err, results) {
-							console.log('the <li>s all animated.');
-						});
+						} else {
+							async.mapLimit(soundInstanceCollection.collection, 1, function(c, callback) {
+								var index = soundInstanceCollection.indexes[c.id];
+								setTimeout(function() {
+									callback();
+								}, 100);
+								var $li = getLiByDataId(c.id);
+								$li.fly({
+									start: positions[index],
+									end: backPositions[index],
+									autoPlay: true,
+									speed: 1.1,
+									vertex_Rtop: 0,
+									onEnd: function() {}
+								});
+							}, function() {
+								if (index === 0) {
+									listed = false;
+									$listbtn.attr('data-listed', listed);
+								}
+							});
+						}
 					};
+				};
+
+				function refreshList() {
+					$listbtn.unbind('click');
+					firstLoad = false;
+					clearAudioTags();
+					$refreshButton.unbind('click', refreshList);
+					$playnow.trigger('play');
+					queue.close();
+					queue.removeAll();
+					rotateControllerCollection.resetAll(function() {
+						rotateControllerCollection.removeAll();
+					});
+					soundInstanceCollection.removeAll();
+
+					async.mapLimit($ls, 1, function(other, callback) {
+						var other = $(other);
+						if (other.attr('data-id') === currentSound)
+							other.trigger("pause");
+						other.unbind('click');
+						other.unbind('pause');
+						other.unbind('play');
+						other.unbind('instance');
+						callback();
+					}, function() {
+						// 延迟
+						setTimeout(function() {
+							progressBar.clearAll();
+							currentSound = null;
+						}, 10);
+					});
+					var animateIndex = 0,
+						_height = $ls.eq(0).height(),
+						_r = _height / 4,
+						r = $u.height() / 4 - _r;
+					async.mapLimit($ls, 1, function(li, callback) {
+						var index = animateIndex;
+						setTimeout(function() {
+							if (animateIndex <= len - 1)
+								animateIndex++;
+							callback();
+						}, 100);
+						var $li = $(li),
+							position = getPosition(animateIndex, r);
+						$li.animate({
+							left: position.x - _r,
+							top: position.y - _r,
+							width: _height / 2,
+							height: _height / 2
+						}, {
+							easing: 'easeInBack',
+							duration: 300,
+							complete: function() {
+								if (index + 1 === animateIndex && animateIndex === len) {
+									load();
+									animateIndex = 0;
+								}
+							}
+						});
+						$li.queue(function() {
+							$(this).dequeue();
+						});
+					}, function(err, results) {
+						console.log('the <li>s all animated.');
+					});
+				};
+
+				function done(data, status) {
 					//返回列表成功
 					if (status === "success") {
 						if (data) {
@@ -675,50 +802,21 @@ define(['async'], function(async) {
 									currentSound = dataId;
 								}
 							}
+							if (!$ls) {
+								$ls = $u.children("li");
+								len = $ls.length;
+							}
 							if (firstLoad === true) {
 								getLiByDataId(soundInstanceCollection.getFirst().id).trigger('play');
+								$listbtn.on('click', listProxy(true));
 							} else {
 								getLiByDataId(soundInstanceCollection.getLast().id).trigger('play');
 							}
-							//渲染页面
-							if (firstLoad) {
-								/*如果填充父容器*/
-								if ($opts.centerFill) {
-									var $parent = $u.parent(),
-										parentWidth = $parent.width(),
-										parentHeight = $parent.height();
-									if (parentWidth > parentHeight) {
-										$u.css({
-											width: parentHeight,
-											height: parentHeight,
-											left: (parentWidth - parentHeight) / 2
-										});
-									} else if (parentWidth <= parentHeight) {
-										$u.css({
-											width: parentWidth,
-											height: parentWidth,
-											top: (parentHeight - parentWidth) / 2
-										});
-									}
-								} else {
-									if ($opts.size && $opts.size > 0) {
-										$u.css({
-											width: $opts.size,
-											height: $opts.size
-										});
-									}
-									if ($opts.top)
-										$u.css('top', $opts.top);
-									if ($opts.left)
-										$u.css('top', $opts.left);
-								}
-							}
-							$ls = $u.children("li");
-							len = $ls.length;
-							var centerPoint = {
-								x: $u.width() / 2,
-								y: $u.height() / 2
-							};
+							if (!centerPoint)
+								centerPoint = {
+									x: $u.width() / 2,
+									y: $u.height() / 2
+								};
 
 
 							if (!$refreshButton) {
@@ -735,9 +833,9 @@ define(['async'], function(async) {
 
 								$ls.each(function(index, li) {
 									$li = $(li);
-									var _width = $ls.eq(0).width(),
-										_r = _width / 2,
-										r = $u.width() / 2 - _r,
+									var _height = $ls.eq(0).height(),
+										_r = _height / 2,
+										r = $u.height() / 2 - _r,
 										position = getPosition(index, r);
 									$li.css({
 										left: position.x - _r,
@@ -755,9 +853,9 @@ define(['async'], function(async) {
 								});
 							} else {
 								var animateIndex = 0,
-									_width = $ls.eq(0).width(),
-									_r = _width * 2 / 2,
-									r = $u.width() / 2 - _r;
+									_height = $ls.eq(0).height(),
+									_r = _height * 2 / 2,
+									r = $u.height() / 2 - _r;
 								async.mapLimit((function() {
 									var arr = [];
 									for (var i = $ls.length - 1; i >= 0; i--) {
@@ -766,6 +864,7 @@ define(['async'], function(async) {
 									return arr;
 								})(), 1, function(li, callback) {
 									var $li = $(li);
+									var index = animateIndex;
 									setTimeout(function() {
 										if (animateIndex <= len - 1)
 											animateIndex++;
@@ -775,11 +874,12 @@ define(['async'], function(async) {
 									$li.animate({
 										left: position.x - _r,
 										top: position.y - _r,
-										width: _width * 2,
-										height: _width * 2
+										width: _height * 2,
+										height: _height * 2
 									}, {
 										easing: 'easeInOutBack',
 										duration: 300,
+										queue: true,
 										complete: function() {
 											$li.circleProgress({
 												value: 0,
@@ -789,9 +889,13 @@ define(['async'], function(async) {
 													duration: 0
 												}
 											});
-											if (animateIndex === len) {
-												$refreshButton.bind('click', refreshList);
-												animateIndex = 0;
+											if (index + 1 === animateIndex && animateIndex === len) {
+												console.log($li.attr('data-id'));
+												setTimeout(function() {
+													$refreshButton.bind('click', refreshList);
+													animateIndex = 0;
+													$listbtn.on('click', listProxy(false));
+												}, 300)
 											}
 										}
 									});
