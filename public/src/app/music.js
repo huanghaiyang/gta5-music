@@ -307,7 +307,6 @@ define(['async'], function(async) {
 			this.time = 10;
 		};
 		HoverDelay.prototype = (function() {
-
 			return {
 				config: function(config) {
 					this.total = config.total;
@@ -328,6 +327,67 @@ define(['async'], function(async) {
 					clearInterval(this.interval);
 					this.interval = null;
 					this.count = 0;
+				}
+			};
+		})();
+
+		function CnKnot(id, $element) {
+			this.$element = $element;
+			this.id = id;
+		};
+
+		CnKnot.prototype = (function() {
+			return {
+				show: function(isRotate) {
+					/*
+					很奇怪：这么写竟然没有渐变效果
+					this.$element.show();
+					this.$element.css({
+						opacity: 0.9
+					});
+					*/
+					var self = this;
+					this.$element.show();
+					this.$element.css({
+						opacity: 0
+					});
+					this.$element.animate({
+						opacity: 0.9
+					}, {
+						duration: 300,
+						complete: function() {
+							if (isRotate) {
+								self.$element.addClass('z-active')
+							}
+						}
+					});
+				},
+				hide: function() {
+					var self = this;
+					this.$element.css({
+						opacity: 0
+					});
+					setTimeout(function() {
+						self.$element.hide();
+					}, 300);
+				},
+				css: function(style) {
+					this.$element.css(style);
+				}
+			};
+		})();
+
+		var CnknotCollection = (function() {
+			var collections = {};
+			return {
+				add: function(cnknot) {
+					collections[cnknot.id] = cnknot;
+				},
+				get: function(id) {
+					return collections[id];
+				},
+				exist: function(id) {
+					return !!collections[id]
 				}
 			};
 		})();
@@ -651,14 +711,25 @@ define(['async'], function(async) {
 									speed: 1.1,
 									vertex_Rtop: 0,
 									onEnd: function() {
-										var $cnknot = $('.z').first().clone(true);
-										$('body').append($cnknot);
-										$cnknot.show();
-										$cnknot.css({
-											top: $li.offset().top + $li.height(),
-											left: $li.offset().left - $cnknot.width() / 2 + $li.width() / 2,
-											opacity: 0.9
-										});
+										if (!CnknotCollection.exist(c.id)) {
+											var $cnknot = $('.z').first().clone(true);
+											$('body').append($cnknot);
+											var cnknot = new CnKnot(c.id, $cnknot);
+											CnknotCollection.add(cnknot);
+											cnknot.css({
+												top: $li.offset().top + $li.height() - $cnknot.height() / 4,
+												left: $li.offset().left - $cnknot.width() / 2 + $li.width() / 2
+											});
+											if (c.id === currentSound)
+												cnknot.show(true);
+											else
+												cnknot.show();
+										} else {
+											if (c.id === currentSound)
+												CnknotCollection.get(c.id).show(true);
+											else
+												CnknotCollection.get(c.id).show();
+										}
 									}
 								});
 							}, function() {
@@ -669,19 +740,22 @@ define(['async'], function(async) {
 							});
 						} else {
 							async.mapLimit(soundInstanceCollection.collection, 1, function(c, callback) {
-								var index = soundInstanceCollection.indexes[c.id];
+								CnknotCollection.get(c.id).hide();
 								setTimeout(function() {
-									callback();
-								}, 100);
-								var $li = getLiByDataId(c.id);
-								$li.fly({
-									start: positions[index],
-									end: backPositions[index],
-									autoPlay: true,
-									speed: 1.1,
-									vertex_Rtop: 0,
-									onEnd: function() {}
-								});
+									var index = soundInstanceCollection.indexes[c.id];
+									setTimeout(function() {
+										callback();
+									}, 100);
+									var $li = getLiByDataId(c.id);
+									$li.fly({
+										start: positions[index],
+										end: backPositions[index],
+										autoPlay: true,
+										speed: 1.1,
+										vertex_Rtop: 0,
+										onEnd: function() {}
+									});
+								}, 500);
 							}, function() {
 								if (index === 0) {
 									listed = false;

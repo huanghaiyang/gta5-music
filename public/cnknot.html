@@ -20,11 +20,16 @@
 		}
 		.z .red{
 			background-color: red;
+			box-shadow: 0px 0px 1px 0 #666;
 		}
 		.f1{
 			width: 18px;
 			height: 18px;
-			transform:rotate(45deg);
+			-webkit-transform: rotate(45deg);
+		       -moz-transform: rotate(45deg);
+		        -ms-transform: rotate(45deg);
+		         -o-transform: rotate(45deg);
+		            transform: rotate(45deg);
 			top:0;
 			border-radius: 2px;
 		}
@@ -36,11 +41,51 @@
 			width:14px;
 			height: 14px;
 			border-radius: 7px;
+			box-shadow: 0px 0px 1px 0 #666;
+			z-index: 10;
+		}
+		.c1-1 {
+		    position: relative;
+		    width: 40px;
+		    height: 12px;
+		}
+		.c1-1:before,
+		.c1-1:after {
+			box-shadow: 0px 0px 1px 0 #666;
+		    content: "";
+		    position: absolute;
+		    top: 0;
+		    left: 0;
+		    width: 8px;
+		    height: 14px;    
+		    border: 2px solid red;
+		    border-radius:50%   50%  50%  50%  / 30%   30%   70%  70%;
+		    -webkit-transform: rotate(-90deg);
+		       -moz-transform: rotate(-90deg);
+		        -ms-transform: rotate(-90deg);
+		         -o-transform: rotate(-90deg);
+		            transform: rotate(-90deg);
+		}
+		 
+		.c1-1:after {
+		    left: auto;
+		    right: 0;
+		    border-radius:50%   50%  50%  50%  / 70%   70%   30%  30%;
+		    -webkit-transform: rotate(-90deg);
+		       -moz-transform: rotate(-90deg);
+		        -ms-transform: rotate(-90deg);
+		         -o-transform: rotate(-90deg);
+		            transform: rotate(-90deg);
 		}
 		.r{
 			width:80px;
 			height: 80px;
-			transform:rotate(45deg);
+			z-index: 10;
+			-webkit-transform: rotate(45deg);
+		       -moz-transform: rotate(45deg);
+		        -ms-transform: rotate(45deg);
+		         -o-transform: rotate(45deg);
+		            transform: rotate(45deg);
 		}
 		.r .ro{
 			position: relative;
@@ -69,6 +114,7 @@
 			width:14px;
 			height: 14px;
 			border-radius: 8px;
+			z-index: 10;
 		}
 		.k{
 			width: 10px;
@@ -98,6 +144,7 @@
 		 
 		.i1:before,
 		.i1:after {
+			box-shadow: 0px 0px 1px 0 #666;
 		    content: "";
 		    position: absolute;
 		    top: 0;
@@ -105,7 +152,7 @@
 		    width: 30px;
 		    height: 40px;    
 		    border: 3px solid red;
-   			border-radius:50%   50%  50%  50%  / 40%   40%   60%  60%;
+   			border-radius:50%   50%  50%  50%  / 30%   30%   70%  70%;
 		    -webkit-transform: rotate(-90deg);
 		       -moz-transform: rotate(-90deg);
 		        -ms-transform: rotate(-90deg);
@@ -116,7 +163,7 @@
 		.i1:after,.i2:after {
 		    left: auto;
 		    right: 0;
-		    border-radius:50%   50%  50%  50%  / 60%   60%   40%  40%;
+		    border-radius:50%   50%  50%  50%  / 70%   70%   30%  30%;
 		    -webkit-transform: rotate(-90deg);
 		       -moz-transform: rotate(-90deg);
 		        -ms-transform: rotate(-90deg);
@@ -125,11 +172,12 @@
 		} 
 		.i2 {
 		    position: relative;
-		    width: 126px;
+		    width: 136px;
 		    height: 24px;
 		}
 		.i2:before,
 		.i2:after {
+			box-shadow: 0px 0px 1px 0 #666;
 		    content: "";
 		    position: absolute;
 		    top: 0;
@@ -137,7 +185,7 @@
 		    width: 12px;
 		    height: 20px;    
 		    border: 2px solid red;
-		    border-radius:50%   50%  50%  50%  / 40%   40%   60%  60%;
+		    border-radius:50%   50%  50%  50%  / 30%   30%   70%  70%;
 		    -webkit-transform: rotate(-90deg);
 		       -moz-transform: rotate(-90deg);
 		        -ms-transform: rotate(-90deg);
@@ -148,7 +196,7 @@
 		.i2:after {
 		    left: auto;
 		    right: 0;
-		    border-radius:50%   50%  50%  50%  / 60%   60%   40%  40%;
+		    border-radius:50%   50%  50%  50%  / 70%   70%   30%  30%;
 		    -webkit-transform: rotate(-90deg);
 		       -moz-transform: rotate(-90deg);
 		        -ms-transform: rotate(-90deg);
@@ -162,6 +210,7 @@
 		}
 		.e1:before,
 		.e1:after {
+			box-shadow: 0px 0px 1px 0 #666;
 		    content: "";
 		    position: absolute;
 		    top: 0;
@@ -169,7 +218,69 @@
 		    width: 12px;
 		    height: 20px;    
 		    border: 2px solid red;
-		    border-radius:50%   50%  50%  50%  / 40%   40%   60%  60%;
+		    border-radius:50%   50%  50%  50%  / 30%   30%   70%  70%;
+		    -webkit-transform: rotate(-90deg);
+		       -moz-transform: rotate(-90deg);
+		        -ms-transform: rotate(-90deg);
+		         -o-transform: rotate(-90deg);
+		            transform: rotate(-90deg);
+		}
+		.m{
+			width:80px;
+			height: 80px;
+			-webkit-transform: rotate(45deg);
+		       -moz-transform: rotate(45deg);
+		        -ms-transform: rotate(45deg);
+		         -o-transform: rotate(45deg);
+		            transform: rotate(45deg);
+
+		}
+		.n{
+			width:80px;
+			height: 80px;
+			-webkit-transform: rotate(-45deg);
+		       -moz-transform: rotate(-45deg);
+		        -ms-transform: rotate(-45deg);
+		         -o-transform: rotate(-45deg);
+		            transform: rotate(-45deg);
+
+		}
+		.m .rx,.n .rx{
+			position: relative;
+			display: table;
+			border-collapse:separate;
+ 			border-spacing: 1px;
+		}
+		.m .rb , .m .rb-space,.n .rb , .n .rb-space{
+			position: relative;
+ 			width: 120px;
+		    height: 14px;
+			display: table-cell;
+		}
+		 
+		.m .rb:before,
+		.m .rb:after,.n .rb:before,
+		.n .rb:after {
+			box-shadow: 0px 0px 1px 0 #666;
+		    content: "";
+		    position: absolute;
+		    top: 0;
+		    left: -8px;
+		    width: 6px;
+		    height: 10px;    
+		    border: 2px solid red;
+   			border-radius:50%   50%  50%  50%  / 40%   40%   60%  60%;
+		    -webkit-transform: rotate(-90deg);
+		       -moz-transform: rotate(-90deg);
+		        -ms-transform: rotate(-90deg);
+		         -o-transform: rotate(-90deg);
+		            transform: rotate(-90deg);
+		}
+		 
+		.m .rb:after,.n .rb:after{
+		    left: auto;
+		    right: -8px;
+		    border-radius:50%   50%  50%  50%  / 60%   60%   60%  60%;
 		    -webkit-transform: rotate(-90deg);
 		       -moz-transform: rotate(-90deg);
 		        -ms-transform: rotate(-90deg);
@@ -182,7 +293,8 @@
 		$(document).ready(function(){
 			var $z  = $('.z'), $f1 = $('.f1') , $l1 = $('.l1') , $c1 = $('.c1') , $l2 = $('.l2') , $r = $('.r') , $l3 = $('.l3') , $c2 = $('.c2') , $l4 = $('.l4') , $c3 = $('.c3') , $c4 = $('.c4'),
 				$k = $('.k') , $k1 = $('.k1') , $s = $('.s') , $i1 = $('.i1') , $i2 = $('.i2'),
-				$e1 = $('.e1');
+				$e1 = $('.e1') , $c1_1 = $('.c1-1'),
+				$m = $('.m') , $n = $('.n');
 			$f1.css({
 				left : ($z.width()  - $f1.width()) / 2 , 
 				top : Math.sqrt(2 * Math.pow($f1.height() / 2 , 2)) - $f1.height() / 2
@@ -244,6 +356,18 @@
 				left : ($z.width()  - $i2.width()) / 2,
 				top : Math.sqrt(2 * Math.pow($f1.height() , 2)) + $l1.height() + $c1.height() + $l2.height() + Math.sqrt(2 * Math.pow($r.height() , 2)) / 2 - $i2.height() / 2
 			});
+			$c1_1.css({
+				left : ($z.width()  - $c1_1.width()) / 2,
+				top : Math.sqrt(2 * Math.pow($f1.height() , 2)) + $l1.height() + ($c1_1.height() - $c1.height()) / 2
+			});
+			$m.css({
+				left : ($z.width()  - $m.width()) / 2,
+				top : Math.sqrt(2 * Math.pow($f1.height() , 2)) + $l1.height() + $c1.height() + $l2.height() + Math.sqrt(2 * Math.pow($m.height() / 2 , 2)) - $m.height() / 2
+			});
+			$n.css({
+				left : ($z.width()  - $n.width()) / 2,
+				top : Math.sqrt(2 * Math.pow($f1.height() , 2)) + $l1.height() + $c1.height() + $l2.height() + Math.sqrt(2 * Math.pow($n.height() / 2 , 2)) - $n.height() / 2
+			});
 		});
 		</script>
 	</head>
@@ -252,8 +376,9 @@
 			<div class='f1 red'></div>
 			<div class='l1 red'></div>
 			<div class='c1 red'></div>
+			<div class='c1-1'></div>
 			<div class='l2 red'></div>
-			<div class="r">
+			<div class='r'>
 				<div class='ro'>
 					<div class='b red'></div>
 					<div class='b red'></div>
@@ -304,9 +429,44 @@
 				<div class='ss red'></div>
 				<div class='ss red'></div>
 				<div class='ss red'></div>
+				<div class='ss red'></div>
 			</div>
 			<div class='i1'></div>
 			<div class='i2'></div>
+			<div class='m'>
+				<div class='rx'>
+					<div class='rb-space'></div>
+				</div>
+				<div class='rx'>
+					<div class='rb'></div>
+				</div>
+				<div class='rx'>
+					<div class='rb'></div>
+				</div>
+				<div class='rx'>
+					<div class='rb'></div>
+				</div>
+				<div class='rx'>
+					<div class='rb-space'></div>
+				</div>
+			</div>
+			<div class='n'>
+				<div class='rx'>
+					<div class='rb-space'></div>
+				</div>
+				<div class='rx'>
+					<div class='rb'></div>
+				</div>
+				<div class='rx'>
+					<div class='rb'></div>
+				</div>
+				<div class='rx'>
+					<div class='rb'></div>
+				</div>
+				<div class='rx'>
+					<div class='rb-space'></div>
+				</div>
+			</div>
 		</div>
 	</body>
 </html>

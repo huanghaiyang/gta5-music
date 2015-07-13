@@ -15,7 +15,10 @@ $(document).ready(function() {
 		$s = $('.s'),
 		$i1 = $('.i1'),
 		$i2 = $('.i2'),
-		$e1 = $('.e1');
+		$e1 = $('.e1'),
+		$c1_1 = $('.c1-1'),
+		$m = $('.m'),
+		$n = $('.n');
 	$f1.css({
 		left: ($z.width() - $f1.width()) / 2,
 		top: Math.sqrt(2 * Math.pow($f1.height() / 2, 2)) - $f1.height() / 2
@@ -76,5 +79,17 @@ $(document).ready(function() {
 	$i2.css({
 		left: ($z.width() - $i2.width()) / 2,
 		top: Math.sqrt(2 * Math.pow($f1.height(), 2)) + $l1.height() + $c1.height() + $l2.height() + Math.sqrt(2 * Math.pow($r.height(), 2)) / 2 - $i2.height() / 2
+	});
+	$c1_1.css({
+		left: ($z.width() - $c1_1.width()) / 2,
+		top: Math.sqrt(2 * Math.pow($f1.height(), 2)) + $l1.height() + ($c1_1.height() - $c1.height()) / 2
+	});
+	$m.css({
+		left: ($z.width() - $m.width()) / 2,
+		top: Math.sqrt(2 * Math.pow($f1.height(), 2)) + $l1.height() + $c1.height() + $l2.height() + Math.sqrt(2 * Math.pow($m.height() / 2, 2)) - $m.height() / 2
+	});
+	$n.css({
+		left: ($z.width() - $n.width()) / 2,
+		top: Math.sqrt(2 * Math.pow($f1.height(), 2)) + $l1.height() + $c1.height() + $l2.height() + Math.sqrt(2 * Math.pow($n.height() / 2, 2)) - $n.height() / 2
 	});
 });
