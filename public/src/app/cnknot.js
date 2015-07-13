@@ -1,4 +1,35 @@
 $(document).ready(function() {
+	function HoverDelay() {
+		this.interval = null;
+		this.count = 0;
+		this.total = 10;
+		this.step = 1;
+		this.time = 10;
+	};
+	HoverDelay.prototype = (function() {
+		return {
+			config: function(config) {
+				this.total = config.total;
+				this.step = config.step;
+				this.time = config.time;
+			},
+			over: function(fn) {
+				var t = this;
+				this.interval = setInterval(function() {
+					t.count += t.step;
+					if (t.count >= t.total) {
+						fn();
+						t.clear();
+					}
+				}, this.time);
+			},
+			clear: function() {
+				clearInterval(this.interval);
+				this.interval = null;
+				this.count = 0;
+			}
+		};
+	})();
 	var $z = $('.z'),
 		$f1 = $('.f1'),
 		$l1 = $('.l1'),
@@ -92,4 +123,9 @@ $(document).ready(function() {
 		left: ($z.width() - $n.width()) / 2,
 		top: Math.sqrt(2 * Math.pow($f1.height(), 2)) + $l1.height() + $c1.height() + $l2.height() + Math.sqrt(2 * Math.pow($n.height() / 2, 2)) - $n.height() / 2
 	});
+	var hoverDelay = new HoverDelay();
+	$z.on('mouseover', hoverDelay.over(function(){
+		
+	}), false);
+	$z.on('mouseout', hoverDelay.clear, false);
 });

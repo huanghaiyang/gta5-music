@@ -338,7 +338,7 @@ define(['async'], function(async) {
 
 		CnKnot.prototype = (function() {
 			return {
-				show: function(isRotate) {
+				show: function() {
 					/*
 					很奇怪：这么写竟然没有渐变效果
 					this.$element.show();
@@ -355,11 +355,7 @@ define(['async'], function(async) {
 						opacity: 0.9
 					}, {
 						duration: 300,
-						complete: function() {
-							if (isRotate) {
-								self.$element.addClass('z-active')
-							}
-						}
+						complete: function() {}
 					});
 				},
 				hide: function() {
@@ -720,15 +716,9 @@ define(['async'], function(async) {
 												top: $li.offset().top + $li.height() - $cnknot.height() / 4,
 												left: $li.offset().left - $cnknot.width() / 2 + $li.width() / 2
 											});
-											if (c.id === currentSound)
-												cnknot.show(true);
-											else
-												cnknot.show();
+											cnknot.show();
 										} else {
-											if (c.id === currentSound)
-												CnknotCollection.get(c.id).show(true);
-											else
-												CnknotCollection.get(c.id).show();
+											CnknotCollection.get(c.id).show();
 										}
 									}
 								});
