@@ -465,6 +465,31 @@ define(['async'], function(async) {
 					$volumeBar = $('#volumeBar'),
 					$volumeCircle = $('#volumeCircle');
 
+				var VolumnController = (function() {
+					// 0:on 1:off
+					var state = 0;
+					return {
+						off: function() {
+							state = 1;
+						},
+						on: function() {
+							state = 0;
+						},
+						offCls: function() {
+							if (!$volumeBtn.hasClass(cssConfig.volumeOff)) {
+								$volumeBtn.addClass(cssConfig.volumeOff);
+							}
+							$volumeBtn.removeClass(cssConfig.volumeUp);
+						},
+						onCls: function() {
+							if (!$volumeBtn.hasClass(cssConfig.volumeUp)) {
+								$volumeBtn.addClass(cssConfig.volumeUp);
+							}
+							$volumeBtn.removeClass(cssConfig.volumeOff);
+						}
+					};
+				})();
+
 				var Volume = (function() {
 					var started = false,
 						beginLeft = $volumeBar.offset().left,
@@ -529,15 +554,9 @@ define(['async'], function(async) {
 					if (currentSound)
 						soundInstanceCollection.get(currentSound).setVolume(VolumeStorage.get());
 					if (volumeStage == 0) {
-						if (!$volumeBtn.hasClass(cssConfig.volumeOff)) {
-							$volumeBtn.addClass(cssConfig.volumeOff);
-						}
-						$volumeBtn.removeClass(cssConfig.volumeUp);
+						VolumnController.off();
 					} else {
-						if (!$volumeBtn.hasClass(cssConfig.volumeUp)) {
-							$volumeBtn.addClass(cssConfig.volumeUp);
-						}
-						$volumeBtn.removeClass(cssConfig.volumeOff);
+						VolumnController.on();
 					}
 				}));
 				$('body').on('mouseup', Volume.end);
