@@ -4,6 +4,8 @@ define(['async'], function(async) {
 		window.AudioContext = window.AudioContext || window.webkitAudioContext || window.mozAudioContext || window.msAudioContext;
 		var audioContext = new window.AudioContext();
 
+		window.memory = window.localStorage || (window.UserDataStorage && new UserDataStorage()) || new cookieStorage();
+
 		function throttle(fn, delay) {
 			var timer = null;
 			return function() {
@@ -80,7 +82,9 @@ define(['async'], function(async) {
 
 		var cssConfig = {
 			pause: 'glyphicon-pause',
-			play: 'glyphicon-play'
+			play: 'glyphicon-play',
+			volumeOff: 'glyphicon-volume-off',
+			volumeUp: 'glyphicon-volume-up'
 		};
 
 		function RotateController(id, $o) {
@@ -182,16 +186,20 @@ define(['async'], function(async) {
 			function() {
 				return {
 					play: function(props) {
-						if (this.hasPlaybackResource())
+						if (this.hasPlaybackResource()) {
+							props.volume = VolumeStorage.get();
 							this.sound.play(props);
-						else if (this.tag)
+						} else if (this.tag) {
 							this.tag.play();
+							this.setVolume();
+						}
 					},
 					resume: function() {
 						if (this.hasPlaybackResource())
 							this.sound._resume();
 						else if (this.tag)
 							this.tag.resume();
+						this.setVolume();
 					},
 					pause: function() {
 						if (this.hasPlaybackResource())
@@ -201,6 +209,9 @@ define(['async'], function(async) {
 					},
 					hasPlaybackResource: function() {
 						return this.sound && this.sound._playbackResource;
+					},
+					setVolume: function(value) {
+						this.tag.volume = value !== undefined ? value : VolumeStorage.get();
 					}
 				};
 			})();
@@ -369,6 +380,13 @@ define(['async'], function(async) {
 				},
 				css: function(style) {
 					this.$element.css(style);
+				},
+				reset: function() {
+					var $li = $('body').find('li[data-id=' + this.id + ']');
+					this.$element.css({
+						top: $li.offset().top + $li.height() - this.$element.height() / 4,
+						left: $li.offset().left - this.$element.width() / 2 + $li.width() / 2
+					});
 				}
 			};
 		})();
@@ -382,8 +400,38 @@ define(['async'], function(async) {
 				get: function(id) {
 					return collections[id];
 				},
+				hideAll: function() {
+					for (var i in collections) {
+						collections[i].hide();
+					}
+				},
 				exist: function(id) {
 					return !!collections[id]
+				},
+				resetAll: function() {
+					for (var i in collections) {
+						collections[i].reset();
+					}
+				},
+				listeners: {
+					resize: function() {
+						console.log('resize window');
+						CnknotCollection.resetAll();
+					}
+				}
+			};
+		})();
+		window.addEventListener('resize', throttle(CnknotCollection.listeners.resize, 20), false);
+
+		var VolumeStorage = (function() {
+			var volumeStage = memory.getItem('volumeStage') || 1;
+			return {
+				set: function(value) {
+					volumeStage = value;
+					memory.setItem('volumeStage', value);
+				},
+				get: function() {
+					return volumeStage;
 				}
 			};
 		})();
@@ -411,7 +459,89 @@ define(['async'], function(async) {
 					$ls,
 					len,
 					centerPoint,
-					$listbtn = $('#listbtn');
+					$listbtn = $('#listbtn'),
+					$volume = $('#volume'),
+					$volumeBtn = $volume.find('span').first(),
+					$volumeBar = $('#volumeBar'),
+					$volumeCircle = $('#volumeCircle');
+
+				var Volume = (function() {
+					var started = false,
+						beginLeft = $volumeBar.offset().left,
+						endLeft = $volumeBar.offset().left + $volumeBar.width() - $volumeCircle.width(),
+						all = endLeft - beginLeft,
+						volumeStage = VolumeStorage.get() || 1,
+						offsetX = 0;
+					$volumeCircle.css({
+						left: all * volumeStage
+					});
+
+					function percent(stage) {
+						return (stage / all).toFixed(2);
+					};
+
+					return {
+						start: function(e) {
+							started = true;
+							offsetX = e.offsetX;
+							$volumeCircle.css({
+								left: e.pageX - beginLeft - offsetX
+							});
+						},
+						move: function(fn) {
+							return function(e) {
+								if (started) {
+									if (e.pageX <= endLeft && e.pageX >= beginLeft) {
+										var offsetLeft = e.pageX - beginLeft - offsetX;
+										offsetLeft = offsetLeft < 0 ? 0 : offsetLeft;
+										volumeStage = percent(offsetLeft);
+										$volumeCircle.css({
+											left: offsetLeft
+										});
+									} else if (e.pageX > endLeft) {
+										volumeStage = 1;
+										$volumeCircle.css({
+											left: endLeft - beginLeft
+										});
+									} else if (e.pageX < beginLeft) {
+										volumeStage = 0;
+										$volumeCircle.css({
+											left: 0
+										});
+									}
+									volumeStage = volumeStage < 0 ? 0 : (volumeStage > 1 ? 1 : volumeStage);
+									if (fn)
+										fn(volumeStage);
+								}
+							}
+						},
+						end: function() {
+							started = false;
+							offsetX = 0;
+						},
+						getVolumeStage: function() {
+							return volumeStage;
+						}
+					};
+				})();
+				$('body').on('mousemove', Volume.move(function(volumeStage) {
+					VolumeStorage.set(volumeStage);
+					if (currentSound)
+						soundInstanceCollection.get(currentSound).setVolume(VolumeStorage.get());
+					if (volumeStage == 0) {
+						if (!$volumeBtn.hasClass(cssConfig.volumeOff)) {
+							$volumeBtn.addClass(cssConfig.volumeOff);
+						}
+						$volumeBtn.removeClass(cssConfig.volumeUp);
+					} else {
+						if (!$volumeBtn.hasClass(cssConfig.volumeUp)) {
+							$volumeBtn.addClass(cssConfig.volumeUp);
+						}
+						$volumeBtn.removeClass(cssConfig.volumeOff);
+					}
+				}));
+				$('body').on('mouseup', Volume.end);
+				$volumeCircle.on('mousedown', Volume.start).on('mouseup', Volume.end);
 
 				function getLiByDataId(id) {
 					return $u.find('li[data-id=' + id + ']');
@@ -447,11 +577,13 @@ define(['async'], function(async) {
 					}
 				};
 
-				$playnow.on('click', function() {
+				$playnow.on('click', function(e, param) {
 					if (currentSound) {
 						var $current_li = getLiByDataId(currentSound);
 						if ($playnow.hasClass(cssConfig.play)) {
-							$current_li.trigger('play');
+							if (param !== false) {
+								$current_li.trigger('play');
+							}
 						} else if ($playnow.hasClass(cssConfig.pause)) {
 							$current_li.trigger('pause');
 						}
@@ -465,12 +597,12 @@ define(['async'], function(async) {
 				});
 
 				$playforward.on('click', function() {
-					$playnow.trigger('click');
+					$playnow.trigger('click', false);
 					playforward();
 				});
 
 				$playbackward.on('click', function() {
-					$playnow.trigger('click');
+					$playnow.trigger('click', false);
 					playbackward();
 				});
 
@@ -492,7 +624,7 @@ define(['async'], function(async) {
 								duration = Math.floor(_tag.duration);
 							$playTime.html(convertTime(currentTime) +
 								'/' + convertTime(duration));
-							nowProgress = currentTime / duration * 100;
+							nowProgress = (currentTime / duration * 100).toFixed(2);
 							if (nowProgress === 100) {
 								progressBar.setNowProgress(0);
 								progressBar.setRemainProgress(100);
@@ -512,7 +644,7 @@ define(['async'], function(async) {
 									value: progress,
 									animationStartValue: animationStartValue
 								});
-								remainProgress = 100 * progress;
+								remainProgress = (100 * progress).toFixed(2);
 								progressBar.setRemainProgress(remainProgress - nowProgress);
 								animationStartValue = progress;
 								if (progress === 1)
@@ -542,6 +674,7 @@ define(['async'], function(async) {
 						$li = getLiByDataId(id),
 						sound = createjs.Sound.play(id);
 					soundInstanceCollection.get(id).sound = sound;
+					soundInstanceCollection.get(id).setVolume();
 					rotateControllerCollection.get(id).rotate360();
 					$li.trigger('instance');
 					$li.attr('data-firstplay', false);
@@ -712,10 +845,7 @@ define(['async'], function(async) {
 											$('body').append($cnknot);
 											var cnknot = new CnKnot(c.id, $cnknot);
 											CnknotCollection.add(cnknot);
-											cnknot.css({
-												top: $li.offset().top + $li.height() - $cnknot.height() / 4,
-												left: $li.offset().left - $cnknot.width() / 2 + $li.width() / 2
-											});
+											cnknot.reset();
 											cnknot.show();
 										} else {
 											CnknotCollection.get(c.id).show();
@@ -757,6 +887,7 @@ define(['async'], function(async) {
 				};
 
 				function refreshList() {
+					CnknotCollection.hideAll();
 					$listbtn.unbind('click');
 					firstLoad = false;
 					clearAudioTags();

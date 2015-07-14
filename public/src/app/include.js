@@ -2,6 +2,7 @@
 require.config({
 	baseUrl: "/bower_components/",
 	paths: {
+		"es6-shim": 'es6-shim/es6-shim.min',
 		"jquery": "jquery/dist/jquery",
 		"jquery.rotate": "../src/app/lib/jquery.rotate/jquery.rotate",
 		"jquery.easing": "jquery-easing/jquery.easing",
@@ -52,7 +53,7 @@ require.config({
 });
 /*加载文件*/
 require([
-	'jquery', 'jquery.rotate', 'jquery.easing', 'velocity', 'async', 'jquery-circle-progress', 'Vague', 'fly', 'music', 'cnknot', 'PreloadJS', 'SoundJS',
+	'es6-shim', 'jquery', 'jquery.rotate', 'jquery.easing', 'velocity', 'async', 'jquery-circle-progress', 'Vague', 'fly', 'music', 'cnknot', 'PreloadJS', 'SoundJS',
 	'app.index'
 ], function(require) {
 	'use strict';

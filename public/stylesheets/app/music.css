@@ -162,3 +162,37 @@
 	-o-transition:opacity 0.05s ease-in-out;
 	transition:opacity 0.05s ease-in-out;
 }
+
+.volume-bar{
+	vertical-align: middle;
+	display: inline-block;
+  	text-align: center;
+  	width:120px;
+  	height: 8px;
+  	background-color: white;
+  	border-radius: 4px;
+  	box-shadow: 0 0 1px 0 #000;
+  	position: relative;
+}
+.volume-bar .volume-circle{
+	height: 14px;
+	width: 14px;
+	border-radius: 50%;
+	top:-3px;
+	left:0;
+	box-shadow: inset 0 0 7px 0 #FCFCFC;
+	position: absolute;
+	background-color: white;
+	cursor: pointer;
+}
+.volume-bar .volume-circle::after{
+	content: '';
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	display: block;
+	position: absolute;
+	border-radius: 50%;
+	box-shadow: 0 0 1px 0 #000;
+}
