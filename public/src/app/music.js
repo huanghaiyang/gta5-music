@@ -483,7 +483,7 @@ define(['async'], function(async) {
 					return {
 						start: function(e) {
 							started = true;
-							offsetX = e.offsetX;
+							offsetX = e.offsetX || e.originalEvent.layerX;
 							$volumeCircle.css({
 								left: e.pageX - beginLeft - offsetX
 							});
