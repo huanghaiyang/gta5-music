@@ -64,9 +64,9 @@ define(['async'], function(async) {
 		function convertTime(time) {
 			var m = Math.floor(Math.floor(time) / 60),
 				s = parseInt(Math.floor(time) % 60);
-			if ((m + '').length === 1)
+			if ((m + '').length == 1)
 				m = '0' + m;
-			if ((s + '').length === 1)
+			if ((s + '').length == 1)
 				s = '0' + s;
 			return m + ':' + s;
 		};
@@ -102,7 +102,7 @@ define(['async'], function(async) {
 						if (!$o.is(":animated")) {
 							t.rotate(360, 5000);
 						}
-					}, (this.timeout === null ? 0 : 300));
+					}, (this.timeout == null ? 0 : 300));
 				},
 				stop: function() {
 					this.clearTimeout();
@@ -116,7 +116,7 @@ define(['async'], function(async) {
 				rotate: function(deg, duration, callback) {
 					var t = this;
 					var rotated = this.$o.css('rotate');
-					if (deg === 0 && rotated == "") {
+					if (deg == 0 && rotated == "") {
 						if (callback)
 							callback();
 						return;
@@ -128,7 +128,7 @@ define(['async'], function(async) {
 						easing: 'linear',
 						duration: (function() {
 
-							if (rotated === 0 || rotated === "")
+							if (rotated == 0 || rotated == "")
 								return duration;
 							else {
 								return duration * (360 - parseInt(rotated)) / 360;
@@ -211,7 +211,7 @@ define(['async'], function(async) {
 						return this.sound && this.sound._playbackResource;
 					},
 					setVolume: function(value) {
-						this.tag.volume = value !== undefined ? value : VolumeStorage.get();
+						this.tag.volume = value !== undefined ? value : (VolumeStorage.getState() == 0 ? 0 : VolumeStorage.get());
 					}
 				};
 			})();
@@ -239,7 +239,7 @@ define(['async'], function(async) {
 					return this.collection[index];
 				},
 				getNext: function(id) {
-					if (this.indexes[id] + 1 === this.collection.length)
+					if (this.indexes[id] + 1 == this.collection.length)
 						return this.getByIndex(0);
 					else
 						return this.getByIndex(this.indexes[id] + 1);
@@ -425,6 +425,7 @@ define(['async'], function(async) {
 
 		var VolumeStorage = (function() {
 			var volumeStage = memory.getItem('volumeStage') || 1;
+			var state = memory.getItem('volumeState') || 1;
 			return {
 				set: function(value) {
 					volumeStage = value;
@@ -432,6 +433,13 @@ define(['async'], function(async) {
 				},
 				get: function() {
 					return volumeStage;
+				},
+				setState: function(value) {
+					state = value;
+					memory.setItem('volumeState', value);
+				},
+				getState: function() {
+					return state;
 				}
 			};
 		})();
@@ -465,40 +473,85 @@ define(['async'], function(async) {
 					$volumeBar = $('#volumeBar'),
 					$volumeCircle = $('#volumeCircle');
 
-				var VolumnController = (function() {
-					// 0:on 1:off
-					var state = 0;
+				var VolumeController = (function() {
+
+					function offClass() {
+						if (!$volumeBtn.hasClass(cssConfig.volumeOff)) {
+							$volumeBtn.addClass(cssConfig.volumeOff);
+						}
+						$volumeBtn.removeClass(cssConfig.volumeUp);
+					};
+
+					function onClass() {
+						if (!$volumeBtn.hasClass(cssConfig.volumeUp)) {
+							$volumeBtn.addClass(cssConfig.volumeUp);
+						}
+						$volumeBtn.removeClass(cssConfig.volumeOff);
+					};
+					// 0:off 1:on
+					var state = VolumeStorage.getState() || 0;
+					if (state == 0) {
+						offClass();
+					} else {
+						onClass();
+					}
 					return {
-						off: function() {
-							state = 1;
+						off: function(flag) {
+							VolumeController.set(0);
+							VolumeController.offCls();
+							if (flag) {
+								$volumeCircle.animate({
+									left: 0
+								}, {
+									duration: 100
+								});
+								soundInstanceCollection.get(currentSound).setVolume(0);
+							}
 						},
-						on: function() {
-							state = 0;
+						on: function(flag) {
+							VolumeController.set(1);
+							VolumeController.onCls();
+							if (flag) {
+								$volumeCircle.animate({
+									left: Volume.caculate(VolumeStorage.get())
+								}, {
+									duration: 100
+								});
+								soundInstanceCollection.get(currentSound).setVolume(VolumeStorage.get());
+							}
 						},
 						offCls: function() {
-							if (!$volumeBtn.hasClass(cssConfig.volumeOff)) {
-								$volumeBtn.addClass(cssConfig.volumeOff);
-							}
-							$volumeBtn.removeClass(cssConfig.volumeUp);
+							offClass();
 						},
 						onCls: function() {
-							if (!$volumeBtn.hasClass(cssConfig.volumeUp)) {
-								$volumeBtn.addClass(cssConfig.volumeUp);
+							onClass();
+						},
+						swit: function() {
+							if (state == 0) {
+								VolumeController.on(true);
+							} else if (state == 1) {
+								VolumeController.off(true);
 							}
-							$volumeBtn.removeClass(cssConfig.volumeOff);
+						},
+						set: function(value) {
+							state = value;
+							VolumeStorage.setState(state);
 						}
 					};
 				})();
+
+				$volume.on('click', VolumeController.swit);
 
 				var Volume = (function() {
 					var started = false,
 						beginLeft = $volumeBar.offset().left,
 						endLeft = $volumeBar.offset().left + $volumeBar.width() - $volumeCircle.width(),
 						all = endLeft - beginLeft,
-						volumeStage = VolumeStorage.get() || 1,
+						volumeStage = VolumeStorage.get(),
+						volumeState = VolumeStorage.getState(),
 						offsetX = 0;
 					$volumeCircle.css({
-						left: all * volumeStage
+						left: volumeState == 0 ? 0 : all * volumeStage
 					});
 
 					function percent(stage) {
@@ -546,6 +599,9 @@ define(['async'], function(async) {
 						},
 						getVolumeStage: function() {
 							return volumeStage;
+						},
+						caculate: function(value) {
+							return all * value;
 						}
 					};
 				})();
@@ -554,9 +610,9 @@ define(['async'], function(async) {
 					if (currentSound)
 						soundInstanceCollection.get(currentSound).setVolume(VolumeStorage.get());
 					if (volumeStage == 0) {
-						VolumnController.off();
+						VolumeController.off(false);
 					} else {
-						VolumnController.on();
+						VolumeController.on(false);
 					}
 				}));
 				$('body').on('mouseup', Volume.end);
@@ -568,7 +624,7 @@ define(['async'], function(async) {
 
 				function playforward(id) {
 					id = id ? id : currentSound;
-					if (firstLoad === true) {
+					if (firstLoad == true) {
 						var nextSoundInstance = soundInstanceCollection.getNext(id);
 						if (nextSoundInstance) {
 							getLiByDataId(nextSoundInstance.id).trigger('play');
@@ -583,7 +639,7 @@ define(['async'], function(async) {
 
 				function playbackward(id) {
 					id = id ? id : currentSound;
-					if (firstLoad === true) {
+					if (firstLoad == true) {
 						var nextSoundInstance = soundInstanceCollection.getPre(id);
 						if (nextSoundInstance) {
 							getLiByDataId(nextSoundInstance.id).trigger('play');
@@ -644,7 +700,7 @@ define(['async'], function(async) {
 							$playTime.html(convertTime(currentTime) +
 								'/' + convertTime(duration));
 							nowProgress = (currentTime / duration * 100).toFixed(2);
-							if (nowProgress === 100) {
+							if (nowProgress == 100) {
 								progressBar.setNowProgress(0);
 								progressBar.setRemainProgress(100);
 							} else {
@@ -666,7 +722,7 @@ define(['async'], function(async) {
 								remainProgress = (100 * progress).toFixed(2);
 								progressBar.setRemainProgress(remainProgress - nowProgress);
 								animationStartValue = progress;
-								if (progress === 1)
+								if (progress == 1)
 									$remainProgress.removeClass('active');
 								else {
 									if (!$remainProgress.hasClass('active'))
@@ -713,7 +769,7 @@ define(['async'], function(async) {
 					rotateController = new RotateController(id, $rotation);
 					rotateControllerCollection.add(rotateController);
 					$li.bind("click", function() {
-						if (clickCount === 0) {
+						if (clickCount == 0) {
 							getLiByDataId(currentSound).trigger('pause');
 							$li.trigger("play");
 						} else {
@@ -811,8 +867,8 @@ define(['async'], function(async) {
 					var positions = [];
 					var _top = (uStyle.height - _width) / 2;
 					for (var i = 0; i < len; i++) {
-						if (sort === true) {
-							if (i === 0)
+						if (sort == true) {
+							if (i == 0)
 								positions.push({
 									top: _top,
 									left: uStyle.width - _width
@@ -825,7 +881,7 @@ define(['async'], function(async) {
 								});
 							}
 						} else {
-							if (i === 0)
+							if (i == 0)
 								positions.push({
 									top: _top,
 									left: 0
@@ -841,7 +897,7 @@ define(['async'], function(async) {
 					}
 					var backPositions = [];
 					return function() {
-						if (listed === false) {
+						if (listed == false) {
 							async.mapLimit(soundInstanceCollection.collection, 1, function(c, callback) {
 								var index = soundInstanceCollection.indexes[c.id];
 								setTimeout(function() {
@@ -872,7 +928,7 @@ define(['async'], function(async) {
 									}
 								});
 							}, function() {
-								if (index === 0) {
+								if (index == 0) {
 									listed = true;
 									$listbtn.attr('data-listed', listed);
 								}
@@ -896,7 +952,7 @@ define(['async'], function(async) {
 									});
 								}, 500);
 							}, function() {
-								if (index === 0) {
+								if (index == 0) {
 									listed = false;
 									$listbtn.attr('data-listed', listed);
 								}
@@ -921,7 +977,7 @@ define(['async'], function(async) {
 
 					async.mapLimit($ls, 1, function(other, callback) {
 						var other = $(other);
-						if (other.attr('data-id') === currentSound)
+						if (other.attr('data-id') == currentSound)
 							other.trigger("pause");
 						other.unbind('click');
 						other.unbind('pause');
@@ -957,7 +1013,7 @@ define(['async'], function(async) {
 							easing: 'easeInBack',
 							duration: 300,
 							complete: function() {
-								if (index + 1 === animateIndex && animateIndex === len) {
+								if (index + 1 == animateIndex && animateIndex == len) {
 									load();
 									animateIndex = 0;
 								}
@@ -973,7 +1029,7 @@ define(['async'], function(async) {
 
 				function done(data, status) {
 					//返回列表成功
-					if (status === "success") {
+					if (status == "success") {
 						if (data) {
 							var arr = [];
 							for (var i = 0; i < data.length; i++) {
@@ -1009,7 +1065,7 @@ define(['async'], function(async) {
 								soundInstanceCollection.add(new SoundInstance(dataId));
 								bindAction($li);
 
-								if (i === 0) {
+								if (i == 0) {
 									$musicthumb.attr('src', imgPath);
 									$musicthumb.attr('alt', d.title);
 									$musictitle.html(d.name);
@@ -1020,7 +1076,7 @@ define(['async'], function(async) {
 								$ls = $u.children("li");
 								len = $ls.length;
 							}
-							if (firstLoad === true) {
+							if (firstLoad == true) {
 								getLiByDataId(soundInstanceCollection.getFirst().id).trigger('play');
 								$listbtn.on('click', listProxy(true));
 							} else {
@@ -1103,7 +1159,7 @@ define(['async'], function(async) {
 													duration: 0
 												}
 											});
-											if (index + 1 === animateIndex && animateIndex === len) {
+											if (index + 1 == animateIndex && animateIndex == len) {
 												console.log($li.attr('data-id'));
 												setTimeout(function() {
 													$refreshButton.bind('click', refreshList);
