@@ -1,6 +1,7 @@
 define(['async'], function(async) {
 	(function($) {
 		'use strict';
+		var $body = $('body');
 		window.AudioContext = window.AudioContext || window.webkitAudioContext || window.mozAudioContext || window.msAudioContext;
 		var audioContext = new window.AudioContext();
 
@@ -212,6 +213,9 @@ define(['async'], function(async) {
 					},
 					setVolume: function(value) {
 						this.tag.volume = value !== undefined ? value : (VolumeStorage.getState() == 0 ? 0 : VolumeStorage.get());
+					},
+					setTime: function(value) {
+						this.tag.currentTime = value;
 					}
 				};
 			})();
@@ -382,7 +386,7 @@ define(['async'], function(async) {
 					this.$element.css(style);
 				},
 				reset: function() {
-					var $li = $('body').find('li[data-id=' + this.id + ']');
+					var $li = $body.find('li[data-id=' + this.id + ']');
 					this.$element.css({
 						top: $li.offset().top + $li.height() - this.$element.height() / 4,
 						left: $li.offset().left - this.$element.width() / 2 + $li.width() / 2
@@ -462,6 +466,7 @@ define(['async'], function(async) {
 					$playforward = $('#playforward'),
 					$remainProgress = $('#remainProgress'),
 					$nowProgress = $('#nowProgress'),
+					$progress = $('#progress'),
 					progressBar = new ProgressBar($remainProgress, $nowProgress),
 					$playTime = $('#playTime'),
 					$ls,
@@ -472,6 +477,53 @@ define(['async'], function(async) {
 					$volumeBtn = $volume.find('span').first(),
 					$volumeBar = $('#volumeBar'),
 					$volumeCircle = $('#volumeCircle');
+
+				var ProgressController = (function() {
+					var $progressCursor = $('<div class="progressbar-cursor"></div>');
+					$body.append($progressCursor);
+					var $time = $('<div class="progressbar-time"></div>');
+					$body.append($time);
+					$progressCursor.css({
+						top: top
+					});
+					var duration = 0;
+					var time;
+					return {
+						move: function(e) {
+							var offsetX = e.target.offsetX || e.originalEvent.layerX;
+							$progressCursor.show();
+							$progressCursor.css({
+								left: $progress.offset().left + offsetX - 1,
+								top: $progress.offset().top - 2
+							});
+
+							$time.show();
+							$time.css({
+								left: $progress.offset().left + offsetX + 2,
+								top: $progress.offset().top - 13
+							});
+							time = Math.floor(offsetX / $progress.width() * duration).toFixed(0);
+							$time.html(convertTime(time));
+						},
+						out: function() {
+							$progressCursor.hide();
+							$time.hide();
+						},
+						click: function() {
+							if (currentSound) {
+								soundInstanceCollection.get(currentSound).setTime(time);
+							}
+						},
+						setDuration: function(value) {
+							duration = value;
+						}
+					};
+				})();
+
+				$progress.on('click', ProgressController.click);
+
+				$progress.mousemove(ProgressController.move);
+				$progress.on('mouseout', ProgressController.out);
 
 				var VolumeController = (function() {
 
@@ -558,6 +610,10 @@ define(['async'], function(async) {
 						return (stage / all).toFixed(2);
 					};
 
+					function trustVolumeStage(volumeStage) {
+						return volumeStage = volumeStage < 0 ? 0 : (volumeStage > 1 ? 1 : volumeStage);
+					}
+
 					return {
 						start: function(e) {
 							started = true;
@@ -587,11 +643,34 @@ define(['async'], function(async) {
 											left: 0
 										});
 									}
-									volumeStage = volumeStage < 0 ? 0 : (volumeStage > 1 ? 1 : volumeStage);
+									volumeStage = trustVolumeStage(volumeStage);
 									if (fn)
 										fn(volumeStage);
 								}
 							}
+						},
+						click: function(fn) {
+							var lastOffsetX = $volumeCircle.position().left;
+							return function(e) {
+								if (e.target === $volumeBar[0]) {
+									var offsetX = e.offsetX || e.originalEvent.layerX;
+									volumeStage = percent(offsetX);
+									$volumeCircle.velocity({
+										left: offsetX
+									}, {
+										easing: 'easeInQuad',
+										duration: (function() {
+											return 300 * (Math.abs(offsetX - lastOffsetX) / all)
+										})(),
+										complete: function() {
+											lastOffsetX = offsetX;
+										}
+									});
+									volumeStage = trustVolumeStage(volumeStage);
+									if (fn)
+										fn(volumeStage);
+								}
+							};
 						},
 						end: function() {
 							started = false;
@@ -605,7 +684,8 @@ define(['async'], function(async) {
 						}
 					};
 				})();
-				$('body').on('mousemove', Volume.move(function(volumeStage) {
+
+				function volumeFn(volumeStage) {
 					VolumeStorage.set(volumeStage);
 					if (currentSound)
 						soundInstanceCollection.get(currentSound).setVolume(VolumeStorage.get());
@@ -614,9 +694,11 @@ define(['async'], function(async) {
 					} else {
 						VolumeController.on(false);
 					}
-				}));
-				$('body').on('mouseup', Volume.end);
+				};
+				$body.on('mousemove', Volume.move(volumeFn));
+				$body.on('mouseup', Volume.end);
 				$volumeCircle.on('mousedown', Volume.start).on('mouseup', Volume.end);
+				$volumeBar.on('click', Volume.click(volumeFn));
 
 				function getLiByDataId(id) {
 					return $u.find('li[data-id=' + id + ']');
@@ -688,6 +770,7 @@ define(['async'], function(async) {
 				queue.installPlugin(createjs.Sound);
 				queue.on("complete", handleComplete);
 				queue.on("fileload", function(e) {
+					ProgressController.setDuration(e.result.duration);
 					$playTime.html('0:00/' + convertTime(e.result.duration));
 					var remainProgress = 0,
 						nowProgress = 0,
@@ -917,7 +1000,7 @@ define(['async'], function(async) {
 									onEnd: function() {
 										if (!CnknotCollection.exist(c.id)) {
 											var $cnknot = $('.z').first().clone(true);
-											$('body').append($cnknot);
+											$body.append($cnknot);
 											var cnknot = new CnKnot(c.id, $cnknot);
 											CnknotCollection.add(cnknot);
 											cnknot.reset();

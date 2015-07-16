@@ -167,12 +167,14 @@
 	vertical-align: middle;
 	display: inline-block;
   	text-align: center;
-  	width:120px;
+  	width:100px;
   	height: 8px;
   	background-color: white;
   	border-radius: 4px;
   	box-shadow: 0 0 1px 0 #000;
   	position: relative;
+  	margin-left: 5px;
+  	margin-right: 5px;
 }
 .volume-bar .volume-circle{
 	height: 14px;
@@ -195,4 +197,22 @@
 	position: absolute;
 	border-radius: 50%;
 	box-shadow: 0 0 1px 0 #000;
+}
+
+.progressbar-cursor{
+	height: 24px;
+	width:1px;
+	background-color: red;
+	position: absolute;
+	display: none;
+	z-index: 2000;
+}
+
+.progressbar-time{
+	position: absolute;
+	display: inline-block;
+	z-index: 2000;
+	display: none;
+	color:#26C5CB;
+	font-size: 12px;
 }
