@@ -8,6 +8,7 @@ require.config({
 		"jquery.easing": "jquery-easing/jquery.easing",
 		"velocity": "velocity/velocity.min",
 		"jquery-circle-progress": "jquery-circle-progress/dist/circle-progress",
+		"jquery-ui": "jquery-ui/jquery-ui.min",
 
 		"async": "async/lib/async",
 		"fly": "../src/app/fly",
@@ -26,6 +27,9 @@ require.config({
 			'deps': ['jquery']
 		},
 		'jquery.easing': {
+			'deps': ['jquery']
+		},
+		'jquery-ui': {
 			'deps': ['jquery']
 		},
 		'velocity': {
@@ -57,7 +61,7 @@ require.config({
 });
 /*加载文件*/
 require([
-	'es6-shim', 'jquery', 'jquery.rotate', 'jquery.easing', 'velocity', 'async', 'jquery-circle-progress', 'Vague', 'fly', 'animationRim', 'music', 'cnknot', 'PreloadJS', 'SoundJS',
+	'es6-shim', 'jquery', 'jquery.rotate', 'jquery.easing', 'jquery-ui', 'velocity', 'async', 'jquery-circle-progress', 'Vague', 'fly', 'animationRim', 'music', 'cnknot', 'PreloadJS', 'SoundJS',
 	'app.index'
 ], function(require) {
 	'use strict';

@@ -219,7 +219,43 @@
 
 .cd{
 	position: absolute;
-	color: #26C5CB;
-	top:-16px;
-	left: 42px;
+	color: #FFF;
+	display: none;
+	top:0;
+	left: 0;
+	width: 100%;
+	z-index: 2000;
+	background-color: #000;
+	opacity: 0.8;
+	height: 20px;
+	padding-top: 2px;
+}
+
+.cd .glyphicon-cd{
+	-webkit-animation:cdRotate 3s infinite linear normal running;
+    -moz-animation:cdRotate 3s infinite linear normal running;
+    -ms-animation:cdRotate 3s infinite linear normal running;
+    -o-animation:cdRotate 3s infinite linear normal running;
+    animation:cdRotate 3s infinite linear normal running;
+}
+
+@-webkit-keyframes cdRotate {
+    0% {transform:rotateZ(0deg);}
+    100% {transform:rotateZ(360deg);}
+}
+@-moz-keyframes cdRotate {
+    0% {transform:rotateZ(0deg);}
+    100% {transform:rotateZ(360deg);}
+}
+@-ms-keyframes cdRotate {
+    0% {transform:rotateZ(0deg);}
+    100% {transform:rotateZ(360deg);}
+}
+@-o-keyframes cdRotate {
+    0% {transform:rotateZ(0deg);}
+    100% {transform:rotateZ(360deg);}
+}
+@keyframes cdRotate {
+    0% {transform:rotateZ(0deg);}
+    100% {transform:rotateZ(360deg);}
 }

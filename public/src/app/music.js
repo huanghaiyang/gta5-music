@@ -330,18 +330,26 @@ define(['async'], function(async) {
 				},
 				over: function(fn) {
 					var t = this;
-					this.interval = setInterval(function() {
-						t.count += t.step;
-						if (t.count >= t.total) {
-							fn();
-							t.clear();
-						}
-					}, this.time);
+					return function(e) {
+						t.interval = setInterval(function() {
+							t.count += t.step;
+							if (t.count >= t.total) {
+								if (fn)
+									fn(e);
+								t.clear();
+							}
+						}, t.time);
+					};
 				},
-				clear: function() {
-					clearInterval(this.interval);
-					this.interval = null;
-					this.count = 0;
+				clear: function(fn) {
+					var t = this;
+					return function(e) {
+						clearInterval(t.interval);
+						t.interval = null;
+						t.count = 0;
+						if (fn)
+							fn(e);
+					}
 				}
 			};
 		})();
@@ -1134,10 +1142,28 @@ define(['async'], function(async) {
 									$rotation.append($img);
 
 									var hoverDelay = new HoverDelay();
-									$li.on('mouseenter', hoverDelay.over(function() {
-										$cd.slideDown();
-									}));
-									$li.on('mouseout', hoverDelay.clear);
+									(function($img, $cd) {
+										var cdMouseover = false;
+										$img.on('mouseover', hoverDelay.over(function() {
+											$cd.slideDown();
+										}));
+										$img.on('mouseout', hoverDelay.clear(function(e) {
+											if (e.currentTarget === $img[0]) {
+												setTimeout(function() {
+													if (cdMouseover === false) {
+														$cd.slideUp();
+													}
+												}, 50);
+											}
+										}));
+
+										$cd.on('mouseover', function() {
+											cdMouseover = true;
+										});
+										$cd.on('mouseout', function() {
+											cdMouseover = false;
+										});
+									})($img, $cd);
 								} else {
 									$li = $u.find('li').eq(i);
 									$box = $li.find('div');
