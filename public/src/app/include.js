@@ -11,6 +11,7 @@ require.config({
 
 		"async": "async/lib/async",
 		"fly": "../src/app/fly",
+		"animationRim": "../src/app/animationRim",
 		"music": "../src/app/music",
 		"cnknot": "../src/app/cnknot",
 		"app.index": "../src/app/index",
@@ -39,6 +40,9 @@ require.config({
 		'fly': {
 			'deps': ['jquery']
 		},
+		'animationRim': {
+			'deps': ['jquery']
+		},
 		'music': {
 			'deps': ['jquery', 'jquery.rotate', 'jquery.easing', 'async', 'fly']
 		},
@@ -53,7 +57,7 @@ require.config({
 });
 /*加载文件*/
 require([
-	'es6-shim', 'jquery', 'jquery.rotate', 'jquery.easing', 'velocity', 'async', 'jquery-circle-progress', 'Vague', 'fly', 'music', 'cnknot', 'PreloadJS', 'SoundJS',
+	'es6-shim', 'jquery', 'jquery.rotate', 'jquery.easing', 'velocity', 'async', 'jquery-circle-progress', 'Vague', 'fly', 'animationRim', 'music', 'cnknot', 'PreloadJS', 'SoundJS',
 	'app.index'
 ], function(require) {
 	'use strict';

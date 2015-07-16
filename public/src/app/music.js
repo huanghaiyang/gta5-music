@@ -1120,16 +1120,24 @@ define(['async'], function(async) {
 									imgPath = config.file_server + encodeURIComponent(d.imgPath),
 									dataPath = config.file_server + d.path,
 									dataId = config.sound + d.id,
-									$li, $box, $rotation, $img;
+									$li, $box, $cd, $rotation, $img;
 								if (firstLoad) {
 									$li = $('<li></li>');
 									$u.append($li);
 									$box = $("<div class=\"box\"></div>");
 									$li.append($box);
+									$cd = $("<div class=\"cd\"><span class=\"glyphicon glyphicon-cd\"></span></div>");
+									$box.append($cd);
 									$rotation = $('<div class=\"rotation\"></div>');
 									$box.append($rotation);
 									$img = $("<img/>");
 									$rotation.append($img);
+
+									var hoverDelay = new HoverDelay();
+									$li.on('mouseenter', hoverDelay.over(function() {
+										$cd.slideDown();
+									}));
+									$li.on('mouseout', hoverDelay.clear);
 								} else {
 									$li = $u.find('li').eq(i);
 									$box = $li.find('div');

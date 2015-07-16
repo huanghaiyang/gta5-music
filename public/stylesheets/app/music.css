@@ -216,3 +216,10 @@
 	color:#26C5CB;
 	font-size: 12px;
 }
+
+.cd{
+	position: absolute;
+	color: #26C5CB;
+	top:-16px;
+	left: 42px;
+}
