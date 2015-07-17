@@ -514,6 +514,14 @@ define(['async'], function(async) {
 					rimCss,
 					rimLiCss,
 					rimCircleProgressCss,
+					normalCss = {
+						width: 100,
+						height: 100
+					},
+					normalCircleCss = {
+						size: 100,
+						thickness: 3
+					},
 					$listbtn = $('#listbtn'),
 					$volume = $('#volume'),
 					$volumeBtn = $volume.find('span').first(),
@@ -537,7 +545,7 @@ define(['async'], function(async) {
 				};
 
 				function ClearAnimationRim() {
-					$rim.html();
+					$rim.html('');
 				};
 
 				var ProgressController = (function() {
@@ -867,12 +875,21 @@ define(['async'], function(async) {
 				function playward(id, instance) {
 					if (instance) {
 						var $li = getLiByDataId(instance.id);
+						var $current_li = getLiByDataId(id);
 						$li.trigger('play');
 						if (PlayMode.mode === PlayMode.SINGLE) {
+
 							hideLi(id);
+							$current_li.css($.extend($current_li.data('originPosition'), normalCss));
+							$current_li.circleProgress(normalCircleCss);
+
 							showLi(instance.id);
 							$li.css({
 								opacity: 1
+							});
+							$li.data('originPosition', {
+								left: $li.position().left,
+								top: $li.position().top
 							});
 							$li.css(rimLiCss);
 							$li.circleProgress(rimCircleProgressCss);
@@ -1155,67 +1172,93 @@ define(['async'], function(async) {
 					}
 					var backPositions = [];
 					return function() {
-						if (listed == false) {
-							async.mapLimit(soundInstanceCollection.collection, 1, function(c, callback) {
-								var index = soundInstanceCollection.indexes[c.id];
-								setTimeout(function() {
-									callback();
-								}, 100);
-								var $li = getLiByDataId(c.id);
-								backPositions.push({
-									top: $li.position().top,
-									left: $li.position().left
+						if (PlayMode.mode === PlayMode.SINGLE) {
+							ClearAnimationRim();
+							var $l = getLiByDataId(currentSound);
+							if ($l) {
+								$l.velocity($.extend($l.data('originPosition'), normalCss), {
+									duration: 300
 								});
-								$li.fly({
-									start: backPositions[index],
-									end: positions[index],
-									autoPlay: true,
-									speed: 1.1,
-									vertex_Rtop: 0,
-									onEnd: function() {
-										if (!CnknotCollection.exist(c.id)) {
-											var $cnknot = $('.z').first().clone(true);
-											$body.append($cnknot);
-											var cnknot = new CnKnot(c.id, $cnknot);
-											CnknotCollection.add(cnknot);
-											cnknot.reset();
-											cnknot.show();
-										} else {
-											CnknotCollection.get(c.id).show();
-										}
-									}
-								});
-							}, function() {
-								if (index == 0) {
-									listed = true;
-									$listbtn.attr('data-listed', listed);
-								}
-							});
+								$l.circleProgress(normalCircleCss);
+							}
+							ShowAllExceptThis(currentSound);
+							ShowRefreshBtn();
+						}
+
+						if (PlayMode.mode === PlayMode.SINGLE) {
+							setTimeout(function() {
+								list();
+							}, 300);
 						} else {
-							async.mapLimit(soundInstanceCollection.collection, 1, function(c, callback) {
-								CnknotCollection.get(c.id).hide();
-								setTimeout(function() {
+							list();
+						}
+
+						function list() {
+							if (listed == false) {
+								async.mapLimit(soundInstanceCollection.collection, 1, function(c, callback) {
 									var index = soundInstanceCollection.indexes[c.id];
 									setTimeout(function() {
 										callback();
 									}, 100);
 									var $li = getLiByDataId(c.id);
+									backPositions.push({
+										top: $li.position().top,
+										left: $li.position().left
+									});
 									$li.fly({
-										start: positions[index],
-										end: backPositions[index],
+										start: backPositions[index],
+										end: positions[index],
 										autoPlay: true,
 										speed: 1.1,
 										vertex_Rtop: 0,
-										onEnd: function() {}
+										onEnd: function() {
+											if (!CnknotCollection.exist(c.id)) {
+												var $cnknot = $('.z').first().clone(true);
+												$body.append($cnknot);
+												var cnknot = new CnKnot(c.id, $cnknot);
+												CnknotCollection.add(cnknot);
+												cnknot.reset();
+												cnknot.show();
+											} else {
+												CnknotCollection.get(c.id).show();
+											}
+										}
 									});
-								}, 500);
-							}, function() {
-								if (index == 0) {
-									listed = false;
-									$listbtn.attr('data-listed', listed);
-								}
-							});
-						}
+								}, function() {
+									if (index == 0) {
+										listed = true;
+										$listbtn.attr('data-listed', listed);
+										PlayMode.mode = PlayMode.LIST;
+									}
+								});
+							} else {
+								async.mapLimit(soundInstanceCollection.collection, 1, function(c, callback) {
+									CnknotCollection.get(c.id).hide();
+									setTimeout(function() {
+										var index = soundInstanceCollection.indexes[c.id];
+										setTimeout(function() {
+											callback();
+										}, 100);
+										var $li = getLiByDataId(c.id);
+										$li.fly({
+											start: positions[index],
+											end: backPositions[index],
+											autoPlay: true,
+											speed: 1.1,
+											vertex_Rtop: 0,
+											onEnd: function() {}
+										});
+									}, 500);
+								}, function() {
+									if (index == 0) {
+										listed = false;
+										$listbtn.attr('data-listed', listed);
+										PlayMode.mode = PlayMode.LIST;
+									}
+								});
+							}
+						};
+
 					};
 				};
 
@@ -1306,6 +1349,28 @@ define(['async'], function(async) {
 					}
 				};
 
+				function ShowAllExceptThis(id) {
+					for (var i = 0; i < soundInstanceCollection.collection.length; i++) {
+						var instance = soundInstanceCollection.collection[i];
+						if (instance.id !== id) {
+							var $li = getLiByDataId(instance.id);
+							$li.show();
+							$li.css({
+								opacity: 0
+							});
+							$li.animate({
+								opacity: 1
+							}, {
+								duration: 200
+							});
+						}
+					}
+				};
+
+				function HideAllCnKnot() {
+					CnknotCollection.hideAll();
+				};
+
 				/*隐藏刷新按钮*/
 
 				function HideRefreshBtn() {
@@ -1315,6 +1380,13 @@ define(['async'], function(async) {
 					setTimeout(function() {
 						$refreshButton.hide();
 					}, 300);
+				};
+
+				function ShowRefreshBtn() {
+					$refreshButton.show();
+					$refreshButton.animate({
+						opacity: 1
+					});
 				};
 
 				function done(data, status) {
@@ -1356,6 +1428,10 @@ define(['async'], function(async) {
 										};
 
 										function MoveToCenterPoint() {
+											$li.data('originPosition', {
+												left: $li.position().left,
+												top: $li.position().top
+											});
 											$li.velocity(rimLiCss);
 											$li.circleProgress(rimCircleProgressCss);
 										};
@@ -1363,11 +1439,14 @@ define(['async'], function(async) {
 										function CDClick(e) {
 											e.preventDefault();
 											e.stopPropagation();
-											PlayMode.mode = PlayMode.SINGLE;
 											HideAllExceptThis($li.attr('data-id'));
 											HideRefreshBtn();
 											MoveToCenterPoint();
 											CreateAnimateRim();
+
+											if (PlayMode.mode === PlayMode.LIST)
+												HideAllCnKnot();
+											PlayMode.mode = PlayMode.SINGLE;
 										};
 
 										$li.on('mouseenter', hoverDelay.over(LiMouseOver));
@@ -1457,15 +1536,13 @@ define(['async'], function(async) {
 										left: position.x - _r,
 										top: position.y - _r
 									});
-									$li.circleProgress({
+									$li.circleProgress($.extend({
 										value: 0,
-										size: 100,
-										thickness: 3,
 										fill: {
 											gradient: ['#0099CC']
 										},
 										startAngle: -Math.PI / 2
-									});
+									}, normalCircleCss));
 								});
 							} else {
 								var animateIndex = 0,

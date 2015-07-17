@@ -87,7 +87,7 @@
 				dc.clearRect(0, 0, 400, 400);
 				drawCircle();
 				drawLine(200, 200, R - 4, caculateCirclePoints(200, 200, R - 4, g, startDeg, true),
-					caculateCirclePoints(200, 200, R - 4 - w, g, g / 2 + startDeg + 30, true));
+					caculateCirclePoints(200, 200, R - 4 - w, g, g / 2 + startDeg + 35, true));
 				if (seq) {
 					g -= 1;
 					if (g === n)
