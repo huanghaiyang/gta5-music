@@ -2,16 +2,22 @@ define(['async'], function(async) {
 	(function($) {
 		'use strict';
 		var $body = $('body');
+
+		/*声音文件解析*/
 		window.AudioContext = window.AudioContext || window.webkitAudioContext || window.mozAudioContext || window.msAudioContext;
 		var audioContext = new window.AudioContext();
 
+		/*本地存储*/
 		window.memory = window.localStorage || (window.UserDataStorage && new UserDataStorage()) || new cookieStorage();
+
+		/*延迟代理函数*/
 
 		function throttle(fn, delay) {
 			var timer = null;
 			return function() {
 				var context = this,
 					args = arguments;
+				//清除密集时间延时
 				clearTimeout(timer);
 				timer = setTimeout(function() {
 					fn.apply(context, args);
@@ -19,8 +25,11 @@ define(['async'], function(async) {
 			};
 		};
 
+		/*背景图片工具函数*/
 		var vagueToggle = (function() {
 			var vague, fnCollection = {};
+
+			// 初始化
 
 			function init(v, fn) {
 				vague = v;
@@ -28,13 +37,19 @@ define(['async'], function(async) {
 					fn();
 			};
 
+			// 对象是否存在
+
 			function exist() {
 				return !!vague;
 			};
 
+			// 注册函数
+
 			function regist(name, fn) {
 				fnCollection[name] = fn;
 			};
+
+			// 触发函数 背景变换
 
 			function trigger(name, isRemove) {
 				vague.animate(10, {
@@ -62,6 +77,8 @@ define(['async'], function(async) {
 			};
 		})();
 
+		/*时间转换*/
+
 		function convertTime(time) {
 			var m = Math.floor(Math.floor(time) / 60),
 				s = parseInt(Math.floor(time) % 60);
@@ -72,21 +89,27 @@ define(['async'], function(async) {
 			return m + ':' + s;
 		};
 
+		/*清除所有的audio标签*/
+
 		function clearAudioTags() {
 			$('audio').remove();
 		};
 
+		/*配置项*/
 		var config = {
 			file_server: 'file_server/',
 			sound: 'sound_'
 		};
 
+		/*样式类设置*/
 		var cssConfig = {
 			pause: 'glyphicon-pause',
 			play: 'glyphicon-play',
 			volumeOff: 'glyphicon-volume-off',
 			volumeUp: 'glyphicon-volume-up'
 		};
+
+		/*图片旋转控制器*/
 
 		function RotateController(id, $o) {
 			this.id = id;
@@ -101,7 +124,7 @@ define(['async'], function(async) {
 					var $o = t.$o;
 					this.timeout = setTimeout(function() {
 						if (!$o.is(":animated")) {
-							t.rotate(360, 5000);
+							t.rotate(360, 10000);
 						}
 					}, (this.timeout == null ? 0 : 300));
 				},
@@ -456,11 +479,19 @@ define(['async'], function(async) {
 			};
 		})();
 
+		function PlayMode() {};
+		PlayMode.CIRCLE = 0;
+		PlayMode.SINGLE = 1;
+		PlayMode.LIST = 2;
+		PlayMode.mode = PlayMode.CIRCLE;
+
 		jQuery.fn.pilimusic = function(options) {
 			var defaults = {};
 			var $opts = $.extend({}, defaults, options);
 
 			return this.each(function(index, t) {
+
+
 				var $bk = $('.bk'),
 					$u = $(this),
 					firstLoad = true,
@@ -480,11 +511,34 @@ define(['async'], function(async) {
 					$ls,
 					len,
 					centerPoint,
+					rimCss,
+					rimLiCss,
+					rimCircleProgressCss,
 					$listbtn = $('#listbtn'),
 					$volume = $('#volume'),
 					$volumeBtn = $volume.find('span').first(),
 					$volumeBar = $('#volumeBar'),
-					$volumeCircle = $('#volumeCircle');
+					$volumeCircle = $('#volumeCircle'),
+					$rim = $('#rim'),
+					$nextPlayInfo = $('#nextplayinfo'),
+					$prePlayInfo = $('#preplayinfo');
+
+				$nextPlayInfo.on('click', function() {
+					$playforward.trigger('click');
+				});
+
+				$prePlayInfo.on('click', function() {
+					$playbackward.trigger('click');
+				});
+
+
+				function CreateAnimateRim() {
+					$rim.animationRim();
+				};
+
+				function ClearAnimationRim() {
+					$rim.html();
+				};
 
 				var ProgressController = (function() {
 					var $progressCursor = $('<div class="progressbar-cursor"></div>');
@@ -494,8 +548,81 @@ define(['async'], function(async) {
 					$progressCursor.css({
 						top: top
 					});
-					var duration = 0;
-					var time;
+					var duration = 0,
+						time,
+						musictitle_opacity = 1,
+						nextPlayInfo_opacity = 1,
+						prePlayInfo_opacity = 1;
+
+					var MusicTitleOpacityController = {
+						hide: function() {
+							if (musictitle_opacity === 1) {
+								$musictitle.css({
+									opacity: 0
+								});
+								musictitle_opacity = 0;
+							}
+						},
+						show: function() {
+							if (musictitle_opacity === 0) {
+								$musictitle.css({
+									opacity: 1
+								});
+								musictitle_opacity = 1;
+							}
+						}
+					};
+
+					var NextPlayInfoOpacityController = {
+						hide: function() {
+							if (nextPlayInfo_opacity === 1) {
+								$nextPlayInfo.css({
+									opacity: 0
+								});
+								nextPlayInfo_opacity = 0;
+							}
+						},
+						show: function() {
+							if (nextPlayInfo_opacity === 0) {
+								$nextPlayInfo.css({
+									opacity: 1
+								});
+								nextPlayInfo_opacity = 1;
+							}
+						}
+					};
+
+					var PrePlayInfoOpacityController = {
+						hide: function() {
+							if (prePlayInfo_opacity === 1) {
+								$prePlayInfo.css({
+									opacity: 0
+								});
+								prePlayInfo_opacity = 0;
+							}
+						},
+						show: function() {
+							if (prePlayInfo_opacity === 0) {
+								$prePlayInfo.css({
+									opacity: 1
+								});
+								prePlayInfo_opacity = 1;
+							}
+						}
+					};
+
+					var AllOpacityController = {
+						hide: function() {
+							MusicTitleOpacityController.hide();
+							NextPlayInfoOpacityController.hide();
+							PrePlayInfoOpacityController.hide();
+						},
+						show: function() {
+							MusicTitleOpacityController.show();
+							NextPlayInfoOpacityController.show();
+							PrePlayInfoOpacityController.show();
+						}
+					};
 					return {
 						move: function(e) {
 							var offsetX = e.target.offsetX || e.originalEvent.layerX;
@@ -508,14 +635,31 @@ define(['async'], function(async) {
 							$time.show();
 							$time.css({
 								left: $progress.offset().left + offsetX + 2,
-								top: $progress.offset().top - 13
+								top: $progress.offset().top - 15
 							});
 							time = Math.floor(offsetX / $progress.width() * duration).toFixed(0);
 							$time.html(convertTime(time));
+							if (e.pageX <= $musictitle.offset().left + $musictitle.width() + 5) {
+								MusicTitleOpacityController.hide();
+							} else {
+								MusicTitleOpacityController.show();
+							}
+							if (e.pageX >= $nextPlayInfo.offset().left - 5) {
+								NextPlayInfoOpacityController.hide();
+							} else {
+								NextPlayInfoOpacityController.show();
+							}
+							if (e.pageX >= $prePlayInfo.offset().left - 5 && e.pageX <= $prePlayInfo.offset().left + $prePlayInfo.width() + 5) {
+								PrePlayInfoOpacityController.hide();
+							} else {
+								PrePlayInfoOpacityController.show();
+							}
+
 						},
 						out: function() {
 							$progressCursor.hide();
 							$time.hide();
+							AllOpacityController.show();
 						},
 						click: function() {
 							if (currentSound) {
@@ -712,33 +856,49 @@ define(['async'], function(async) {
 					return $u.find('li[data-id=' + id + ']');
 				};
 
+				function hideLi(id) {
+					getLiByDataId(id).hide();
+				};
+
+				function showLi(id) {
+					getLiByDataId(id).show();
+				};
+
+				function playward(id, instance) {
+					if (instance) {
+						var $li = getLiByDataId(instance.id);
+						$li.trigger('play');
+						if (PlayMode.mode === PlayMode.SINGLE) {
+							hideLi(id);
+							showLi(instance.id);
+							$li.css({
+								opacity: 1
+							});
+							$li.css(rimLiCss);
+							$li.circleProgress(rimCircleProgressCss);
+						}
+					}
+				};
+
 				function playforward(id) {
 					id = id ? id : currentSound;
 					if (firstLoad == true) {
 						var nextSoundInstance = soundInstanceCollection.getNext(id);
-						if (nextSoundInstance) {
-							getLiByDataId(nextSoundInstance.id).trigger('play');
-						}
+						playward(id, nextSoundInstance);
 					} else {
 						var nextSoundInstance = soundInstanceCollection.getPre(id);
-						if (nextSoundInstance) {
-							getLiByDataId(nextSoundInstance.id).trigger('play');
-						}
+						playward(id, nextSoundInstance);
 					}
 				};
 
 				function playbackward(id) {
 					id = id ? id : currentSound;
 					if (firstLoad == true) {
-						var nextSoundInstance = soundInstanceCollection.getPre(id);
-						if (nextSoundInstance) {
-							getLiByDataId(nextSoundInstance.id).trigger('play');
-						}
+						var preSoundInstance = soundInstanceCollection.getPre(id);
+						playward(id, preSoundInstance);
 					} else {
-						var nextSoundInstance = soundInstanceCollection.getNext(id);
-						if (nextSoundInstance) {
-							getLiByDataId(nextSoundInstance.id).trigger('play');
-						}
+						var preSoundInstance = soundInstanceCollection.getNext(id);
+						playward(id, preSoundInstance);
 					}
 				};
 
@@ -778,6 +938,13 @@ define(['async'], function(async) {
 				queue.installPlugin(createjs.Sound);
 				queue.on("complete", handleComplete);
 				queue.on("fileload", function(e) {
+
+					var nextId = soundInstanceCollection.getNextId(e.item.id);
+					$nextPlayInfo.html('下一曲:' + getLiByDataId(nextId).attr('data-title'));
+
+					var preId = soundInstanceCollection.getPreId(e.item.id);
+					$prePlayInfo.html('上一曲:' + getLiByDataId(preId).attr('data-title'));
+
 					ProgressController.setDuration(e.result.duration);
 					$playTime.html('0:00/' + convertTime(e.result.duration));
 					var remainProgress = 0,
@@ -1113,9 +1280,41 @@ define(['async'], function(async) {
 						$li.queue(function() {
 							$(this).dequeue();
 						});
+						$li.circleProgress({
+							size: _height / 2,
+							thickness: 1.5
+						});
 					}, function(err, results) {
 						console.log('the <li>s all animated.');
 					});
+				};
+
+				/*隐藏所有除当前播放音乐的<li>元素*/
+
+				function HideAllExceptThis(id) {
+					for (var i = 0; i < soundInstanceCollection.collection.length; i++) {
+						var instance = soundInstanceCollection.collection[i];
+						if (instance.id !== id) {
+							var $li = getLiByDataId(instance.id);
+							$li.css({
+								opacity: 0
+							});
+							setTimeout(function() {
+								$li.hide();
+							}, 300);
+						}
+					}
+				};
+
+				/*隐藏刷新按钮*/
+
+				function HideRefreshBtn() {
+					$refreshButton.css({
+						opacity: 0
+					});
+					setTimeout(function() {
+						$refreshButton.hide();
+					}, 300);
 				};
 
 				function done(data, status) {
@@ -1134,7 +1333,7 @@ define(['async'], function(async) {
 									$u.append($li);
 									$box = $("<div class=\"box\"></div>");
 									$li.append($box);
-									$cd = $("<div class=\"cd\"><span class=\"glyphicon glyphicon-cd\"></span></div>");
+									$cd = $("<div class=\"cd\" title=\"单曲播放\"><span class=\"glyphicon glyphicon-cd\"></span></div>");
 									$box.append($cd);
 									$rotation = $('<div class=\"rotation\"></div>');
 									$box.append($rotation);
@@ -1142,28 +1341,41 @@ define(['async'], function(async) {
 									$rotation.append($img);
 
 									var hoverDelay = new HoverDelay();
-									(function($img, $cd) {
-										var cdMouseover = false;
-										$img.on('mouseover', hoverDelay.over(function() {
-											$cd.slideDown();
-										}));
-										$img.on('mouseout', hoverDelay.clear(function(e) {
-											if (e.currentTarget === $img[0]) {
-												setTimeout(function() {
-													if (cdMouseover === false) {
-														$cd.slideUp();
-													}
-												}, 50);
-											}
-										}));
+									(function($li, $cd) {
 
-										$cd.on('mouseover', function() {
-											cdMouseover = true;
-										});
-										$cd.on('mouseout', function() {
-											cdMouseover = false;
-										});
-									})($img, $cd);
+										function SlideDown() {
+											$cd.slideUp();
+										};
+
+										function LiMouseOver() {
+											$cd.slideDown();
+										};
+
+										function LiMouseOut(e) {
+											SlideDown();
+										};
+
+										function MoveToCenterPoint() {
+											$li.velocity(rimLiCss);
+											$li.circleProgress(rimCircleProgressCss);
+										};
+
+										function CDClick(e) {
+											e.preventDefault();
+											e.stopPropagation();
+											PlayMode.mode = PlayMode.SINGLE;
+											HideAllExceptThis($li.attr('data-id'));
+											HideRefreshBtn();
+											MoveToCenterPoint();
+											CreateAnimateRim();
+										};
+
+										$li.on('mouseenter', hoverDelay.over(LiMouseOver));
+										$li.on('mouseleave', hoverDelay.clear(LiMouseOut));
+
+										$cd.on('click', CDClick);
+
+									})($li, $cd);
 								} else {
 									$li = $u.find('li').eq(i);
 									$box = $li.find('div');
@@ -1199,12 +1411,29 @@ define(['async'], function(async) {
 							} else {
 								getLiByDataId(soundInstanceCollection.getLast().id).trigger('play');
 							}
-							if (!centerPoint)
+							if (!centerPoint) {
 								centerPoint = {
 									x: $u.width() / 2,
 									y: $u.height() / 2
 								};
-
+								rimCss = {
+									width: 400,
+									height: 400,
+									left: centerPoint.x - 200,
+									top: centerPoint.y - 200
+								};
+								$rim.css(rimCss);
+								rimLiCss = {
+									width: 308,
+									height: 308,
+									left: centerPoint.x - 154,
+									top: centerPoint.y - 154
+								};
+								rimCircleProgressCss = {
+									size: 308,
+									thickness: 12
+								};
+							}
 
 							if (!$refreshButton) {
 								$refreshButton = $("<span title=\"刷新音乐列表\" class=\"refresh-btn\"><i class=\"glyphicon glyphicon-refresh\"></i></span>")
@@ -1258,6 +1487,10 @@ define(['async'], function(async) {
 										callback();
 									}, 100);
 									var position = getPosition(animateIndex, r);
+									$li.circleProgress({
+										size: _height * 2,
+										thickness: 3
+									});
 									$li.animate({
 										left: position.x - _r,
 										top: position.y - _r,

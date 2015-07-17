@@ -34,6 +34,11 @@
 	background-color: #000000;
 	box-shadow: 0 0 10px 0 rgba(0,0,0,.5);
 	z-index: 100;
+	-webkit-transition:opacity 0.3s ease-in-out;
+	-moz-transition:opacity 0.3s ease-in-out;
+	-ms-transition:opacity 0.3s ease-in-out;
+	-o-transition:opacity 0.3s ease-in-out;
+	transition:opacity 0.3s ease-in-out;
 }
 .music-ul>li:hover,.music-ul>li.active{
 	box-shadow: 0px 0px 10px 0 #26C5CB;
@@ -73,7 +78,7 @@
 	width: 100%;
 	height: 100%;
 	border-radius: 50%;
-	opacity: 0.7;
+	opacity: 0.8;
 	-webkit-backface-visibility: hidden ;
 	-moz-backface-visibility: hidden ;
 	-o-backface-visibility: hidden ;
@@ -97,9 +102,14 @@
 	position: absolute;
 	width:14px;
 	height: 16px;
+	-webkit-transition:opacity 0.3s ease-in-out;
+	-moz-transition:opacity 0.3s ease-in-out;
+	-ms-transition:opacity 0.3s ease-in-out;
+	-o-transition:opacity 0.3s ease-in-out;
+	transition:opacity 0.3s ease-in-out;
 }
 
-.glyphicon,.music-title{
+.glyphicon,.music-icon{
 	cursor: pointer;
 	-webkit-transition:color 0.3s ease-in-out;
 	-moz-transition:color 0.3s ease-in-out;
@@ -108,7 +118,7 @@
 	transition:color 0.3s ease-in-out;
 }
 
-.glyphicon:hover,.music-title:hover{
+.glyphicon:hover,.music-icon:hover{
 	color:#26C5CB;
 }
 
@@ -151,8 +161,16 @@
 .music-thumb:hover{
 	opacity: 1.1;
 }
-.music-title{
+.music-icon{
 	margin-top: 3px;
+}
+.music-title , .pre-play-info , .next-play-info{
+	opacity: 1;
+	-webkit-transition:opacity 0.3s ease-in-out;
+	-moz-transition:opacity 0.3s ease-in-out;
+	-ms-transition:opacity 0.3s ease-in-out;
+	-o-transition:opacity 0.3s ease-in-out;
+	transition:opacity 0.3s ease-in-out;
 }
 .play-btn,.list-btn,.music-thumb{
 	opacity: 0.8;
@@ -214,7 +232,7 @@
 	z-index: 2000;
 	display: none;
 	color:#26C5CB;
-	font-size: 12px;
+	font-size: 14px;
 }
 
 .cd{
@@ -232,11 +250,28 @@
 }
 
 .cd .glyphicon-cd{
-	-webkit-animation:cdRotate 3s infinite linear normal running;
-    -moz-animation:cdRotate 3s infinite linear normal running;
-    -ms-animation:cdRotate 3s infinite linear normal running;
-    -o-animation:cdRotate 3s infinite linear normal running;
-    animation:cdRotate 3s infinite linear normal running;
+	-webkit-animation:cdRotate 5s infinite linear normal running;
+    -moz-animation:cdRotate 5s infinite linear normal running;
+    -ms-animation:cdRotate 5s infinite linear normal running;
+    -o-animation:cdRotate 5s infinite linear normal running;
+    animation:cdRotate 5s infinite linear normal running;
+}
+
+.rim{
+	position: relative;
+	margin-right: auto;
+	margin-top: auto;
+	vertical-align: middle;
+	width: 400px;
+	height: 400px;
+}
+
+.next-play-info , .pre-play-info{
+	float: right;
+}
+
+.next-play-info{
+	margin-left: 20px;
 }
 
 @-webkit-keyframes cdRotate {

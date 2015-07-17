@@ -27,6 +27,7 @@
 			<div class="row">
 				<div class='col-12'>
 					<div class="ul-container">
+						<div class="rim" id="rim"></div>
 						<ul id="me" class="music-ul">
 				
 						</ul>
@@ -56,7 +57,11 @@
 					    </a>
 					  </div>
 					  <div class="media-body">
-					    <h6 class="media-heading music-title" id='musictitle'></h6>
+					    <h6 class="media-heading">
+					    	<span id='musictitle' class='music-title music-icon'></span>
+					    	<span id='nextplayinfo' class='next-play-info music-icon'></span>
+					    	<span id='preplayinfo' class='pre-play-info music-icon'></span>
+					    </h6>
 					    <div class="progress" id='progress'>
 						  <div class="progress-bar progress-bar-warning progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;" id="nowProgress">
 						  </div>
@@ -65,7 +70,7 @@
 						</div>
 					  </div>
 					  <div class='media-right'>
-					  	<h6 class="media-heading music-title"></h6>
+					  	<h6 class="media-heading music-icon"></h6>
 					  	<span id='playTime'>00:00/00:00</span>
 					  </div>
 					</div>
