@@ -163,6 +163,9 @@
 .music-icon{
 	margin-top: 3px;
 }
+.music-title{
+	float:left;
+}
 .music-title , .pre-play-info , .next-play-info{
 	opacity: 1;
 	-webkit-transition:opacity 0.3s ease-in-out;
@@ -214,6 +217,11 @@
 	position: absolute;
 	border-radius: 50%;
 	box-shadow: 0 0 1px 0 #000;
+}
+
+.progress{
+	clear:both;
+	margin-top:20px;
 }
 
 .progressbar-cursor{
