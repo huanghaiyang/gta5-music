@@ -442,6 +442,11 @@ define(['async'], function(async) {
 						collections[i].hide();
 					}
 				},
+				showAll: function() {
+					for (var i in collections) {
+						collections[i].show();
+					}
+				},
 				exist: function(id) {
 					return !!collections[id]
 				},
@@ -1279,8 +1284,8 @@ define(['async'], function(async) {
 									if (index == 0) {
 										listed = false;
 										$listbtn.attr('data-listed', listed);
-										PlayMode.mode = PlayMode.LIST;
-										PlayMode.preMode = PlayMode.LIST;
+										PlayMode.mode = PlayMode.CIRCLE;
+										PlayMode.preMode = PlayMode.CIRCLE;
 									}
 								});
 							}
@@ -1475,10 +1480,8 @@ define(['async'], function(async) {
 
 												if (PlayMode.mode === PlayMode.LIST) {
 													HideAllCnKnot();
-													PlayMode.preMode = PlayMode.CIRCLE;
-												} else if (PlayMode.mode === PlayMode.LIST) {
-													PlayMode.preMode = PlayMode.LIST;
 												}
+												PlayMode.preMode = PlayMode.mode;
 												PlayMode.mode = PlayMode.SINGLE;
 
 												$cd.attr('title', '退出单曲播放');
@@ -1489,6 +1492,9 @@ define(['async'], function(async) {
 													$li.trigger('click');
 											} else {
 												cdReset();
+												if (PlayMode.preMode === PlayMode.LIST) {
+													CnknotCollection.showAll();
+												}
 												PlayMode.mode = PlayMode.preMode;
 											}
 										};
