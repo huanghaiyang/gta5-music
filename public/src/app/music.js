@@ -455,6 +455,18 @@ define(['async'], function(async) {
 						collections[i].reset();
 					}
 				},
+				replace: function(id, replaceId) {
+					if (id && replaceId) {
+						var cnknot = CnknotCollection.get(id);
+						cnknot.id = replaceId;
+						collections[replaceId] = cnknot;
+						CnknotCollection.remove();
+					}
+				},
+				remove: function(id) {
+					collections[id] = null;
+					delete collections[id];
+				},
 				listeners: {
 					resize: function() {
 						console.log('resize window');
@@ -1242,16 +1254,17 @@ define(['async'], function(async) {
 										speed: 1.1,
 										vertex_Rtop: 0,
 										onEnd: function() {
+											var cnknot;
 											if (!CnknotCollection.exist(c.id)) {
 												var $cnknot = $('.z').first().clone(true);
 												$body.append($cnknot);
-												var cnknot = new CnKnot(c.id, $cnknot);
+												cnknot = new CnKnot(c.id, $cnknot);
 												CnknotCollection.add(cnknot);
-												cnknot.reset();
-												cnknot.show();
 											} else {
-												CnknotCollection.get(c.id).show();
+												cnknot = CnknotCollection.get(c.id);
 											}
+											cnknot.reset();
+											cnknot.show();
 										}
 									});
 								}, function() {
@@ -1509,7 +1522,10 @@ define(['async'], function(async) {
 									$li = $u.find('li').eq(i);
 									$box = $li.find('div');
 									$img = $box.find('img');
+
+									CnknotCollection.replace($li.attr('data-id'), dataId);
 								}
+
 								$li.attr({
 									'data-title': d.title,
 									'data-id': dataId,
