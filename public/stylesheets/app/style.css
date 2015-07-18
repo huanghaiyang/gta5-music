@@ -18,3 +18,13 @@ a {
 	margin-left: auto;
 	margin-right: auto;
 }  
+
+.keywords{
+  border-radius: 20px;
+  padding-right: 6px !important;
+  padding-left: 42.5px;
+}
+
+.keywords-feedback{
+  right: auto;
+}
