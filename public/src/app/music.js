@@ -102,11 +102,13 @@ define(['async'], function(async) {
 		};
 
 		/*样式类设置*/
-		var cssConfig = {
+		var classConfig = {
 			pause: 'glyphicon-pause',
 			play: 'glyphicon-play',
 			volumeOff: 'glyphicon-volume-off',
-			volumeUp: 'glyphicon-volume-up'
+			volumeUp: 'glyphicon-volume-up',
+			cd: 'glyphicon-cd',
+			ban: 'glyphicon-ban-circle'
 		};
 
 		/*图片旋转控制器*/
@@ -484,6 +486,7 @@ define(['async'], function(async) {
 		PlayMode.SINGLE = 1;
 		PlayMode.LIST = 2;
 		PlayMode.mode = PlayMode.CIRCLE;
+		PlayMode.preMode = PlayMode.CIRCLE;
 
 		jQuery.fn.pilimusic = function(options) {
 			var defaults = {};
@@ -688,17 +691,17 @@ define(['async'], function(async) {
 				var VolumeController = (function() {
 
 					function offClass() {
-						if (!$volumeBtn.hasClass(cssConfig.volumeOff)) {
-							$volumeBtn.addClass(cssConfig.volumeOff);
+						if (!$volumeBtn.hasClass(classConfig.volumeOff)) {
+							$volumeBtn.addClass(classConfig.volumeOff);
 						}
-						$volumeBtn.removeClass(cssConfig.volumeUp);
+						$volumeBtn.removeClass(classConfig.volumeUp);
 					};
 
 					function onClass() {
-						if (!$volumeBtn.hasClass(cssConfig.volumeUp)) {
-							$volumeBtn.addClass(cssConfig.volumeUp);
+						if (!$volumeBtn.hasClass(classConfig.volumeUp)) {
+							$volumeBtn.addClass(classConfig.volumeUp);
 						}
-						$volumeBtn.removeClass(cssConfig.volumeOff);
+						$volumeBtn.removeClass(classConfig.volumeOff);
 					};
 					// 0:off 1:on
 					var state = VolumeStorage.getState() || 0;
@@ -874,12 +877,20 @@ define(['async'], function(async) {
 
 				function playward(id, instance) {
 					if (instance) {
-						var $li = getLiByDataId(instance.id);
-						var $current_li = getLiByDataId(id);
+						var $li = getLiByDataId(instance.id),
+							$cd = $li.find('.box'),
+							$gly = $cd.find('span'),
+							$current_li = getLiByDataId(id),
+							$current_cd = $current_li.find('.box'),
+							$current_gly = $current_cd.find('span');
 						$li.trigger('play');
 						if (PlayMode.mode === PlayMode.SINGLE) {
 
 							hideLi(id);
+							$current_cd.attr('title', '单曲播放');
+							$current_gly.removeClass(classConfig.ban);
+							$current_gly.addClass(classConfig.cd);
+
 							$current_li.css($.extend($current_li.data('originPosition'), normalCss));
 							$current_li.circleProgress(normalCircleCss);
 
@@ -893,6 +904,10 @@ define(['async'], function(async) {
 							});
 							$li.css(rimLiCss);
 							$li.circleProgress(rimCircleProgressCss);
+
+							$cd.attr('title', '退出单曲播放');
+							$gly.removeClass(classConfig.cd);
+							$gly.addClass(classConfig.ban);
 						}
 					}
 				};
@@ -922,20 +937,20 @@ define(['async'], function(async) {
 				$playnow.on('click', function(e, param) {
 					if (currentSound) {
 						var $current_li = getLiByDataId(currentSound);
-						if ($playnow.hasClass(cssConfig.play)) {
+						if ($playnow.hasClass(classConfig.play)) {
 							if (param !== false) {
 								$current_li.trigger('play');
 							}
-						} else if ($playnow.hasClass(cssConfig.pause)) {
+						} else if ($playnow.hasClass(classConfig.pause)) {
 							$current_li.trigger('pause');
 						}
 					}
 				}).on('pause', function() {
-					$playnow.addClass(cssConfig.pause);
-					$playnow.removeClass(cssConfig.play);
+					$playnow.addClass(classConfig.pause);
+					$playnow.removeClass(classConfig.play);
 				}).on('play', function() {
-					$playnow.addClass(cssConfig.play);
-					$playnow.removeClass(cssConfig.pause);
+					$playnow.addClass(classConfig.play);
+					$playnow.removeClass(classConfig.pause);
 				});
 
 				$playforward.on('click', function() {
@@ -1128,6 +1143,25 @@ define(['async'], function(async) {
 					};
 				};
 
+				function cdReset() {
+					ClearAnimationRim();
+					var $l = getLiByDataId(currentSound);
+					if ($l) {
+						$l.velocity($.extend($l.data('originPosition'), normalCss), {
+							duration: 300
+						});
+						$l.circleProgress(normalCircleCss);
+					}
+					ShowAllExceptThis(currentSound);
+					ShowRefreshBtn();
+
+					var $cd = $l.find('.cd');
+					$cd.attr('title', '单曲播放');
+					var $gly = $cd.find('span');
+					$gly.removeClass(classConfig.ban);
+					$gly.addClass(classConfig.cd);
+				};
+
 				function listProxy(sort) {
 					var listed = false,
 						totalTime = 400,
@@ -1173,16 +1207,7 @@ define(['async'], function(async) {
 					var backPositions = [];
 					return function() {
 						if (PlayMode.mode === PlayMode.SINGLE) {
-							ClearAnimationRim();
-							var $l = getLiByDataId(currentSound);
-							if ($l) {
-								$l.velocity($.extend($l.data('originPosition'), normalCss), {
-									duration: 300
-								});
-								$l.circleProgress(normalCircleCss);
-							}
-							ShowAllExceptThis(currentSound);
-							ShowRefreshBtn();
+							cdReset();
 						}
 
 						if (PlayMode.mode === PlayMode.SINGLE) {
@@ -1229,6 +1254,7 @@ define(['async'], function(async) {
 										listed = true;
 										$listbtn.attr('data-listed', listed);
 										PlayMode.mode = PlayMode.LIST;
+										PlayMode.preMode = PlayMode.LIST;
 									}
 								});
 							} else {
@@ -1254,6 +1280,7 @@ define(['async'], function(async) {
 										listed = false;
 										$listbtn.attr('data-listed', listed);
 										PlayMode.mode = PlayMode.LIST;
+										PlayMode.preMode = PlayMode.LIST;
 									}
 								});
 							}
@@ -1405,7 +1432,7 @@ define(['async'], function(async) {
 									$u.append($li);
 									$box = $("<div class=\"box\"></div>");
 									$li.append($box);
-									$cd = $("<div class=\"cd\" title=\"单曲播放\"><span class=\"glyphicon glyphicon-cd\"></span></div>");
+									$cd = $("<div class=\"cd\" title=\"单曲播放\"><span class=\"glyphicon " + classConfig.cd + "\"></span></div>");
 									$box.append($cd);
 									$rotation = $('<div class=\"rotation\"></div>');
 									$box.append($rotation);
@@ -1414,6 +1441,7 @@ define(['async'], function(async) {
 
 									var hoverDelay = new HoverDelay();
 									(function($li, $cd) {
+										var $gly = $cd.find('span');
 
 										function SlideDown() {
 											$cd.slideUp();
@@ -1439,14 +1467,30 @@ define(['async'], function(async) {
 										function CDClick(e) {
 											e.preventDefault();
 											e.stopPropagation();
-											HideAllExceptThis($li.attr('data-id'));
-											HideRefreshBtn();
-											MoveToCenterPoint();
-											CreateAnimateRim();
+											if ($gly.hasClass(classConfig.cd)) {
+												HideAllExceptThis($li.attr('data-id'));
+												HideRefreshBtn();
+												MoveToCenterPoint();
+												CreateAnimateRim();
 
-											if (PlayMode.mode === PlayMode.LIST)
-												HideAllCnKnot();
-											PlayMode.mode = PlayMode.SINGLE;
+												if (PlayMode.mode === PlayMode.LIST) {
+													HideAllCnKnot();
+													PlayMode.preMode = PlayMode.CIRCLE;
+												} else if (PlayMode.mode === PlayMode.LIST) {
+													PlayMode.preMode = PlayMode.LIST;
+												}
+												PlayMode.mode = PlayMode.SINGLE;
+
+												$cd.attr('title', '退出单曲播放');
+												$gly.removeClass(classConfig.cd);
+												$gly.addClass(classConfig.ban);
+
+												if (currentSound !== $li.attr('data-id'))
+													$li.trigger('click');
+											} else {
+												cdReset();
+												PlayMode.mode = PlayMode.preMode;
+											}
 										};
 
 										$li.on('mouseenter', hoverDelay.over(LiMouseOver));
