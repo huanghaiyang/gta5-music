@@ -1110,7 +1110,7 @@ define(['async'], function(async) {
 								});
 							});
 						}
-						$musictitle.html($li.attr('data-title'));
+						$musictitle.html('<span>' + $li.attr('data-artist') + '</span>——' + $li.attr('data-title'));
 						vagueToggle.trigger('changeBk', true);
 					}).bind('instance', function() {
 						soundInstance = soundInstanceCollection.get(id);
@@ -1466,19 +1466,13 @@ define(['async'], function(async) {
 									'data-firstPlay': true,
 									'data-img': imgPath,
 									'data-path': dataPath,
-									'data-size': d.size
+									'data-size': d.size,
+									'data-artist': d.artist
 								});
 								$box.attr('title', d.title);
 								$img.attr('src', imgPath);
 								soundInstanceCollection.add(new SoundInstance(dataId));
 								bindAction($li);
-
-								if (i == 0) {
-									$musicthumb.attr('src', imgPath);
-									$musicthumb.attr('alt', d.title);
-									$musictitle.html(d.name);
-									currentSound = dataId;
-								}
 							}
 							if (!$ls) {
 								$ls = $u.children("li");

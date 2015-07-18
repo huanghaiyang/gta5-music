@@ -7,6 +7,7 @@
 	width:100%;
 }
 .navbar-transparent{
+	box-shadow: -2px 0px 2px 0px #666;
 }
 .music-ul{
 	list-style: none;
