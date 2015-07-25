@@ -458,9 +458,11 @@ define(['async'], function(async) {
 				replace: function(id, replaceId) {
 					if (id && replaceId) {
 						var cnknot = CnknotCollection.get(id);
-						cnknot.id = replaceId;
-						collections[replaceId] = cnknot;
-						CnknotCollection.remove();
+						if(cnknot){
+							cnknot.id = replaceId;
+							collections[replaceId] = cnknot;
+							CnknotCollection.remove();
+						}
 					}
 				},
 				remove: function(id) {
