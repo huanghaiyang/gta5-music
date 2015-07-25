@@ -458,7 +458,7 @@ define(['async'], function(async) {
 				replace: function(id, replaceId) {
 					if (id && replaceId) {
 						var cnknot = CnknotCollection.get(id);
-						if(cnknot){
+						if (cnknot) {
 							cnknot.id = replaceId;
 							collections[replaceId] = cnknot;
 							CnknotCollection.remove();
@@ -1375,6 +1375,7 @@ define(['async'], function(async) {
 							thickness: 1.5
 						});
 					}, function(err, results) {
+						PlayMode.preMode = PlayMode.mode = PlayMode.CIRCLE;
 						console.log('the <li>s all animated.');
 					});
 				};
