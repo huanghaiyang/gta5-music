@@ -5,6 +5,11 @@ body {
   -ms-user-select:   none;
   -o-user-select:   none;
   user-select:   none;
+  -webkit-font-smoothing: antialiased;
+  -moz-font-smoothing: antialiased
+  -ms-font-smoothing: antialiased
+  -o-font-smoothing: antialiased
+  font-smoothing: antialiased
 }
 
 a {

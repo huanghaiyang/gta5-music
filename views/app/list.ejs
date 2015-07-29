@@ -9,6 +9,7 @@
 	<link rel="stylesheet" type="text/css" href="bower_components/css-reset/reset.css">
 	<link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="/stylesheets/app/style.css">
+	<link rel="stylesheet" type="text/css" href="/stylesheets/app/list.css">
 	<script type="text/javascript" data-main="src/app/list-include" src="bower_components/requirejs/require.js"></script>
 
 	<style type="text/css">
@@ -21,9 +22,25 @@
 		<%include nav%>
 		<div class="container">
 			<div class="row">
-				<div class='col-12'>
-					<table class="table table-hover" id="musicList">
-					</table>
+				<div class='col-md-4'>
+					<div class='list-cata'>
+						单曲
+					</div>
+				</div>
+				<div class='col-md-4'>
+					<div class='list-cata'>
+						歌手
+					</div>
+				</div>
+				<div class='col-md-4'>
+					<div class='list-cata'>
+						专辑
+					</div>
+				</div>
+			</div>
+			<div class='row'>
+				<div class='col-md-12' id='musicList'>
+					
 				</div>
 			</div>
 		</div>
