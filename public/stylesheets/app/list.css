@@ -26,8 +26,15 @@
 }
 
 .list-cata:hover,.list-cata-active{
-	background-color: #FF6666;
 	color: #FFF;
+}
+
+.list-cata-active{
+	background-color: #FF6666;
+}
+
+.list-cata:hover{
+	background-color: #FF5555;
 }
 
 .list-children{
