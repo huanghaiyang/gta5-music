@@ -1,9 +1,37 @@
 $(document).ready(function() {
 	var $musicList = $('#musicList'),
 		$listCatas = $('.list-cata'),
-		params, classConfig = {
+		params = {},
+		un = (function() {
+			window.location.search.replace(/^\?/, '').split('&').forEach(function(value, index) {
+				var arr = value.split(/=/);
+				params[arr[0]] = decodeURIComponent(arr[1]);
+			});
+			return undefined;
+		})(),
+		classConfig = {
 			li: {
 				active: 'list-cata-active'
+			}
+		},
+		aj = {
+			url: '/music/search'
+		},
+		searchData = {
+			music: {
+				keywords: params.keywords,
+				page: 1,
+				fetchSize: 10
+			},
+			album: {
+				keywords: params.keywords,
+				page: 1,
+				fetchSize: 10
+			},
+			artist: {
+				keywords: params.keywords,
+				page: 1,
+				fetchSize: 10
 			}
 		};
 
@@ -34,6 +62,9 @@ $(document).ready(function() {
 		group: {},
 		add: function(i, tab) {
 			this.group[i] = tab;
+		},
+		get: function(i) {
+			return this.group[i];
 		}
 	};
 
@@ -48,14 +79,27 @@ $(document).ready(function() {
 		var $self = $(this);
 		$listCatas.each(function(i, l) {
 			if ($(l).data('index') != $self.data('index')) {
-				$(l).removeClass(classConfig.li.active);
+				TabGroup.get($(l).data('index')).disActive();
 			} else {
-				$self.addClass(classConfig.li.active);
+				TabGroup.get($self.data('index')).active();
 			}
 		});
 	});
 
-	function loadList() {
+	function done(data, status) {
 
 	};
+
+	function loadList() {
+		$.ajax({
+			url: aj.url,
+			data: {
+				searchData: searchData
+			},
+			dataType: "json",
+			type: 'POST'
+		}).done(done);
+	};
+
+	loadList();
 });

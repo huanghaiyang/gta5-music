@@ -9,7 +9,7 @@ require.config({
 		"jquery-ui": "jquery-ui/jquery-ui.min",
 
 		"async": "async/lib/async",
-		"list": "../src/app/list",
+		"search": "../src/app/search",
 		"app.index": "../src/app/index"
 	},
 	shim: {
@@ -22,7 +22,7 @@ require.config({
 		'velocity': {
 			'deps': ['jquery']
 		},
-		'list': {
+		'search': {
 			'deps': ['jquery', 'jquery.easing', 'async']
 		}
 	},
@@ -30,7 +30,7 @@ require.config({
 });
 /*加载文件*/
 require([
-	'es6-shim', 'jquery', 'jquery.easing', 'jquery-ui', 'velocity', 'async', 'list'
+	'es6-shim', 'jquery', 'jquery.easing', 'jquery-ui', 'velocity', 'async', 'search'
 ], function(require) {
 	'use strict';
 });

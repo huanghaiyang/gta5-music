@@ -6,6 +6,6 @@ var indexController = new IndexController();
 /* GET home page. */
 router.get('/', indexController.home);
 
-router.get('/list', indexController.list);
+router.get('/search', indexController.search);
 
 module.exports = router;

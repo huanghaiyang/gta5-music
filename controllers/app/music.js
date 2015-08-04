@@ -136,5 +136,27 @@ MusicController.prototype.random = function(req, res, next) {
 	});;
 };
 
+function searchMusic(keywords) {
+
+};
+
+function searchArtist(keywords) {
+
+};
+
+function searchAlbum(keywords) {
+
+};
+
+MusicController.prototype.search = function(req, res) {
+	var keywords = req.query.keywords;
+	res.send({
+		music: searchMusic(keywords),
+		album: searchMusic(keywords),
+		artist: searchArtist(keywords)
+	});
+	res.end();
+};
+
 
 module.exports = MusicController;

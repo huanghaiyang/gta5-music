@@ -9,4 +9,6 @@ router.get('/random', musicController.random);
 /*get a random music*/
 router.get('/randomOne', musicController.randomOne);
 
+router.post('/search' , musicController.search);
+
 module.exports = router;
