@@ -3,6 +3,8 @@ var assert = require('assert');
 var Promise = require('bluebird');
 var async = require("async");
 var ObjectUtils = require('../../lib/object-utils');
+var RegExpUtils = require('../../lib/regexp-utils');
+var DateUtils = require('../../lib/date-utils');
 
 function MusicController() {
 	// 最多随机数
@@ -136,26 +138,195 @@ MusicController.prototype.random = function(req, res, next) {
 	});;
 };
 
-function searchMusic(keywords) {
+function searchMusic(keywords, page, size) {
+	return new Promise(function(resolve, reject) {
 
-};
+		var conditions = {
+			title: new RegExp(RegExpUtils.parse(keywords), "gi")
+		};
+		if (page >= 0 && size > 0) {
+			Music.find(conditions).sort({
+				addDate: 'asc'
+			}).skip((page - 1) * size).limit(size).select('name title artist album path imgPath addDate').exec(function(err, result) {
+				assert.equal(err, null);
+				console.log('query success.');
 
-function searchArtist(keywords) {
+				var content = JSON.parse(JSON.stringify(result));
+				console.log(content);
 
-};
+				for (var i = 0; i < result.length; i++) {
+					content[i].addDate = DateUtils.Format(result[i].addDate, "yyyy-MM-dd HH:mm:ss");
+				}
 
-function searchAlbum(keywords) {
+				var obj = {
+					size: size,
+					content: content,
+					page: page,
+					sort: "addDate"
+				};
 
-};
+				Music.count(conditions, function(err, count) {
+					assert.equal(err, null);
+					console.log('count success.');
+					obj.totalPages = count % size > 0 ? Math.floor(count / size) + 1 : count / size;
+					obj.totalElements = count;
+					if (page * size >= count)
+						obj.last = true;
+					else
+						obj.last = false;
+					if (page === 1)
+						obj.first = true;
+					else
+						obj.first = false;
 
-MusicController.prototype.search = function(req, res) {
-	var keywords = req.query.keywords;
-	res.send({
-		music: searchMusic(keywords),
-		album: searchMusic(keywords),
-		artist: searchArtist(keywords)
+					resolve(obj);
+				});
+
+			});
+		} else {
+			resolve({
+				size: 0,
+				content: [],
+				page: page,
+				sort: ''
+			});
+		}
 	});
-	res.end();
+};
+
+function searchArtist(keywords, page, size) {
+	return new Promise(function(resolve, reject) {
+
+		var conditions = {
+			title: new RegExp(RegExpUtils.parse(keywords), "gi")
+		};
+		if (page >= 0 && size > 0) {
+			Music.find(conditions).distinct('artist').sort({
+				addDate: 'asc'
+			}).skip((page - 1) * size).limit(size).select('artist imgPath').exec(function(err, result) {
+				assert.equal(err, null);
+				console.log('query success.');
+
+				var content = JSON.parse(JSON.stringify(result));
+				console.log(content);
+
+				var obj = {
+					size: size,
+					content: content,
+					page: page
+				};
+
+				Music.count(conditions, function(err, count) {
+					assert.equal(err, null);
+					console.log('count success.');
+					obj.totalPages = count % size > 0 ? Math.floor(count / size) + 1 : count / size;
+					obj.totalElements = count;
+					if (page * size >= count)
+						obj.last = true;
+					else
+						obj.last = false;
+					if (page === 1)
+						obj.first = true;
+					else
+						obj.first = false;
+
+					resolve(obj);
+				});
+
+			});
+		} else {
+			resolve({
+				size: 0,
+				content: [],
+				page: page
+			});
+		}
+	});
+
+};
+
+function searchAlbum(keywords, page, size) {
+	return new Promise(function(resolve, reject) {
+
+		var conditions = {
+			title: new RegExp(RegExpUtils.parse(keywords), "gi")
+		};
+		if (page >= 0 && size > 0) {
+			Music.find(conditions).sort({
+				addDate: 'asc'
+			}).skip((page - 1) * size).limit(size).select('album imgPath').distinct('album').exec(function(err, result) {
+				assert.equal(err, null);
+				console.log('query success.');
+
+				var content = JSON.parse(JSON.stringify(result));
+				console.log(content);
+
+				var obj = {
+					size: size,
+					content: content,
+					page: page
+				};
+
+				Music.count(conditions, function(err, count) {
+					assert.equal(err, null);
+					console.log('count success.');
+					obj.totalPages = count % size > 0 ? Math.floor(count / size) + 1 : count / size;
+					obj.totalElements = count;
+					if (page * size >= count)
+						obj.last = true;
+					else
+						obj.last = false;
+					if (page === 1)
+						obj.first = true;
+					else
+						obj.first = false;
+
+					resolve(obj);
+				});
+
+			});
+		} else {
+			resolve({
+				size: 0,
+				content: [],
+				page: page
+			});
+		}
+	});
+
+};
+
+MusicController.prototype.searchMusic = function(req, res) {
+	var keywords = req.query.keywords;
+	var page = req.query.page;
+	var size = req.query.size;
+	searchMusic(keywords, page, size).then(function(data) {
+		res.send(data);
+		res.end();
+	}).
+	catch (function() {});
+};
+
+MusicController.prototype.searchAlbum = function(req, res) {
+	var keywords = req.query.keywords;
+	var page = req.query.page;
+	var size = req.query.size;
+	searchAlbum(keywords, page, size).then(function(data) {
+		res.send(data);
+		res.end();
+	}).
+	catch (function() {});
+};
+
+MusicController.prototype.searchArtist = function(req, res) {
+	var keywords = req.query.keywords;
+	var page = req.query.page;
+	var size = req.query.size;
+	searchArtist(keywords, page, size).then(function(data) {
+		res.send(data);
+		res.end();
+	}).
+	catch (function() {});
 };
 
 

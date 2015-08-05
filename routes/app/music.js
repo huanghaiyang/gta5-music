@@ -9,6 +9,10 @@ router.get('/random', musicController.random);
 /*get a random music*/
 router.get('/randomOne', musicController.randomOne);
 
-router.post('/search' , musicController.search);
+router.get('/searchMusic', musicController.searchMusic);
+
+router.get('/searchAlbum', musicController.searchAlbum);
+
+router.get('/searchArtist', musicController.searchArtist);
 
 module.exports = router;

@@ -20,18 +20,18 @@ $(document).ready(function() {
 		searchData = {
 			music: {
 				keywords: params.keywords,
-				page: 1,
-				fetchSize: 10
+				page: 0,
+				size: 10
 			},
 			album: {
 				keywords: params.keywords,
-				page: 1,
-				fetchSize: 10
+				page: 0,
+				size: 10
 			},
 			artist: {
 				keywords: params.keywords,
-				page: 1,
-				fetchSize: 10
+				page: 0,
+				size: 10
 			}
 		};
 
@@ -97,7 +97,7 @@ $(document).ready(function() {
 				searchData: searchData
 			},
 			dataType: "json",
-			type: 'POST'
+			type: 'GET'
 		}).done(done);
 	};
 
