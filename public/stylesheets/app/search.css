@@ -48,6 +48,7 @@
 	margin-top: 5px;
 }
 .list-panel li{
+	position: relative;
 	height: 60px;
 	line-height: 56px;
 	margin-bottom: 5px;
@@ -64,6 +65,7 @@
 .list-panel li:hover{
 	box-shadow: 0 1px 1px #000;
 	opacity: 1;
+	cursor: pointer;
 }
 
 .list-panel li img{
@@ -71,15 +73,68 @@
 	border-radius: 5px;
 	margin-left: 5px;
 	border:1px solid #000;
-	opacity: 0.9;
+}
+
+.list-panel li .m-modal{
+	height: 50px;
+	width: 50px;
+	border-radius: 5px;
+	left: 5px;
+	background-color: #000;
+	opacity: 0.2;
+	position: absolute;
+	top:5px;
+	z-index: 100;
+}
+
+.list-panel li .m-play{
+	position: absolute;
+	height: 0;
+	width: 0;
+	border-top: 10px solid transparent;
+	border-bottom: 10px solid transparent;
+	border-left: 20px solid #000;
+	z-index: 101;
+	top:20px;
+	left: 20px;
 	-webkit-transition:border 0.3s ease-in-out;
 	-moz-transition:border 0.3s ease-in-out;
 	-ms-transition:border 0.3s ease-in-out;
 	-o-transition:border 0.3s ease-in-out;
 	transition:border 0.3s ease-in-out;
+
+	-webkit-animation: ball-scale-multiple 1s 0s linear;
+  	animation: ball-scale-multiple 1s 0s linear;
 }
 
-.list-panel li img:hover{
-	opacity: 1;
-	border: 1px solid #FF5555;
-};
+.list-panel li .m-play:hover{
+	border-left: 10px solid #FF5555;
+}
+
+@-webkit-keyframes ball-scale-multiple {
+  0% {
+    -webkit-transform: scale(0.5);
+            transform: scale(0.5);
+    opacity: 0.5; }
+
+  5% {
+    opacity: 1; }
+
+  100% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+    opacity: 0.5; } }
+
+@keyframes ball-scale-multiple {
+  0% {
+    -webkit-transform: scale(0.5);
+            transform: scale(0.5);
+    opacity: 0.5; }
+
+  5% {
+    opacity: 1; }
+
+  100% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+    opacity: 0.5; } }

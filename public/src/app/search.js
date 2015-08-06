@@ -266,14 +266,24 @@ $(document).ready(function() {
 			create: function() {
 				var $element = $('<li></li>'),
 					$img = $('<img>'),
-					$audio = $('<audio></audio>');
+					$audio = $('<audio></audio>'),
+					$modal = $('<div class="m-modal"></div>'),
+					$play = $('<div class="m-play"></div>');
 
+				$element.append($play);
+				$element.append($modal);
 				$element.append($img);
 				$element.append($audio);
 
 				this.$audio = $audio;
 				this.$img = $img;
 				this.$element = $element;
+				this.$modal = $modal;
+				this.$play = $play;
+
+				this.$img.bind('mouseenter', function(ev) {
+
+				});
 				return this;
 			},
 			bind: function(record) {
