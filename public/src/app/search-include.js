@@ -8,6 +8,8 @@ require.config({
 		"velocity": "velocity/velocity.min",
 		"jquery-ui": "jquery-ui/jquery-ui.min",
 
+		"underscore": "underscore/underscore",
+
 		"async": "async/lib/async",
 		"search": "../src/app/search",
 		"app.index": "../src/app/index"
@@ -23,14 +25,14 @@ require.config({
 			'deps': ['jquery']
 		},
 		'search': {
-			'deps': ['jquery', 'jquery.easing', 'async']
+			'deps': ['jquery', 'jquery.easing', 'async', 'underscore']
 		}
 	},
 	waitSeconds: 15
 });
 /*加载文件*/
 require([
-	'es6-shim', 'jquery', 'jquery.easing', 'jquery-ui', 'velocity', 'async', 'search'
+	'es6-shim', 'jquery', 'jquery.easing', 'jquery-ui', 'underscore', 'velocity', 'async', 'search'
 ], function(require) {
 	'use strict';
 });

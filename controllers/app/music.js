@@ -1,4 +1,6 @@
-var Music = require('../../models/music');
+var Music = require('../../models/music'),
+	Artist = require('../../models/artist'),
+	Album = require('../../models/album');
 var assert = require('assert');
 var Promise = require('bluebird');
 var async = require("async");
@@ -144,7 +146,7 @@ function searchMusic(keywords, page, size) {
 		var conditions = {
 			title: new RegExp(RegExpUtils.parse(keywords), "gi")
 		};
-		if (page >= 0 && size > 0) {
+		if (page >= 1 && size > 0) {
 			Music.find(conditions).sort({
 				addDate: 'asc'
 			}).skip((page - 1) * size).limit(size).select('name title artist album path imgPath addDate').exec(function(err, result) {
@@ -198,12 +200,12 @@ function searchArtist(keywords, page, size) {
 	return new Promise(function(resolve, reject) {
 
 		var conditions = {
-			title: new RegExp(RegExpUtils.parse(keywords), "gi")
+			name: new RegExp(RegExpUtils.parse(keywords), "gi")
 		};
-		if (page >= 0 && size > 0) {
-			Music.find(conditions).distinct('artist').sort({
-				addDate: 'asc'
-			}).skip((page - 1) * size).limit(size).select('artist imgPath').exec(function(err, result) {
+		if (page >= 1 && size > 0) {
+			Artist.find(conditions).distinct('name').sort({
+				name: 'asc'
+			}).skip((page - 1) * size).limit(size).select('name imgPath').exec(function(err, result) {
 				assert.equal(err, null);
 				console.log('query success.');
 
@@ -216,7 +218,7 @@ function searchArtist(keywords, page, size) {
 					page: page
 				};
 
-				Music.count(conditions, function(err, count) {
+				Artist.count(conditions, function(err, count) {
 					assert.equal(err, null);
 					console.log('count success.');
 					obj.totalPages = count % size > 0 ? Math.floor(count / size) + 1 : count / size;
@@ -249,12 +251,12 @@ function searchAlbum(keywords, page, size) {
 	return new Promise(function(resolve, reject) {
 
 		var conditions = {
-			title: new RegExp(RegExpUtils.parse(keywords), "gi")
+			name: new RegExp(RegExpUtils.parse(keywords), "gi")
 		};
-		if (page >= 0 && size > 0) {
-			Music.find(conditions).sort({
-				addDate: 'asc'
-			}).skip((page - 1) * size).limit(size).select('album imgPath').distinct('album').exec(function(err, result) {
+		if (page >= 1 && size > 0) {
+			Album.find(conditions).sort({
+				name: 'asc'
+			}).skip((page - 1) * size).limit(size).select('name imgPath').exec(function(err, result) {
 				assert.equal(err, null);
 				console.log('query success.');
 
@@ -267,7 +269,7 @@ function searchAlbum(keywords, page, size) {
 					page: page
 				};
 
-				Music.count(conditions, function(err, count) {
+				Album.count(conditions, function(err, count) {
 					assert.equal(err, null);
 					console.log('count success.');
 					obj.totalPages = count % size > 0 ? Math.floor(count / size) + 1 : count / size;
