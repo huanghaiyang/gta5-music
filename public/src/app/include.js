@@ -16,11 +16,14 @@ require.config({
 		"music": "../src/app/music",
 		"cnknot": "../src/app/cnknot",
 		"app.index": "../src/app/index",
+		'app.nav': '../src/app/nav',
 
 		'PreloadJS': 'PreloadJS/lib/preloadjs-0.6.1.combined',
 		'SoundJS': 'SoundJS/lib/soundjs-0.6.1.combined',
 
-		'Vague': 'Vague.js/Vague'
+		'Vague': 'Vague.js/Vague',
+		'inputSearch': '../src/app/inputSearch',
+		'utils': '../src/app/utils'
 	},
 	shim: {
 		'jquery.rotate': {
@@ -53,16 +56,23 @@ require.config({
 		'cnknot': {
 			'deps': ['jquery']
 		},
+		'inputSearch': {
+			'deps': ['jquery']
+		},
 		'app.index': {
 			'deps': ['jquery', 'music']
+		},
+		'app.nav': {
+			'deps': ['jquery', 'inputSearch', 'utils']
 		}
 	},
 	waitSeconds: 15
 });
 /*加载文件*/
 require([
-	'es6-shim', 'jquery', 'jquery.rotate', 'jquery.easing', 'jquery-ui', 'velocity', 'async', 'jquery-circle-progress', 'Vague', 'fly', 'animationRim', 'music', 'cnknot', 'PreloadJS', 'SoundJS',
-	'app.index'
+	'es6-shim', 'jquery', 'jquery.rotate', 'jquery.easing', 'jquery-ui', 'velocity',
+	'async', 'jquery-circle-progress', 'Vague', 'fly', 'animationRim', 'music', 'cnknot', 'PreloadJS', 'SoundJS', 'inputSearch', 'utils',
+	'app.index', 'app.nav'
 ], function(require) {
 	'use strict';
 });

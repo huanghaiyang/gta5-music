@@ -1294,7 +1294,7 @@ define(['async'], function(async) {
 											vertex_Rtop: 0,
 											onEnd: function() {}
 										});
-									}, 500);
+									}, 100);
 								}, function() {
 									if (index == 0) {
 										listed = false;
