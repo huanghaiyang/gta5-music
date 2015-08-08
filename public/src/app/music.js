@@ -1144,7 +1144,7 @@ define(['async'], function(async) {
 								});
 							});
 						}
-						$musictitle.html('<span>' + $li.attr('data-artist') + '</span>——' + $li.attr('data-title'));
+						$musictitle.html('<span>' + $li.attr('data-title') + '</span>——演唱:' + $li.attr('data-artist'));
 						vagueToggle.trigger('changeBk', true);
 					}).bind('instance', function() {
 						soundInstance = soundInstanceCollection.get(id);
