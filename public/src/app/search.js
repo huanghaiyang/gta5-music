@@ -255,6 +255,9 @@ $(document).ready(function() {
 		this.$element = null;
 		this.$img = null;
 		this.$autio = null;
+		this.$back = null;
+		this.$play = null;
+		this.$title = null;
 	};
 
 	MusicRecordElement.prototype = (function() {
@@ -267,19 +270,22 @@ $(document).ready(function() {
 				var $element = $('<li></li>'),
 					$img = $('<img>'),
 					$audio = $('<audio></audio>'),
-					$modal = $('<div class="m-modal"></div>'),
-					$play = $('<div class="m-play"></div>');
+					$back = $('<div class="m-back"><div class="m-modal"></div></div>'),
+					$play = $('<div class="m-play"></div>'),
+					$row = $('<div class="m-row"><div class="m-info"><div class="m-title"></div></div></div>');
 
 				$element.append($play);
-				$element.append($modal);
-				$element.append($img);
+				$element.append($back);
 				$element.append($audio);
+				$element.append($row);
+				$back.append($img);
 
 				this.$audio = $audio;
 				this.$img = $img;
 				this.$element = $element;
-				this.$modal = $modal;
+				this.$back = $back;
 				this.$play = $play;
+				this.$title = $row.find('.m-title');
 
 				this.$img.bind('mouseenter', function(ev) {
 
@@ -291,6 +297,8 @@ $(document).ready(function() {
 					src: fileServer.basePath + encodeURIComponent(record.imgPath),
 					title: record.title
 				});
+
+				this.$title.html(record.title + ' — ' + record.artist);
 
 				/*this.$audio.attr({
 					src: fileServer.basePath + record.path
