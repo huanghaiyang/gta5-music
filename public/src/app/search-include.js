@@ -11,8 +11,10 @@ require.config({
 		"underscore": "underscore/underscore",
 
 		"async": "async/lib/async",
-		"search": "../src/app/search",
-		"app.index": "../src/app/index"
+		"app.search": "../src/app/search",
+		'app.nav': '../src/app/nav',
+		"inputSearch": '../src/app/inputSearch',
+		'utils': '../src/app/utils'
 	},
 	shim: {
 		'jquery.easing': {
@@ -24,15 +26,21 @@ require.config({
 		'velocity': {
 			'deps': ['jquery']
 		},
-		'search': {
-			'deps': ['jquery', 'jquery.easing', 'async', 'underscore']
+		'inputSearch': {
+			'deps': ['jquery', 'utils']
+		},
+		'app.search': {
+			'deps': ['jquery', 'jquery.easing', 'async', 'underscore', 'utils']
+		},
+		'app.nav': {
+			'deps': ['jquery', 'inputSearch']
 		}
 	},
 	waitSeconds: 15
 });
 /*加载文件*/
 require([
-	'es6-shim', 'jquery', 'jquery.easing', 'jquery-ui', 'underscore', 'velocity', 'async', 'search'
+	'es6-shim', 'jquery', 'jquery.easing', 'jquery-ui', 'underscore', 'velocity', 'async', 'inputSearch', 'utils', 'app.search', 'app.nav'
 ], function(require) {
 	'use strict';
 });

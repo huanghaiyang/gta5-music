@@ -1,14 +1,7 @@
 $(document).ready(function() {
 	var $listPanels = $('.list-panel'),
 		$listCatas = $('.list-cata'),
-		params = {},
-		un = (function() {
-			window.location.search.replace(/^\?/, '').split('&').forEach(function(value, index) {
-				var arr = value.split(/=/);
-				params[arr[0]] = decodeURIComponent(arr[1]);
-			});
-			return undefined;
-		})(),
+		params = utils.url.params(),
 		classConfig = {
 			li: {
 				active: 'list-cata-active'
