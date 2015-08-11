@@ -17,6 +17,10 @@
 				if (ev.keyCode === 13) {
 					window.location = $opts.url + '&keywords=' + $self.val()
 				}
+			}).on('keydown', function(ev) {
+				if (ev.keyCode === 13) {
+					ev.preventDefault();
+				}
 			});
 		});
 	};

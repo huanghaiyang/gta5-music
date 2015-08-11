@@ -59,8 +59,10 @@ $(document).ready(function() {
 		return {
 			load: function(url, data, callback) {
 				var uri = _concat(url, data);
-				if (!store.uri)
+				if (!store[uri]) {
 					loadList(url, data, callback);
+					store[uri] = data;
+				}
 			}
 		};
 	})();
@@ -247,7 +249,6 @@ $(document).ready(function() {
 	function MusicRecordElement() {
 		this.$element = null;
 		this.$img = null;
-		this.$autio = null;
 		this.$back = null;
 		this.$play = null;
 		this.$title = null;
@@ -262,18 +263,15 @@ $(document).ready(function() {
 			create: function() {
 				var $element = $('<li></li>'),
 					$img = $('<img>'),
-					$audio = $('<audio></audio>'),
 					$back = $('<div class="m-back"><div class="m-modal"></div></div>'),
 					$play = $('<div class="m-play"></div>'),
 					$row = $('<div class="m-row"><div class="m-info"><div class="m-title"></div></div></div>');
 
 				$element.append($play);
 				$element.append($back);
-				$element.append($audio);
 				$element.append($row);
 				$back.append($img);
 
-				this.$audio = $audio;
 				this.$img = $img;
 				this.$element = $element;
 				this.$back = $back;
@@ -292,10 +290,6 @@ $(document).ready(function() {
 				});
 
 				this.$title.html(record.title + ' — ' + record.artist);
-
-				/*this.$audio.attr({
-					src: fileServer.basePath + record.path
-				});*/
 			}
 		};
 	})();
