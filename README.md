@@ -1,7 +1,7 @@
 #PILI-MUSIC
 ###个人web音乐试听
 
-##克隆项目到<code>c:\</code>
+##克隆项目到<code>c:</code>
 <p><code>git clone https://www.github.com/huanghaiyang/pili-music.git</code></p>
 ##工程构建
 ###1.安装nodejs
