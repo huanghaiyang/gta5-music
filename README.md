@@ -24,6 +24,19 @@ af.js工具能够遍历文件夹<code>c:\CloudMusic</code>中的mp3音乐文件�
 <p><code>node bin/app -d c:\CloudMusic</code></p>
 
 ##效果截图
+###1.列表效果（环绕）
 ![Alt text](截图1.jpg "效果1")
+###2.列表效果（队列中国结）
 ![Alt text](截图2.jpg "效果2")
+###3.单曲效果（乐盘齿纹）
 ![Alt text](截图3.jpg "效果3")
+
+##可以使用如下命令启动后台管理系统，端口3001
+<p><code>node bin/system -d c:\CloudMusic</code></p>
+##效果及功能
+###1.列表
+![Alt text](截图4.jpg "效果4")
+###2.修改及查看
+![Alt text](截图5.jpg "效果5")
+###3.资源文件及试听
+![Alt text](截图6.jpg "效果6")
