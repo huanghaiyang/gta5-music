@@ -1,6 +1,4 @@
-var Music = require('../../models/music'),
-	Artist = require('../../models/artist'),
-	Album = require('../../models/album');
+var Music = require('../../models/music');
 var assert = require('assert');
 var Promise = require('bluebird');
 var async = require("async");

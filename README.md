@@ -22,13 +22,14 @@
 af.js工具能够遍历文件夹<code>c:\CloudMusic</code>中的mp3音乐文件，并且对文件进行解析，提取海报图片、艺术家、唱片集等，写入到MongoDB数据库文件中。
 ###8.启动
 <p><code>node bin/app -d c:\CloudMusic</code></p>
+也可以使用<code>node bin/app -s c:\CloudMusic</code>来初始化文件夹，来保存文件夹状态，避免每次启动都需要设置<code>-d</code>命令 
 
 ##效果截图
 ###1.列表效果（环绕）
 ![Alt text](截图1.jpg "效果1")
-###2.列表效果（队列中国结）
+###2.列表效果（中国结）
 ![Alt text](截图2.jpg "效果2")
-###3.单曲效果（乐盘齿纹）
+###3.单曲效果（CD齿纹）
 ![Alt text](截图3.jpg "效果3")
 
 ##可以使用如下命令启动后台管理系统，端口3001

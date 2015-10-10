@@ -1,3 +1,7 @@
+/**
+	此工具用来读取文件夹下的所有MP3文件，并且录入到数据库中
+**/
+
 var fs = require("fs");
 var Promise = require("bluebird");
 var async = require("async");

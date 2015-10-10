@@ -1,9 +1,6 @@
-var commander = require('commander');
-commander.option('-d --dirpath <dirpath>', 'set the music files dir path').parse(process.argv);
-var initFolder = commander.dirpath;
-if (!initFolder) {
-	throw new Error('please use -d to set the dirpath.');
-}
+// 初始化命令行设置
+var commanderInit = require('./commanderInit');
+var dirpath = "c:/CloudMusic";
 
 var fs = require("fs");
 var path = require("path");
@@ -88,7 +85,7 @@ FileServerController.prototype.get = function(request, response, next) {
 	}
 
 	var filename =
-		initFolder + url.parse(request.url, true, true).pathname.split('/').join(path.sep);
+		dirpath + url.parse(request.url, true, true).pathname.split('/').join(path.sep);
 
 	filename = decodeURIComponent(filename);
 
