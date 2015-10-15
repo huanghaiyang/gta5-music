@@ -48,7 +48,7 @@ readdirPromise(dir).then(function(files) {
 					/*将图片写到本地*/
 					fs.writeFile(dir + imgPath, dataBuffer, function(err) {
 						assert.equal(err, null);
-						console.log("图片生成成功！");
+						console.log("info:音乐"+filename+"的图片生成成功！");
 					});
 				}
 			}
@@ -82,14 +82,14 @@ readdirPromise(dir).then(function(files) {
 					name: filename
 				}, function(err, result) {
 					assert.equal(err, null);
-					console.log("finding music without error.");
+					console.log("info:finding music "+filename+" without error.");
 					callback(result);
 				});
 			};
 			/*打开数据库连接并操作*/
 			MongoClient.connect(url, function(err, db) {
 				assert.equal(err, null);
-				console.log("connect success.");
+				console.log("connect db success.");
 				findMusic(db, function(result) {
 					if (result === null)
 						insertMusic(db, function() {
