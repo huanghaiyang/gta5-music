@@ -73,6 +73,6 @@ require([
 	'es6-shim', 'jquery', 'jquery.rotate', 'jquery.easing', 'jquery-ui', 'velocity',
 	'async', 'jquery-circle-progress', 'Vague', 'fly', 'animationRim', 'music', 'cnknot', 'PreloadJS', 'SoundJS', 'inputSearch', 'utils',
 	'app.index', 'app.nav'
-], function(require) {
+], function (require) {
 	'use strict';
 });

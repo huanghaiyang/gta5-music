@@ -1,8 +1,8 @@
 /*! fly - v1.0.0 - 2015-03-23
  * https://github.com/amibug/fly
  * Copyright (c) 2015 wuyuedong; Licensed MIT */
-(function($) {
-  $.fly = function(element, options) {
+(function ($) {
+  $.fly = function (element, options) {
     // 默认值
     var defaults = {
       version: '1.0.0',
@@ -20,14 +20,14 @@
     /**
      * 初始化组件，new的时候即调用
      */
-    self.init = function(options) {
-      this.setOptions(options); !! this.settings.autoPlay && this.play();
+    self.init = function (options) {
+      this.setOptions(options); !!this.settings.autoPlay && this.play();
     };
 
     /**
      * 设置组件参数
      */
-    self.setOptions = function(options) {
+    self.setOptions = function (options) {
       this.settings = $.extend(true, {}, defaults, options);
       var settings = this.settings,
         start = settings.start,
@@ -71,14 +71,14 @@
     /**
      * 开始运动，可自己调用
      */
-    self.play = function() {
+    self.play = function () {
       this.move();
     };
 
     /**
      * 按step运动
      */
-    self.move = function() {
+    self.move = function () {
       var settings = this.settings,
         start = settings.start,
         count = settings.count,
@@ -115,7 +115,7 @@
     /**
      * 销毁
      */
-    self.destroy = function() {
+    self.destroy = function () {
       $element.remove();
     };
 
@@ -123,8 +123,8 @@
   };
 
   // add the plugin to the jQuery.fn object
-  $.fn.fly = function(options) {
-    return this.each(function() {
+  $.fn.fly = function (options) {
+    return this.each(function () {
       new $.fly(this, options)
     });
   };
